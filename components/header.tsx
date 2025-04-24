@@ -8,14 +8,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { ModeToggle } from './mode-toggle';
-import { NavUser } from './nav-user';
-
-const user = {
-  name: 'shadcn',
-  email: 'm@example.com',
-  avatar: '',
-};
+import { NavActions } from './nav-actions';
 
 export default function Header() {
   return (
@@ -37,9 +30,8 @@ export default function Header() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className='flex items-center gap-2 ml-auto px-3'>
-        <ModeToggle />
-        <NavUser user={user} />
+      <div className='ml-auto px-3'>
+        <NavActions />
       </div>
     </header>
   );
