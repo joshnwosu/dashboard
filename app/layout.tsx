@@ -32,11 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
-          <SidebarProvider>
+          <SidebarProvider className='font-sans'>
             <AppSidebar />
             <SidebarInset>
               <Header />
-              <div className='flex flex-1 flex-col gap-4 p-4 pt-0 font-sans'>
+              <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
                 {children}
               </div>
             </SidebarInset>

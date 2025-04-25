@@ -13,7 +13,6 @@ import {
   GalleryVerticalEnd,
   LineChart,
   Link,
-  MoreHorizontal,
   Settings2,
   Trash,
   Trash2,
@@ -35,7 +34,6 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { ModeToggle } from './mode-toggle';
-import { NavUser } from './nav-user';
 
 const data = [
   [
@@ -100,12 +98,6 @@ const data = [
   ],
 ];
 
-const user = {
-  name: 'shadcn',
-  email: 'm@example.com',
-  avatar: '',
-};
-
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -147,7 +139,6 @@ export function NavActions() {
         </PopoverContent>
       </Popover>
       <ModeToggle />
-      <NavUser user={user} />
     </div>
   );
 }

@@ -1,0 +1,206 @@
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import {
+  AudioLines,
+  Award,
+  Check,
+  Filter,
+  Locate,
+  MoveRight,
+  SendHorizonal,
+  Target,
+  User,
+} from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { analyzePrompt, BadgeStates } from '@/utils/analyzePrompt';
+
+// Define custom Badge variants for highlighting
+const badgeVariants = {
+  outline: 'text-sm px-4 py-2 rounded-full',
+  active:
+    'text-sm px-4 py-2 rounded-full bg-green-200 text-white border-green-900  text-green-900',
+};
+
+// Define interface for badge objects
+interface BadgeItem {
+  title: keyof BadgeStates; // Restrict title to BadgeStates keys
+  icon: any; // Use specific icon type if possible (e.g., from lucide-react)
+}
+
+export default function Search() {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [textareaValue, setTextareaValue] = useState<string>('');
+  const [activeBadges, setActiveBadges] = useState<BadgeStates>({
+    Location: false,
+    Skills: false,
+    'Years of Experience': false,
+    Industry: false,
+    'Job Title': false,
+  });
+
+  const badges: BadgeItem[] = [
+    { title: 'Location', icon: Locate },
+    { title: 'Job Title', icon: User },
+    { title: 'Years of Experience', icon: Award },
+    { title: 'Industry', icon: '' },
+    { title: 'Skills', icon: Target },
+  ];
+
+  const searchBtns = [
+    { title: 'Edit Filters', icon: Filter },
+    { title: 'Continue Search', icon: MoveRight },
+  ];
+
+  const actionButtons = [
+    { title: 'voice', icon: AudioLines },
+    { title: 'Send', icon: SendHorizonal },
+  ];
+
+  const samplePrompt = [
+    {
+      title: 'Software Engineer',
+      prompt:
+        'Software Engineer with 5+ years of experience developing scalable applications at fintech companies in the Bay Area, proficient in Python, JavaScript, and cloud technologies like AWS.',
+    },
+    {
+      title: 'Ui/Ux Designer',
+      prompt:
+        'UI/UX Designer with 2+ years of experience creating user-centered designs for fintech products in the Bay Area, skilled in Figma, Adobe XD, and usability testing.',
+    },
+    {
+      title: 'Marketing Manager',
+      prompt:
+        'Marketing Manager with 3+ years of experience driving brand growth for fintech startups in the Bay Area, specializing in digital marketing, SEO, and campaign strategy.',
+    },
+  ];
+
+  // Handle card click to populate textarea
+  const handleCardClick = (prompt: string) => {
+    setTextareaValue(prompt);
+    setActiveBadges(analyzePrompt(prompt));
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
+
+  // Handle container click to focus textarea
+  const handleContainerClick = () => {
+    textareaRef.current?.focus();
+  };
+
+  // Adjust textarea height and analyze prompt on change
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const adjustHeight = () => {
+      if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
+    };
+
+    if (textarea) {
+      textarea.addEventListener('input', adjustHeight);
+    }
+    adjustHeight();
+
+    // Analyze prompt whenever textareaValue changes
+    setActiveBadges(analyzePrompt(textareaValue));
+
+    return () => {
+      if (textarea) {
+        textarea.removeEventListener('input', adjustHeight);
+      }
+    };
+  }, [textareaValue]);
+
+  return (
+    <div className='flex flex-1 flex-col items-center justify-end gap-4 px-4 py-10 max-w-6xl mx-auto'>
+      <div className='flex flex-col items-center text-3xl mb-6'>
+        <p>Good morning, Joshua.</p>
+        <p className='text-muted-foreground'>What are you looking for?</p>
+      </div>
+      <div
+        className='mx-auto w-full max-w-3xl rounded-3xl bg-muted p-4 border border-border cursor-text'
+        onClick={handleContainerClick}
+      >
+        <textarea
+          ref={textareaRef}
+          value={textareaValue}
+          onChange={(e) => setTextareaValue(e.target.value)}
+          className='w-full mt-4 border-0 bg-transparent dark:bg-input/0 shadow-none focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none focus-visible:border-none resize-none overflow-y-auto text-base leading-6'
+          style={{ height: '25px', maxHeight: '120px' }}
+          placeholder='Software Engineer with 5+ years of experience at fintech companies in the Bay Area'
+        />
+
+        <div className='flex justify-between items-baseline'>
+          <div className='flex gap-2'>
+            {searchBtns.map((btn, index) => (
+              <Button
+                key={index.toString()}
+                variant='outline'
+                className='rounded-full'
+              >
+                {btn.title}
+                <btn.icon className='ml-2' />
+              </Button>
+            ))}
+          </div>
+
+          <div className='flex gap-2'>
+            {actionButtons.map((btn, index) => (
+              <Button
+                key={index.toString()}
+                variant={btn.title === 'Send' ? 'default' : 'outline'}
+                className='w-10 h-10 rounded-full'
+              >
+                <btn.icon />
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className='flex gap-4 items-center justify-center'>
+        {badges.map((badge, index) => (
+          <Badge
+            key={index.toString()}
+            variant={activeBadges[badge.title] ? 'default' : 'outline'}
+            className={
+              activeBadges[badge.title]
+                ? badgeVariants.active
+                : badgeVariants.outline
+            }
+            // className='text-sm px-4 py-2 rounded-full'
+          >
+            {badge.icon ? (
+              <badge.icon className='mr-2 scale-150' />
+            ) : (
+              <Check className='mr-2 scale-150' />
+            )}
+            {String(badge.title)}
+          </Badge>
+        ))}
+      </div>
+
+      <div className='grid grid-cols-3 gap-6 mt-4'>
+        {samplePrompt.map((card, index) => (
+          <Card
+            key={index.toString()}
+            className='p-6 cursor-pointer'
+            onClick={() => handleCardClick(card.prompt)}
+          >
+            <CardTitle>
+              <span>{card.title}</span>
+            </CardTitle>
+            <CardDescription className='text-md'>
+              <span>{card.prompt}</span>
+            </CardDescription>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

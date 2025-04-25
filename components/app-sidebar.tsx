@@ -3,15 +3,21 @@
 import * as React from 'react';
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  Bookmark,
   Command,
   Frame,
   GalleryVerticalEnd,
+  History,
+  LayoutDashboard,
+  List,
+  Mail,
   Map,
+  MessageSquare,
   PieChart,
+  Search,
+  Send,
   Settings2,
-  SquareTerminal,
+  User,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -29,13 +35,13 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: 'shadcn',
-    email: 'm@example.com',
+    name: 'Joshua Nwosu',
+    email: 'josh@talenttrace.io',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: 'Acme Inc',
+      name: 'TalentTrace',
       logo: GalleryVerticalEnd,
       plan: 'Enterprise',
     },
@@ -52,71 +58,35 @@ const data = {
   ],
   navMain: [
     {
-      title: 'Playground',
-      url: '#',
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: 'History',
-          url: '#',
-        },
-        {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
-          url: '#',
-        },
-      ],
+      title: 'Explore',
+      url: '/',
+      icon: LayoutDashboard,
     },
     {
-      title: 'Models',
-      url: '#',
-      icon: Bot,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
-        },
-        {
-          title: 'Explorer',
-          url: '#',
-        },
-        {
-          title: 'Quantum',
-          url: '#',
-        },
-      ],
+      title: 'Search',
+      url: '/search',
+      icon: Send,
     },
     {
-      title: 'Documentation',
+      title: 'Shortlist',
+      url: 'save',
+      icon: Bookmark,
+    },
+    {
+      title: 'Recent search',
+      url: '/history',
+      icon: History,
+    },
+    {
+      title: 'Job Board',
       url: '#',
-      icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
+      icon: List,
     },
     {
       title: 'Settings',
       url: '#',
       icon: Settings2,
+      isActive: true,
       items: [
         {
           title: 'General',
@@ -139,19 +109,19 @@ const data = {
   ],
   projects: [
     {
-      name: 'Design Engineering',
+      name: 'Sequences',
+      url: '#',
+      icon: Mail,
+    },
+    {
+      name: 'Integrations',
       url: '#',
       icon: Frame,
     },
     {
-      name: 'Sales & Marketing',
+      name: 'Analytics',
       url: '#',
       icon: PieChart,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: Map,
     },
   ],
 };
