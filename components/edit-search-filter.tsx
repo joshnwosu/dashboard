@@ -7,10 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { BadgeStates } from '@/utils/analyzePrompt';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -29,33 +26,20 @@ import {
 interface EditSearchFilterProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  badgeStates: BadgeStates;
-  onSave: (updatedBadges: BadgeStates) => void;
+  onSave: () => void;
 }
 
 export function EditSearchFilter({
   open,
   onOpenChange,
-  badgeStates,
   onSave,
 }: EditSearchFilterProps) {
-  const [localBadges, setLocalBadges] = useState<BadgeStates>(badgeStates);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const checkboxRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  // Update localBadges when badgeStates prop changes
-  useEffect(() => {
-    setLocalBadges(badgeStates);
-  }, [badgeStates]);
-
-  // Handle checkbox toggle
-  const handleToggle = (key: keyof BadgeStates) => {
-    setLocalBadges((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
   // Handle save
   const handleSave = () => {
-    onSave(localBadges);
+    onSave();
     onOpenChange(false);
   };
 
@@ -84,11 +68,15 @@ export function EditSearchFilter({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[1100px] flex flex-col h-[80vh] p-0 gap-0 [&>button]:hidden'>
+      <DialogContent className='sm:max-w-[1100px] flex flex-col h-[80vh] p-0 gap-0 [&>button]:hidden dark:bg-sidebar'>
         <DialogHeader className='flex flex-row justify-between items-center p-4 border-b border-b-border'>
           <DialogTitle className='text-md'>Edit Search Filters</DialogTitle>
 
-          <Button className='cursor-pointer'>
+          <Button
+            variant='outline'
+            className='cursor-pointer'
+            onClick={handleSave}
+          >
             Save changes <MoveRight className='ml-2' />
           </Button>
         </DialogHeader>

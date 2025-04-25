@@ -129,11 +129,6 @@ export default function Search() {
     textareaRef.current?.focus();
   };
 
-  // Handle saving filters from dialog
-  const handleSaveFilters = (updatedBadges: BadgeStates) => {
-    setActiveBadges(updatedBadges);
-  };
-
   // Adjust textarea height and analyze prompt on change
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -221,8 +216,7 @@ export default function Search() {
       <EditSearchFilter
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        badgeStates={activeBadges}
-        onSave={handleSaveFilters}
+        onSave={() => console.log('Saving filter...')}
       />
 
       <div className='flex gap-4 items-center justify-center'>
