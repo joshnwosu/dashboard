@@ -58,7 +58,7 @@ const data = {
   ],
   navMain: [
     {
-      title: 'Explore',
+      title: 'Dashboard',
       url: '/',
       icon: LayoutDashboard,
     },
@@ -86,7 +86,7 @@ const data = {
       title: 'Settings',
       url: '#',
       icon: Settings2,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: 'General',

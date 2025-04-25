@@ -5,7 +5,6 @@ import {
   ArrowDown,
   ArrowUp,
   Bell,
-  BellDot,
   Copy,
   CornerUpLeft,
   CornerUpRight,
@@ -19,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Popover,
   PopoverContent,
@@ -106,11 +106,14 @@ export function NavActions() {
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
-            variant='ghost'
-            size='icon'
-            className='h-7 w-7 data-[state=open]:bg-accent'
+            variant='outline'
+            className='gap-4 data-[state=open]:bg-accent'
           >
-            <BellDot />
+            <Bell className='size-4' />
+            Notifications
+            <Badge variant='destructive' className='w-5 h-5 rounded-full'>
+              5
+            </Badge>
           </Button>
         </PopoverTrigger>
         <PopoverContent
