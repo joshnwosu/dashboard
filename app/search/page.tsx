@@ -240,7 +240,7 @@ export default function Search() {
         ))}
       </div>
 
-      <div className='grid grid-cols-3 gap-6 mt-4'>
+      <div className='md:grid grid-cols-3 gap-6 mt-4 hidden'>
         {samplePrompt.map((card, index) => (
           <Card
             key={index.toString()}
