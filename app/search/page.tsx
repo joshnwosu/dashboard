@@ -7,13 +7,15 @@ import {
   AudioLines,
   Award,
   Check,
+  CodeXml,
+  Headset,
   Locate,
   Mic,
   SearchIcon,
   SendHorizonal,
   SlidersHorizontal,
+  Snowflake,
   Sparkle,
-  Target,
   User,
 } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
@@ -24,6 +26,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { EditSearchFilter } from '@/components/edit-search-filter';
 
 // Define custom Badge variants for highlighting
 const badgeVariants = {
@@ -55,6 +59,7 @@ export default function Search() {
     Industry: false,
     'Job Title': false,
   });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const badges: BadgeItem[] = [
     { title: 'Location', icon: Locate },
@@ -65,7 +70,11 @@ export default function Search() {
   ];
 
   const searchBtns = [
-    { title: 'Edit Filters', icon: SlidersHorizontal },
+    {
+      title: 'Edit Filters',
+      icon: SlidersHorizontal,
+      onClick: () => setIsDialogOpen(true),
+    },
     { title: 'Continue Search', icon: SearchIcon },
   ];
 
@@ -87,16 +96,22 @@ export default function Search() {
       title: 'Software Engineer',
       prompt:
         'Software Engineer with 5+ years of experience developing scalable applications at fintech companies in the Bay Area, proficient in Python, JavaScript, and cloud technologies like AWS.',
+      icon: CodeXml,
+      color: 'bg-blue-500',
     },
     {
       title: 'Ui/Ux Designer',
       prompt:
         'UI/UX Designer with 2+ years of experience creating user-centered designs for fintech products in the Bay Area, skilled in Figma, Adobe XD, and usability testing.',
+      icon: Snowflake,
+      color: 'bg-yellow-600',
     },
     {
       title: 'Marketing Manager',
       prompt:
         'Marketing Manager with 3+ years of experience driving brand growth for fintech startups in the Bay Area, specializing in digital marketing, SEO, and campaign strategy.',
+      icon: Headset,
+      color: 'bg-red-600',
     },
   ];
 
@@ -112,6 +127,11 @@ export default function Search() {
   // Handle container click to focus textarea
   const handleContainerClick = () => {
     textareaRef.current?.focus();
+  };
+
+  // Handle saving filters from dialog
+  const handleSaveFilters = (updatedBadges: BadgeStates) => {
+    setActiveBadges(updatedBadges);
   };
 
   // Adjust textarea height and analyze prompt on change
@@ -142,11 +162,13 @@ export default function Search() {
   return (
     <div className='flex flex-1 flex-col items-center justify-end gap-4 px-4 py-10 max-w-6xl mx-auto'>
       <div className='flex flex-col items-center text-3xl mb-6'>
-        <p>Good morning, Joshua.</p>
-        <p className='text-muted-foreground'>What are you looking for?</p>
+        <p>Hi, I'm TalentTrace.</p>
+        <p className='text-muted-foreground text-xl mt-4'>
+          Who are you looking for?
+        </p>
       </div>
       <div
-        className='mx-auto w-full max-w-3xl rounded-3xl bg-muted p-4 border border-border cursor-text'
+        className='mx-auto w-full max-w-3xl rounded-3xl bg-muted dark:bg-sidebar p-4 border border-border cursor-text'
         onClick={handleContainerClick}
       >
         <textarea
@@ -166,9 +188,10 @@ export default function Search() {
                 variant='outline'
                 className='rounded-full cursor-pointer'
                 disabled={!textareaValue}
+                onClick={btn.onClick}
               >
                 {btn.title}
-                <btn.icon className='ml-2 scale-125' />
+                <btn.icon className='ml-2 size-4' />
               </Button>
             ))}
           </div>
@@ -182,7 +205,7 @@ export default function Search() {
                       variant={btn.title === 'Send' ? 'default' : 'outline'}
                       className='w-10 h-10 rounded-full cursor-pointer'
                     >
-                      <btn.icon className='scale-125' />
+                      <btn.icon className='size-5' />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -195,6 +218,13 @@ export default function Search() {
         </div>
       </div>
 
+      <EditSearchFilter
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        badgeStates={activeBadges}
+        onSave={handleSaveFilters}
+      />
+
       <div className='flex gap-4 items-center justify-center'>
         {badges.map((badge, index) => (
           <Badge
@@ -205,7 +235,6 @@ export default function Search() {
                 ? badgeVariants.active
                 : badgeVariants.outline
             }
-            // className='text-sm px-4 py-2 rounded-full'
           >
             {badge.icon ? (
               <badge.icon className='mr-2 scale-150' />
@@ -224,6 +253,15 @@ export default function Search() {
             className='p-6 cursor-pointer'
             onClick={() => handleCardClick(card.prompt)}
           >
+            <div
+              className={cn(
+                'flex aspect-square size-10 items-center justify-center rounded-lg bg-red-600 text-sidebar-primary-foreground',
+                card.color
+              )}
+            >
+              <card.icon className='size-5' />
+            </div>
+
             <CardTitle>
               <span>{card.title}</span>
             </CardTitle>
