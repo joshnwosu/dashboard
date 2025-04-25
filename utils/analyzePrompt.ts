@@ -12,7 +12,7 @@ interface CompromiseDoc {
 export interface BadgeStates {
   Location: boolean;
   Skills: boolean;
-  'Years of Experience': boolean;
+  Experience: boolean;
   Industry: boolean;
   'Job Title': boolean;
 }
@@ -26,7 +26,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
   const badgeStates: BadgeStates = {
     Location: false,
     Skills: false,
-    'Years of Experience': false,
+    Experience: false,
     Industry: false,
     'Job Title': false,
   };
@@ -50,7 +50,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
     );
 
   // Years of Experience: Regex for "X+ years" or "X years"
-  badgeStates['Years of Experience'] = /\d+\+?\s*years/i.test(prompt);
+  badgeStates['Experience'] = /\d+\+?\s*years/i.test(prompt);
 
   // Industry: Common industry keywords (case-insensitive)
   badgeStates.Industry =

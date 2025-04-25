@@ -7,21 +7,29 @@ import {
   AudioLines,
   Award,
   Check,
-  Filter,
   Locate,
-  MoveRight,
+  Mic,
+  SearchIcon,
   SendHorizonal,
+  SlidersHorizontal,
+  Sparkle,
   Target,
   User,
 } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import { analyzePrompt, BadgeStates } from '@/utils/analyzePrompt';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 // Define custom Badge variants for highlighting
 const badgeVariants = {
-  outline: 'text-sm px-4 py-2 rounded-full',
+  outline: 'px-4 py-2 rounded-full',
   active:
-    'text-sm px-4 py-2 rounded-full bg-green-200 text-white border-green-900  text-green-900',
+    'px-4 py-2 rounded-full bg-green-200 text-white border-green-900  text-green-900',
 };
 
 // Define interface for badge objects
@@ -30,13 +38,20 @@ interface BadgeItem {
   icon: any; // Use specific icon type if possible (e.g., from lucide-react)
 }
 
+// Define interface for action button objects
+interface ActionButton {
+  title: string;
+  icon: any; // Use specific icon type if possible
+  tooltip: string; // Add tooltip property
+}
+
 export default function Search() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [textareaValue, setTextareaValue] = useState<string>('');
   const [activeBadges, setActiveBadges] = useState<BadgeStates>({
     Location: false,
     Skills: false,
-    'Years of Experience': false,
+    Experience: false,
     Industry: false,
     'Job Title': false,
   });
@@ -44,19 +59,27 @@ export default function Search() {
   const badges: BadgeItem[] = [
     { title: 'Location', icon: Locate },
     { title: 'Job Title', icon: User },
-    { title: 'Years of Experience', icon: Award },
+    { title: 'Experience', icon: Award },
     { title: 'Industry', icon: '' },
-    { title: 'Skills', icon: Target },
+    { title: 'Skills', icon: Sparkle },
   ];
 
   const searchBtns = [
-    { title: 'Edit Filters', icon: Filter },
-    { title: 'Continue Search', icon: MoveRight },
+    { title: 'Edit Filters', icon: SlidersHorizontal },
+    { title: 'Continue Search', icon: SearchIcon },
   ];
 
-  const actionButtons = [
-    { title: 'voice', icon: AudioLines },
-    { title: 'Send', icon: SendHorizonal },
+  const actionButtons: ActionButton[] = [
+    {
+      title: 'Dictate',
+      icon: Mic,
+      tooltip: 'Record your prompt using voice input',
+    },
+    {
+      title: 'Send',
+      icon: textareaValue ? SendHorizonal : AudioLines, // Dynamic icon based on textareaValue
+      tooltip: textareaValue ? 'Send your prompt' : 'Use voice mode',
+    },
   ];
 
   const samplePrompt = [
@@ -141,24 +164,33 @@ export default function Search() {
               <Button
                 key={index.toString()}
                 variant='outline'
-                className='rounded-full'
+                className='rounded-full cursor-pointer'
+                disabled={!textareaValue}
               >
                 {btn.title}
-                <btn.icon className='ml-2' />
+                <btn.icon className='ml-2 scale-125' />
               </Button>
             ))}
           </div>
 
           <div className='flex gap-2'>
-            {actionButtons.map((btn, index) => (
-              <Button
-                key={index.toString()}
-                variant={btn.title === 'Send' ? 'default' : 'outline'}
-                className='w-10 h-10 rounded-full'
-              >
-                <btn.icon />
-              </Button>
-            ))}
+            <TooltipProvider>
+              {actionButtons.map((btn, index) => (
+                <Tooltip key={index.toString()}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={btn.title === 'Send' ? 'default' : 'outline'}
+                      className='w-10 h-10 rounded-full cursor-pointer'
+                    >
+                      <btn.icon className='scale-125' />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className='text-md'>{btn.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </TooltipProvider>
           </div>
         </div>
       </div>
