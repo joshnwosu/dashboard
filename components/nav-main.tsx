@@ -16,8 +16,10 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
+import { Badge } from './ui/badge';
 
 export function NavMain({
   items,
@@ -27,12 +29,15 @@ export function NavMain({
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
+    badge?: string;
     items?: {
       title: string;
       url: string;
     }[];
   }[];
 }) {
+  const { isMobile } = useSidebar();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -62,7 +67,9 @@ export function NavMain({
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
                           <Link href={subItem.url}>
-                            <span>{subItem.title}</span>
+                            <span className='text-muted-foreground'>
+                              {subItem.title}
+                            </span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -77,6 +84,11 @@ export function NavMain({
                 <Link href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
+                  {item.badge && (
+                    <Badge variant='outline' className='absolute right-1'>
+                      {item.badge}
+                    </Badge>
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -82,7 +82,7 @@ export function EditSearchFilter({
         </DialogHeader>
         <div className='flex flex-1 overflow-hidden'>
           {/* Sidebar */}
-          <div className='w-1/4 border-r border-border p-4'>
+          <div className='w-1/4 border-r border-border p-4 bg-sidebar dark:bg-sidebar'>
             <ScrollArea className='h-full'>
               <ul className='space-y-1'>
                 {sideBarItems.map((item, index) => (

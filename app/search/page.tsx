@@ -155,7 +155,7 @@ export default function Search() {
   }, [textareaValue]);
 
   return (
-    <div className='flex flex-1 flex-col items-center justify-end gap-4 px-4 py-10 max-w-6xl mx-auto'>
+    <div className='flex flex-1 flex-col items-center justify-end gap-3 px-4 py-2 max-w-6xl mx-auto'>
       <div className='flex flex-col items-center text-3xl mb-6'>
         <p>Hi, I'm TalentTrace.</p>
         <p className='text-muted-foreground text-xl mt-4'>

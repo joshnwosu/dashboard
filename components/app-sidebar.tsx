@@ -69,42 +69,32 @@ const data = {
     },
     {
       title: 'Shortlist',
-      url: 'save',
+      url: '/shortlist',
       icon: Bookmark,
     },
     {
-      title: 'Recent search',
+      title: 'History',
       url: '/history',
       icon: History,
+      isActive: true,
+      items: [
+        {
+          title:
+            'Software Engineers in Nigeria working at Series B companies, skilled in Javascript and  React Native',
+          url: '/history/1',
+        },
+        {
+          title:
+            'Marketing Manager in Europe, German-speaking, working at a large enterprise',
+          url: '/history/2',
+        },
+      ],
     },
     {
       title: 'Job Board',
       url: '#',
       icon: List,
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      isActive: false,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
+      badge: 'soon',
     },
   ],
   projects: [
@@ -122,6 +112,11 @@ const data = {
       name: 'Analytics',
       url: '#',
       icon: PieChart,
+    },
+    {
+      name: 'Settings',
+      url: '#',
+      icon: Settings2,
     },
   ],
 };
