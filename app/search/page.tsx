@@ -95,21 +95,21 @@ export default function Search() {
     {
       title: 'Software Engineer',
       prompt:
-        'Software Engineer with 5+ years of experience developing scalable applications at fintech companies in the Bay Area, proficient in Python, JavaScript, and cloud technologies like AWS.',
+        'Software Engineer with 5+ years in fintech, skilled in Python, JavaScript, AWS, based in Nigeria.',
       icon: CodeXml,
       color: 'bg-blue-500',
     },
     {
-      title: 'Ui/Ux Designer',
+      title: 'UI/UX Designer',
       prompt:
-        'UI/UX Designer with 2+ years of experience creating user-centered designs for fintech products in the Bay Area, skilled in Figma, Adobe XD, and usability testing.',
+        'UI/UX Designer with 2+ years in fintech, skilled in Figma, Adobe XD, usability testing, Asia.',
       icon: Snowflake,
       color: 'bg-yellow-600',
     },
     {
       title: 'Marketing Manager',
       prompt:
-        'Marketing Manager with 3+ years of experience driving brand growth for fintech startups in the Bay Area, specializing in digital marketing, SEO, and campaign strategy.',
+        'Marketing Manager with 3+ years in fintech, experienced in digital marketing, SEO, strategy, Europe.',
       icon: Headset,
       color: 'bg-red-600',
     },
