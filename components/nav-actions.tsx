@@ -8,6 +8,7 @@ import {
   Copy,
   CornerUpLeft,
   CornerUpRight,
+  EllipsisVertical,
   FileText,
   GalleryVerticalEnd,
   LineChart,
@@ -18,7 +19,6 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Popover,
   PopoverContent,
@@ -34,6 +34,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { ModeToggle } from './mode-toggle';
+import { NotificationPopup } from './notification-popup';
 
 const data = [
   [
@@ -102,18 +103,16 @@ export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <div className='flex items-center gap-2 text-sm'>
+    <div className='flex items-center gap-4 text-sm'>
+      <NotificationPopup />
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             variant='outline'
             className='gap-4 data-[state=open]:bg-accent'
+            size='icon'
           >
-            <Bell className='size-4' />
-            Notifications
-            <Badge variant='destructive' className='w-5 h-5 rounded-full'>
-              5
-            </Badge>
+            <EllipsisVertical className='size-4' />
           </Button>
         </PopoverTrigger>
         <PopoverContent
