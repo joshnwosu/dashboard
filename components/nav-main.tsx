@@ -40,7 +40,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Explore</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           // Check if item has sub-items

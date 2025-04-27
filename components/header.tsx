@@ -23,9 +23,14 @@ export default function Header() {
   const nameMap: { [key: string]: string } = {
     dashboard: 'Dashboard',
     search: 'Search',
-    settings: 'Settings',
     history: 'History',
     shortlist: 'Shortlist',
+    jobs: 'Jobs',
+
+    emails: 'Emails',
+    intergratins: 'Integrations',
+    analytics: 'Analytics',
+    settings: 'Settings',
   };
 
   return (

@@ -99,23 +99,23 @@ const data = {
   ],
   projects: [
     {
-      name: 'Sequences',
-      url: '#',
+      name: 'Emails',
+      url: '/emails',
       icon: Mail,
     },
     {
       name: 'Integrations',
-      url: '#',
+      url: '/integrations',
       icon: Frame,
     },
     {
       name: 'Analytics',
-      url: '#',
+      url: '/analytics',
       icon: PieChart,
     },
     {
       name: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: Settings2,
     },
   ],
