@@ -16,6 +16,7 @@ import {
   SlidersHorizontal,
   Snowflake,
   Sparkle,
+  Sparkles,
   User,
 } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
@@ -58,6 +59,7 @@ export default function Search() {
     Experience: false,
     Industry: false,
     'Job Title': false,
+    'Job Type': false,
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -67,6 +69,7 @@ export default function Search() {
     { title: 'Experience', icon: Award },
     { title: 'Industry', icon: '' },
     { title: 'Skills', icon: Sparkle },
+    { title: 'Job Type', icon: Sparkles },
   ];
 
   const searchBtns = [
@@ -175,8 +178,8 @@ export default function Search() {
           placeholder='Software Engineer with 5+ years of experience at fintech companies in the Bay Area'
         />
 
-        <div className='flex justify-between items-baseline'>
-          <div className='flex gap-2'>
+        <div className='flex justify-end items-baseline'>
+          <div className='hidden gap-2'>
             {searchBtns.map((btn, index) => (
               <Button
                 key={index.toString()}
@@ -249,11 +252,11 @@ export default function Search() {
           >
             <div
               className={cn(
-                'flex aspect-square size-10 items-center justify-center rounded-lg bg-red-600 text-sidebar-primary-foreground',
-                card.color
+                'flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'
+                // card.color
               )}
             >
-              <card.icon className='size-5' />
+              <card.icon className='size-4' />
             </div>
 
             <CardTitle>

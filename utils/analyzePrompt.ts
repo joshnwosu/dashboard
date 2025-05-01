@@ -1,4 +1,5 @@
 // utils/analyzePrompt.ts
+import { skills } from '@/data/skills';
 import nlp from 'compromise';
 
 // Minimal type for Compromise document to ensure type safety
@@ -15,7 +16,10 @@ export interface BadgeStates {
   Experience: boolean;
   Industry: boolean;
   'Job Title': boolean;
+  'Job Type': boolean;
 }
+
+const skillsSet = new Set(skills.map((skill) => skill.toLowerCase()));
 
 // Utility function to analyze prompt and determine active badges
 export const analyzePrompt = (prompt: string): BadgeStates => {
@@ -29,6 +33,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
     Experience: false,
     Industry: false,
     'Job Title': false,
+    'Job Type': false,
   };
 
   // Location: Detect countries, states, cities, or other places
@@ -50,7 +55,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
     );
 
   // Years of Experience: Regex for "X+ years" or "X years"
-  badgeStates['Experience'] = /\d+\+?\s*years/i.test(prompt);
+  badgeStates.Experience = /\d+\+?\s*years/i.test(prompt);
 
   // Industry: Common industry keywords (case-insensitive)
   badgeStates.Industry =
@@ -58,9 +63,28 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
       prompt.toLowerCase()
     );
 
-  // Skills: Common technical skills (case-insensitive)
-  badgeStates.Skills =
-    /python|javascript|figma|adobe xd|seo|aws|react|typescript|sql/i.test(
+  // // Skills: Common technical skills (case-insensitive)
+  // badgeStates.Skills =
+  //   /python|javascript|figma|adobe xd|seo|aws|react|typescript|sql/i.test(
+  //     prompt.toLowerCase()
+  //   );
+
+  // Check if any skill is present in the prompt using Set
+  // badgeStates.Skills = prompt
+  //   .toLowerCase()
+  //   .split(/\W+/)
+  //   .some((word) => skillsSet.has(word));
+
+  badgeStates.Skills = skills.some((skill) =>
+    new RegExp(
+      `\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+      'i'
+    ).test(prompt)
+  );
+
+  // Job Type: Common job types (case-insensitive)
+  badgeStates['Job Type'] =
+    /remote|full time|full-time|on site|on-site|part time|part-time|contract/i.test(
       prompt.toLowerCase()
     );
 
