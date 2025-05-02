@@ -237,7 +237,7 @@ const columns: ColumnDef<Item>[] = [
   },
 ];
 
-export default function Component() {
+export default function Shortlist() {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -807,5 +807,3 @@ function RowActions({ row }: { row: Row<Item> }) {
     </DropdownMenu>
   );
 }
-
-export { Component };
