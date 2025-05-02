@@ -92,6 +92,7 @@ import {
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import TitleDescription from '@/components/title-description';
 import Image from 'next/image';
+import { GmailIcon, LinkedinIcon } from '@/icon';
 
 type Item = {
   id: string;
@@ -164,14 +165,9 @@ const columns: ColumnDef<Item>[] = [
   {
     header: 'Profile',
     cell: ({ row }) => (
-      <div className='flex gap-4'>
-        <Image
-          src='/images/linkedin.png'
-          alt='Linkedin'
-          width={24}
-          height={24}
-        />
-        <Image src='/images/gmail.png' alt='Gmail' width={24} height={24} />
+      <div className='flex gap-2'>
+        <LinkedinIcon width={24} height={24} />
+        <GmailIcon width={24} height={24} />
       </div>
     ),
   },
@@ -371,7 +367,7 @@ export default function Shortlist() {
             </div>
             {Boolean(table.getColumn('name')?.getFilterValue()) && (
               <button
-                className='absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
+                className='absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Clear filter'
                 onClick={() => {
                   table.getColumn('name')?.setFilterValue('');
