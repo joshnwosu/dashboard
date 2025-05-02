@@ -124,8 +124,7 @@ export default function CardGrid({ items }: CardGridProps) {
                 <div className='flex flex-1 flex-col'>
                   <h2 className='text-md'>{item.name}</h2>
                   <p className='text-sm text-muted-foreground'>
-                    {item.jobTitle} @ <br />
-                    {item.company}
+                    {item.jobTitle} @ {item.company}
                   </p>
                   <div className='mt-2 flex gap-4'>
                     <Image

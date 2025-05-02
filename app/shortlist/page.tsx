@@ -187,22 +187,22 @@ const columns: ColumnDef<Item>[] = [
     ),
     size: 180,
   },
-  {
-    header: 'Status',
-    accessorKey: 'status',
-    cell: ({ row }) => (
-      <Badge
-        className={cn(
-          row.getValue('status') === 'Inactive' &&
-            'bg-muted-foreground/60 text-primary-foreground'
-        )}
-      >
-        {row.getValue('status')}
-      </Badge>
-    ),
-    size: 100,
-    filterFn: statusFilterFn,
-  },
+  // {
+  //   header: 'Status',
+  //   accessorKey: 'status',
+  //   cell: ({ row }) => (
+  //     <Badge
+  //       className={cn(
+  //         row.getValue('status') === 'Inactive' &&
+  //           'bg-muted-foreground/60 text-primary-foreground'
+  //       )}
+  //     >
+  //       {row.getValue('status')}
+  //     </Badge>
+  //   ),
+  //   size: 100,
+  //   filterFn: statusFilterFn,
+  // },
   {
     header: 'Education',
     accessorKey: 'performance',
