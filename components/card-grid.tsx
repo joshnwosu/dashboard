@@ -14,10 +14,12 @@ import {
   ArrowDown,
   ArrowUp,
   Bell,
+  Bookmark,
   Copy,
   CornerUpLeft,
   CornerUpRight,
   EllipsisVertical,
+  Eye,
   FileText,
   GalleryVerticalEnd,
   LineChart,
@@ -107,10 +109,10 @@ export default function CardGrid({ items }: CardGridProps) {
           <div
             key={index.toString()}
             // className='rounded-xl bg-muted/50 p-8 flex flex-col gap-4 shadow-md cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:bg-muted'
-            className='rounded-xl bg-background ring-2 dark:ring-1 ring-accent p-8 flex flex-col gap-4 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:bg-muted/50'
+            className='rounded-xl bg-background ring-2 dark:ring-1 ring-accent p-6 flex flex-col gap-4 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:bg-muted/50'
             onClick={() => handleCardClick(item, index)}
           >
-            <div className='flex justify-between items-start gap-8'>
+            <div className='flex justify-between items-start gap-4'>
               <div className='flex gap-4 items-start'>
                 <Image
                   src={item.avatar}
@@ -122,9 +124,10 @@ export default function CardGrid({ items }: CardGridProps) {
                 <div className='flex flex-1 flex-col'>
                   <h2 className='text-md'>{item.name}</h2>
                   <p className='text-sm text-muted-foreground'>
-                    {item.jobTitle} @ {item.company}
+                    {item.jobTitle} @ <br />
+                    {item.company}
                   </p>
-                  <div className='mt-2 flex gap-4 grayscale-0 hover:grayscale-100'>
+                  <div className='mt-2 flex gap-4'>
                     <Image
                       src='/images/linkedin.png'
                       alt='Linkedin'
@@ -140,45 +143,6 @@ export default function CardGrid({ items }: CardGridProps) {
                   </div>
                 </div>
               </div>
-
-              <Popover open={isOpen} onOpenChange={setIsOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant='outline'
-                    //   className='gap-4 data-[state=open]:bg-accent'
-                    size='icon'
-                  >
-                    <EllipsisVertical className='size-4' />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className='w-56 overflow-hidden rounded-lg p-0'
-                  align='end'
-                >
-                  <Sidebar collapsible='none' className='bg-transparent'>
-                    <SidebarContent>
-                      {data.map((group, index) => (
-                        <SidebarGroup
-                          key={index}
-                          className='border-b last:border-none'
-                        >
-                          <SidebarGroupContent className='gap-0'>
-                            <SidebarMenu>
-                              {group.map((item, index) => (
-                                <SidebarMenuItem key={index}>
-                                  <SidebarMenuButton>
-                                    <item.icon /> <span>{item.label}</span>
-                                  </SidebarMenuButton>
-                                </SidebarMenuItem>
-                              ))}
-                            </SidebarMenu>
-                          </SidebarGroupContent>
-                        </SidebarGroup>
-                      ))}
-                    </SidebarContent>
-                  </Sidebar>
-                </PopoverContent>
-              </Popover>
             </div>
             <p className='line-clamp-3 text-md text-muted-foreground'>
               {item.about}
@@ -191,6 +155,16 @@ export default function CardGrid({ items }: CardGridProps) {
                 iconStyle='line'
                 value={item.value ?? '9.3%'}
               />
+            </div>
+            <div className='flex items-center gap-4 justify-end'>
+              <Button variant='outline' className='text-sm'>
+                <span>Shortlist</span>
+                <Bookmark />
+              </Button>
+              <Button variant='outline' className='text-sm'>
+                <span>Hide</span>
+                <Eye />
+              </Button>
             </div>
           </div>
         ))}

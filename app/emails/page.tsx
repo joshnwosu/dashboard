@@ -1,3 +1,9 @@
+import TitleDescription from '@/components/title-description';
+
 export default function Sequences() {
-  return <p>Emails Page</p>;
+  return (
+    <div>
+      <TitleDescription title='Emails' />
+    </div>
+  );
 }
