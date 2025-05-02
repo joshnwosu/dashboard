@@ -108,11 +108,11 @@ const data = {
       url: '/integrations',
       icon: Frame,
     },
-    {
-      name: 'Analytics',
-      url: '/analytics',
-      icon: PieChart,
-    },
+    // {
+    //   name: 'Analytics',
+    //   url: '/analytics',
+    //   icon: PieChart,
+    // },
     {
       name: 'Settings',
       url: '/settings',
