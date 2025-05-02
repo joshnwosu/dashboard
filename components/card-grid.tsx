@@ -44,6 +44,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { BadgeDelta } from './badge-delta';
+import { GmailIcon, LinkedinIcon } from '@/icon';
 
 export interface ItemProps {
   avatar: string;
@@ -126,19 +127,9 @@ export default function CardGrid({ items }: CardGridProps) {
                   <p className='text-sm text-muted-foreground'>
                     {item.jobTitle} @ {item.company}
                   </p>
-                  <div className='mt-2 flex gap-4'>
-                    <Image
-                      src='/images/linkedin.png'
-                      alt='Linkedin'
-                      width={24}
-                      height={24}
-                    />
-                    <Image
-                      src='/images/gmail.png'
-                      alt='Gmail'
-                      width={24}
-                      height={24}
-                    />
+                  <div className='mt-2 flex gap-2'>
+                    <LinkedinIcon width={34} height={34} />
+                    <GmailIcon width={30} height={30} />
                   </div>
                 </div>
               </div>

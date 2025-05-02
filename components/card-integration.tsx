@@ -1,39 +1,46 @@
 import { Switch } from '@/components/ui/switch';
+import {
+  GithubIcon,
+  GmailIcon,
+  GoogleCalendarIcon,
+  IndeedIcon,
+  LinkedinIcon,
+} from '@/icon';
 
 const data = [
   {
     name: 'LinkedIn',
     description:
       'Connect your LinkedIn account to view and manage your connections.',
-    icon: '/images/linkedin.png',
+    icon: <LinkedinIcon width={60} height={60} />,
     checked: true,
   },
   {
     name: 'Github',
     description:
       'Connect your Github account to manage your repositories and projects.',
-    icon: '/images/github.png',
+    icon: <GithubIcon width={50} height={50} />,
     checked: false,
   },
   {
     name: 'Indeed',
     description:
       'Connect your Indeed account to manage your job postings and applications.',
-    icon: '/images/indeed.png',
+    icon: <IndeedIcon width={50} height={50} />,
     checked: false,
   },
   {
     name: 'Gmail',
     description:
       'Connect your Gmail account to send and receive emails directly from the app.',
-    icon: '/images/gmail.png',
+    icon: <GmailIcon width={50} height={50} />,
     checked: true,
   },
   {
     name: 'Google Calendar',
     description:
       'Connect your Google Calendar to schedule and manage your events.',
-    icon: '/images/google-calendar.png',
+    icon: <GoogleCalendarIcon width={50} height={50} />,
     checked: false,
   },
 ];
@@ -47,11 +54,7 @@ export default function CardIntergratins() {
           className='flex flex-col gap-4 p-6 rounded-lg bg-muted/50'
         >
           <div className='flex justify-between items-start'>
-            <img
-              src={item.icon}
-              alt={item.name}
-              className='w-12 h-12 rounded-md'
-            />
+            {item.icon}
             <Switch
               defaultChecked={item.checked}
               onCheckedChange={() => console.log('Hi')}
