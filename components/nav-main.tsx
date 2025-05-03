@@ -23,6 +23,7 @@ import { Badge } from './ui/badge';
 
 export function NavMain({
   items,
+  pathname,
 }: {
   items: {
     title: string;
@@ -35,6 +36,7 @@ export function NavMain({
       url: string;
     }[];
   }[];
+  pathname?: string;
 }) {
   const { isMobile } = useSidebar();
 
@@ -45,6 +47,10 @@ export function NavMain({
         {items.map((item) => {
           // Check if item has sub-items
           const hasSubItems = item.items && item.items.length > 0;
+          const isActive =
+            pathname === item.url ||
+            (item.items &&
+              item.items.some((subItem) => subItem.url === pathname));
 
           return hasSubItems ? (
             <Collapsible
@@ -55,32 +61,53 @@ export function NavMain({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    className={
+                      isActive ? 'bg-accent text-accent-foreground' : undefined
+                    }
+                  >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                     <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
-                          <Link href={subItem.url}>
-                            <span className='text-muted-foreground'>
-                              {subItem.title}
-                            </span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
+                  <SidebarMenuSub className='py-2'>
+                    {item.items?.map((subItem) => {
+                      const isSubItemActive = pathname === subItem.url;
+                      return (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton
+                            asChild
+                            className={
+                              isSubItemActive
+                                ? 'bg-accent text-accent-foreground'
+                                : 'text-muted-foreground'
+                            }
+                          >
+                            <Link href={subItem.url}>
+                              <span>{subItem.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      );
+                    })}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className={
+                  pathname === item.url
+                    ? 'bg-accent text-accent-foreground'
+                    : undefined
+                }
+              >
                 <Link href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>

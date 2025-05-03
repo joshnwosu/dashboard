@@ -27,6 +27,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { usePathname } from 'next/navigation';
 
 // This is sample data.
 const data = {
@@ -91,7 +92,21 @@ const data = {
       title: 'Job Board',
       url: '#',
       icon: Briefcase,
-      badge: 'soon',
+    },
+    {
+      title: 'Emails',
+      url: '/emails',
+      icon: Mail,
+    },
+    {
+      title: 'Integrations',
+      url: '/integrations',
+      icon: Frame,
+    },
+    {
+      title: 'Settings',
+      url: '/settings',
+      icon: Settings2,
     },
   ],
   projects: [
@@ -114,14 +129,15 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
   return (
-    <Sidebar collapsible='offcanvas' {...props}>
+    <Sidebar collapsible='icon' {...props}>
       <SidebarHeader className='border-b'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} pathname={pathname} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
