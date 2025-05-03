@@ -82,15 +82,20 @@ export default function Search() {
   ];
 
   const actionButtons: ActionButton[] = [
-    {
-      title: 'Dictate',
-      icon: Mic,
-      tooltip: 'Record your prompt using voice input',
-    },
+    // {
+    //   title: 'Dictate',
+    //   icon: Mic,
+    //   tooltip: 'Record your prompt using voice input',
+    // },
+    // {
+    //   title: 'Send',
+    //   icon: textareaValue ? SendHorizonal : AudioLines, // Dynamic icon based on textareaValue
+    //   tooltip: textareaValue ? 'Send your prompt' : 'Use voice mode',
+    // },
     {
       title: 'Send',
-      icon: textareaValue ? SendHorizonal : AudioLines, // Dynamic icon based on textareaValue
-      tooltip: textareaValue ? 'Send your prompt' : 'Use voice mode',
+      icon: SendHorizonal,
+      tooltip: 'Send your prompt',
     },
   ];
 
@@ -160,10 +165,7 @@ export default function Search() {
   return (
     <div className='flex flex-1 flex-col items-center justify-end gap-3 px-4 py-2 max-w-6xl mx-auto'>
       <div className='flex flex-col items-center text-3xl mb-6'>
-        <p>Hi, I'm TalentTrace.</p>
-        <p className='text-muted-foreground text-xl mt-4'>
-          Who are you looking for?
-        </p>
+        <p className='text-xl'>Who are you looking for?</p>
       </div>
       <div
         className='mx-auto w-full max-w-3xl rounded-3xl bg-muted dark:bg-sidebar p-4 border border-border cursor-text'
@@ -176,6 +178,7 @@ export default function Search() {
           className='w-full mt-4 border-0 bg-transparent dark:bg-input/0 shadow-none focus-visible:outline-none focus-visible:ring-0 focus-visible:shadow-none focus-visible:border-none resize-none overflow-y-auto text-base leading-6'
           style={{ height: '25px', maxHeight: '120px' }}
           placeholder='Software Engineer with 5+ years of experience at fintech companies in the Bay Area'
+          autoFocus
         />
 
         <div className='flex justify-end items-baseline'>

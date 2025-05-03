@@ -4,20 +4,16 @@ import * as React from 'react';
 import {
   AudioWaveform,
   Bookmark,
+  Briefcase,
   Command,
+  FileUser,
   Frame,
   GalleryVerticalEnd,
   History,
   LayoutDashboard,
-  List,
   Mail,
-  Map,
-  MessageSquare,
-  PieChart,
-  Search,
   Send,
   Settings2,
-  User,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -90,10 +86,11 @@ const data = {
         },
       ],
     },
+    { title: 'CV Screening', url: '/cv-screening', icon: FileUser },
     {
       title: 'Job Board',
       url: '#',
-      icon: List,
+      icon: Briefcase,
       badge: 'soon',
     },
   ],
@@ -108,11 +105,6 @@ const data = {
       url: '/integrations',
       icon: Frame,
     },
-    // {
-    //   name: 'Analytics',
-    //   url: '/analytics',
-    //   icon: PieChart,
-    // },
     {
       name: 'Settings',
       url: '/settings',
@@ -124,7 +116,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible='offcanvas' {...props}>
-      <SidebarHeader>
+      <SidebarHeader className='border-b'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>

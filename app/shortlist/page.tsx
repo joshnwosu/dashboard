@@ -91,8 +91,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import TitleDescription from '@/components/title-description';
-import Image from 'next/image';
-import { GmailIcon, LinkedinIcon } from '@/icon';
 
 type Item = {
   id: string;
@@ -156,20 +154,10 @@ const columns: ColumnDef<Item>[] = [
     filterFn: multiColumnFilterFn,
     enableHiding: false,
   },
-  // {
-  //   header: 'Email',
-  //   accessorKey: 'email',
-  //   size: 220,
-  // },
-
   {
-    header: 'Profile',
-    cell: ({ row }) => (
-      <div className='flex gap-2'>
-        <LinkedinIcon width={24} height={24} />
-        <GmailIcon width={24} height={24} />
-      </div>
-    ),
+    header: 'Email',
+    accessorKey: 'email',
+    size: 220,
   },
 
   {
