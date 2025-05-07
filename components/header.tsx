@@ -14,14 +14,14 @@ import { NavActions } from './nav-actions';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { LayoutDashboardIcon } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
-  const pathnames = pathname.split('/').filter((x) => x);
+  const pathSegments = pathname.split('/').filter((x) => x);
 
   const nameMap: { [key: string]: string } = {
-    dashboard: 'Dashboard',
     search: 'Search',
     history: 'History',
     shortlist: 'Shortlist',
@@ -38,36 +38,34 @@ export default function Header() {
       <div className='flex items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator orientation='vertical' className='mr-2 h-4' />
-        {/* <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem className='hidden md:block'>
-              <BreadcrumbLink href='#'>Dashboard</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator className='hidden md:block' />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Search</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb> */}
+
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem className='hidden md:block'>
+            {/* Dashboard icon as root link */}
+            <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href='/'>Dashboard</Link>
+                <Link href='/dashboard'>
+                  <LayoutDashboardIcon className='h-4 w-4' />
+                </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {pathnames.map((value, index) => {
-              const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-              const isLast = index === pathnames.length - 1;
+
+            {/* Other breadcrumb segments */}
+            {pathSegments.slice(1).map((segment, index) => {
+              const href = '/' + pathSegments.slice(0, index + 2).join('/');
+              const isLast = index === pathSegments.length - 2;
+
               return (
-                <React.Fragment key={to}>
+                <React.Fragment key={href}>
                   <BreadcrumbSeparator className='hidden md:block' />
                   <BreadcrumbItem>
                     {isLast ? (
-                      <BreadcrumbPage>{nameMap[value] || value}</BreadcrumbPage>
+                      <BreadcrumbPage>
+                        {nameMap[segment] || segment}
+                      </BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink asChild>
-                        <Link href={to}>{nameMap[value] || value}</Link>
+                        <Link href={href}>{nameMap[segment] || segment}</Link>
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>

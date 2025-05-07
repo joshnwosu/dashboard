@@ -12,35 +12,35 @@ const data = [
     name: 'LinkedIn',
     description:
       'Connect your LinkedIn account to view and manage your connections.',
-    icon: <LinkedinIcon width={60} height={60} />,
+    icon: <LinkedinIcon width={40} height={40} />,
     checked: true,
   },
   {
     name: 'Github',
     description:
       'Connect your Github account to manage your repositories and projects.',
-    icon: <GithubIcon width={50} height={50} />,
+    icon: <GithubIcon width={40} height={40} />,
     checked: false,
   },
   {
     name: 'Indeed',
     description:
       'Connect your Indeed account to manage your job postings and applications.',
-    icon: <IndeedIcon width={50} height={50} />,
+    icon: <IndeedIcon width={40} height={40} />,
     checked: false,
   },
   {
     name: 'Gmail',
     description:
       'Connect your Gmail account to send and receive emails directly from the app.',
-    icon: <GmailIcon width={50} height={50} />,
+    icon: <GmailIcon width={40} height={40} />,
     checked: true,
   },
   {
     name: 'Google Calendar',
     description:
       'Connect your Google Calendar to schedule and manage your events.',
-    icon: <GoogleCalendarIcon width={50} height={50} />,
+    icon: <GoogleCalendarIcon width={40} height={40} />,
     checked: false,
   },
 ];
@@ -62,7 +62,7 @@ export default function CardIntergratins() {
             />
           </div>
           <div className='flex flex-col gap-4'>
-            <h2 className='text-2xl font-sans'>{item.name}</h2>
+            <h2 className='text-xl font-sans'>{item.name}</h2>
             <p className='text-md text-muted-foreground'>{item.description}</p>
           </div>
         </div>

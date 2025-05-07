@@ -181,6 +181,28 @@ export default function Search() {
           autoFocus
         />
 
+<LexicalComposer initialConfig={INITIAL_CONFIG}>
+            <RichTextPlugin
+              contentEditable={
+                <ContentEditable
+                  aria-placeholder='Type your message...'
+                  placeholder={
+                    <div className='absolute top-8 left-8 text-lg text-gray-400 pointer-events-none flex-1'>
+                      Type your message...
+                    </div>
+                  }
+                  className='relative p-4 bg-accent dark:bg-sidebar outline-0 rounded-2xl max-h-[200px] overflow-auto text-lg'
+                  onKeyDown={handleKeyDown}
+                />
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            <OnChangePlugin onChange={debouncedOnChange} />
+            <AutoFocusPlugin />
+            <HistoryPlugin />
+            <ClearEditorPlugin clearTrigger={clearEditor} />
+          </LexicalComposer>
+
         <div className='flex justify-end items-baseline'>
           <div className='hidden gap-2'>
             {searchBtns.map((btn, index) => (

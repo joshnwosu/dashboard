@@ -63,18 +63,6 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
       prompt.toLowerCase()
     );
 
-  // // Skills: Common technical skills (case-insensitive)
-  // badgeStates.Skills =
-  //   /python|javascript|figma|adobe xd|seo|aws|react|typescript|sql/i.test(
-  //     prompt.toLowerCase()
-  //   );
-
-  // Check if any skill is present in the prompt using Set
-  // badgeStates.Skills = prompt
-  //   .toLowerCase()
-  //   .split(/\W+/)
-  //   .some((word) => skillsSet.has(word));
-
   badgeStates.Skills = skills.some((skill) =>
     new RegExp(
       `\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
@@ -84,7 +72,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
 
   // Job Type: Common job types (case-insensitive)
   badgeStates['Job Type'] =
-    /remote|full time|full-time|on site|on-site|part time|part-time|contract/i.test(
+    /remote|fulltime|full time|full-time|onsite|on site|on-site|parttime|part time|part-time|contract/i.test(
       prompt.toLowerCase()
     );
 
