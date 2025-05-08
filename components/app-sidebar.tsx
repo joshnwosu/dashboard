@@ -61,51 +61,51 @@ const data = {
     },
     {
       title: 'Search',
-      url: '/search',
+      url: '/dashboard/search',
       icon: Send,
     },
     {
       title: 'Shortlist',
-      url: '/shortlist',
+      url: '/dashboard/shortlist',
       icon: Bookmark,
     },
     {
       title: 'History',
-      url: '/history',
+      url: '/dashboard/history',
       icon: History,
       isActive: true,
       items: [
         {
           title:
             'Software Engineers in Nigeria working at Series B companies, skilled in Javascript and  React Native',
-          url: '/history/1',
+          url: '/dashboard/history/1',
         },
         {
           title:
             'Marketing Manager in Europe, German-speaking, working at a large enterprise',
-          url: '/history/2',
+          url: '/dashboard/history/2',
         },
       ],
     },
-    { title: 'CV Screening', url: '/cv-screening', icon: FileUser },
+    { title: 'CV Screening', url: '/dashboard/cv-screening', icon: FileUser },
     {
       title: 'Job Board',
-      url: '#',
+      url: '/dashboard/job-board',
       icon: Briefcase,
     },
     {
       title: 'Emails',
-      url: '/emails',
+      url: '/dashboard/emails',
       icon: Mail,
     },
     {
       title: 'Integrations',
-      url: '/integrations',
+      url: '/dashboard/integrations',
       icon: Frame,
     },
     {
       title: 'Settings',
-      url: '/settings',
+      url: '/dashboard/settings',
       icon: Settings2,
     },
   ],

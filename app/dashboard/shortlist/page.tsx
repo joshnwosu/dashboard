@@ -171,25 +171,21 @@ const columns: ColumnDef<Item>[] = [
     ),
     size: 180,
   },
-  // {
-  //   header: 'Status',
-  //   accessorKey: 'status',
-  //   cell: ({ row }) => (
-  //     <Badge
-  //       className={cn(
-  //         row.getValue('status') === 'Inactive' &&
-  //           'bg-muted-foreground/60 text-primary-foreground'
-  //       )}
-  //     >
-  //       {row.getValue('status')}
-  //     </Badge>
-  //   ),
-  //   size: 100,
-  //   filterFn: statusFilterFn,
-  // },
   {
-    header: 'Education',
-    accessorKey: 'performance',
+    header: 'Status',
+    accessorKey: 'status',
+    cell: ({ row }) => (
+      <Badge
+        className={cn(
+          row.getValue('status') === 'Inactive' &&
+            'bg-muted-foreground/60 text-primary-foreground'
+        )}
+      >
+        {row.getValue('status')}
+      </Badge>
+    ),
+    size: 100,
+    filterFn: statusFilterFn,
   },
   {
     header: 'Role',
@@ -505,16 +501,6 @@ export default function Shortlist() {
               </AlertDialogContent>
             </AlertDialog>
           )}
-          {/* Add user button */}
-          <Button className='ml-auto' variant='outline'>
-            <Plus
-              className='-ms-1 me-2 opacity-60'
-              size={16}
-              strokeWidth={2}
-              aria-hidden='true'
-            />
-            Add user
-          </Button>
         </div>
       </div>
 

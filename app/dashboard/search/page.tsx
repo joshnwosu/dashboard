@@ -230,7 +230,6 @@ export default function Search() {
                 }
                 className='relative p-4 bg-accent dark:bg-sidebar outline-0 rounded-2xl max-h-[200px] overflow-auto text-lg'
                 onKeyDown={handleKeyDown}
-                value={input}
               />
             }
             ErrorBoundary={LexicalErrorBoundary}

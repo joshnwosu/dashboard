@@ -25,10 +25,11 @@ export default function Header() {
     search: 'Search',
     history: 'History',
     shortlist: 'Shortlist',
-    jobs: 'Jobs',
+    'job-board': 'Job Board',
+    'cv-screening': 'CV Screening',
 
     emails: 'Emails',
-    intergratins: 'Integrations',
+    integrations: 'Integrations',
     analytics: 'Analytics',
     settings: 'Settings',
   };
@@ -44,9 +45,7 @@ export default function Header() {
             {/* Dashboard icon as root link */}
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href='/dashboard'>
-                  <LayoutDashboardIcon className='h-4 w-4' />
-                </Link>
+                <Link href='/dashboard'>Dashboard</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
 
