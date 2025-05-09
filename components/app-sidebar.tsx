@@ -33,12 +33,12 @@ import { usePathname } from 'next/navigation';
 const data = {
   user: {
     name: 'Joshua Nwosu',
-    email: 'josh@talenttrace.io',
+    email: 'joshua@sourzer.co',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: 'TalentTrace',
+      name: 'Sourzer',
       logo: GalleryVerticalEnd,
       plan: 'Enterprise',
     },

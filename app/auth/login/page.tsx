@@ -130,7 +130,7 @@ export default function LoginPage() {
               <GoogleButton />
 
               <p className='text-md leading-relaxed tracking-tight text-muted-foreground text-center font-sans max-w-xl mx-auto px-4'>
-                Not using TalentTrace yet?{' '}
+                Not using Sourzer yet?{' '}
                 <Link href='/auth/signup' className='text-blue-500'>
                   Create an account now
                 </Link>

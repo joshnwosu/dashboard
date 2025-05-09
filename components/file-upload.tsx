@@ -133,7 +133,7 @@ export default function FileUpload() {
                 'w-16 h-16 md:w-20 md:h-20 drop-shadow-sm',
                 isDragging
                   ? 'text-blue-500'
-                  : 'text-zinc-700 dark:text-zinc-300 group-hover:text-blue-500 transition-colors duration-300'
+                  : 'text-zinc-700 dark:text-zinc-300 group-hover:text-blue-500 dark:group-hover:text-blue-500 transition-colors duration-300'
               )}
             />
           </motion.div>
