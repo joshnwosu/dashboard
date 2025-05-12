@@ -12,18 +12,20 @@ export default function CvScreening() {
   }, []);
 
   return (
-    <div className='p-4 md:p-6'>
+    <div className='flex flex-1 flex-col'>
       <TitleDescription
         title='CV Screening'
-        description='Easily upload CV for screening'
+        description='Easily upload job description for screening'
       />
 
-      <LexicalInput
-        content={input}
-        onInputChange={setInput}
-        onSend={handleSend}
-        // isSendAllowed={false}
-      />
+      <div className='flex flex-col flex-1 justify-end'>
+        <LexicalInput
+          placeholder='Enter, Paste or Upload Job Description ...'
+          content={input}
+          onInputChange={setInput}
+          onSend={handleSend}
+        />
+      </div>
     </div>
   );
 }
