@@ -1,10 +1,7 @@
-import CardGrid, { ItemProps } from '@/components/card-grid';
-import { shuffleArray } from '@/utils/shuffleArray';
-import { notFound } from 'next/navigation';
+'use client';
 
-interface HistoryPageProps {
-  params: Promise<{ id: string }>;
-}
+import CardGrid, { ItemProps } from '@/components/card-grid';
+import { useParams } from 'next/navigation';
 
 const items: ItemProps[] = [
   {
@@ -126,21 +123,8 @@ const sortedItems = items.sort((a, b) => {
   return valB - valA;
 });
 
-export default async function HistoryPage({ params }: HistoryPageProps) {
-  const { id } = await params;
-
-  const historyItem = { id };
-
-  if (!historyItem) {
-    notFound();
-  }
+export default async function HistoryPage() {
+  const { id } = useParams();
 
   return <CardGrid items={sortedItems} />;
 }
-
-export async function generateStaticParams() {
-  const ids = ['1', '2', '3'];
-  return ids.map((id) => ({ id }));
-}
-
-export const revalidate = 60;

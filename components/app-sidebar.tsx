@@ -34,7 +34,7 @@ const data = {
   user: {
     name: 'Joshua Nwosu',
     email: 'joshua@sourzer.co',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: '',
   },
   teams: [
     {
@@ -64,6 +64,7 @@ const data = {
       url: '/dashboard/search',
       icon: Send,
     },
+    { title: 'CV Screening', url: '/dashboard/cv-screening', icon: FileUser },
     {
       title: 'Shortlist',
       url: '/dashboard/shortlist',
@@ -76,18 +77,16 @@ const data = {
       isActive: true,
       items: [
         {
-          title:
-            'Software Engineers in Nigeria working at Series B companies, skilled in Javascript and  React Native',
-          url: '/dashboard/history/1',
+          title: 'Search History',
+          url: '/dashboard/history/search-history',
         },
         {
-          title:
-            'Marketing Manager in Europe, German-speaking, working at a large enterprise',
-          url: '/dashboard/history/2',
+          title: 'CV Screening History',
+          url: '/dashboard/history/cv-screening-history',
         },
       ],
     },
-    { title: 'CV Screening', url: '/dashboard/cv-screening', icon: FileUser },
+
     {
       title: 'Job Board',
       url: '/dashboard/job-board',
