@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { LexicalInput } from '@/components/lexical-input';
+import { motion } from 'framer-motion';
 
 // Define badge variants
 const badgeVariants = {
@@ -125,10 +126,14 @@ export default function Search() {
   return (
     <div className='flex flex-1 flex-col items-center justify-end gap-3 px-4 py-2 max-w-6xl mx-auto'>
       <div className='flex flex-col items-center text-3xl mb-6'>
-        <p className='text-xl'>Who are you looking for?</p>
+        {/* <p className='text-xl'>Who are you looking for?</p> */}
+        <h2 className='text-4xl tracking-tighter font-geist bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] text-center'>
+          Who are you looking for?
+        </h2>
       </div>
 
       <LexicalInput
+        placeholder='Ask Sourzer'
         content={input}
         onInputChange={setInput}
         onSend={handleSend}

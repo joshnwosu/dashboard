@@ -1,7 +1,7 @@
 import TitleDescription from '@/components/title-description';
-import { Skeleton } from '@/components/ui/skeleton';
 import { searchQueries } from '@/data/search';
 import { formatDateToShortString } from '@/utils/formatter';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -33,32 +33,24 @@ export default async function HistoryPage({ params }: PageProps) {
         {searchQueries.map((search, index) => (
           <li
             key={index.toString()}
-            className='border  hover:bg-sidebar rounded-2xl'
+            className='group border  hover:bg-sidebar rounded-2xl'
           >
             <Link
               href={`/dashboard/history/${slug}/${index}`}
-              className='flex flex-col gap-2 p-4'
+              className='flex items-center justify-between gap-2 p-4'
             >
-              <span>{search.query}</span>
-              <span className='text-sm text-muted-foreground'>
-                {formatDateToShortString(search.time)}
-              </span>
+              <div className='flex flex-col gap-2'>
+                <span>{search.query}</span>
+                <span className='text-sm text-muted-foreground'>
+                  {formatDateToShortString(search.time)}
+                </span>
+              </div>
+
+              <ArrowRight className='h-5 w-5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100' />
             </Link>
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-function SkeletonDemo() {
-  return (
-    <div className='flex items-center space-x-4'>
-      <Skeleton className='h-12 w-12 rounded-full' />
-      <div className='space-y-2'>
-        <Skeleton className='h-4 w-[250px]' />
-        <Skeleton className='h-4 w-[200px]' />
-      </div>
     </div>
   );
 }

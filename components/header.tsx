@@ -14,8 +14,7 @@ import { NavActions } from './nav-actions';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { LayoutDashboardIcon } from 'lucide-react';
+import React from 'react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -27,7 +26,6 @@ export default function Header() {
     shortlist: 'Shortlist',
     'job-board': 'Job Board',
     'cv-screening': 'CV Screening',
-
     emails: 'Emails',
     integrations: 'Integrations',
     analytics: 'Analytics',
@@ -42,35 +40,24 @@ export default function Header() {
 
         <Breadcrumb>
           <BreadcrumbList>
-            {/* Dashboard icon as root link */}
+            {/* Dashboard as root link */}
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
                 <Link href='/dashboard'>Dashboard</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {/* Other breadcrumb segments */}
-            {pathSegments.slice(1).map((segment, index) => {
-              const href = '/' + pathSegments.slice(0, index + 2).join('/');
-              const isLast = index === pathSegments.length - 2;
-
-              return (
-                <React.Fragment key={href}>
-                  <BreadcrumbSeparator className='hidden md:block' />
-                  <BreadcrumbItem>
-                    {isLast ? (
-                      <BreadcrumbPage>
-                        {nameMap[segment] || segment}
-                      </BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink asChild>
-                        <Link href={href}>{nameMap[segment] || segment}</Link>
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </React.Fragment>
-              );
-            })}
+            {/* Only show the first segment after dashboard, if it exists */}
+            {pathSegments.length > 1 && (
+              <>
+                <BreadcrumbSeparator className='hidden md:block' />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    {nameMap[pathSegments[1]] || pathSegments[1]}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
