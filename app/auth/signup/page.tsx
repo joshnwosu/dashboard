@@ -351,7 +351,7 @@ export default function SignupPage() {
                 //   className='w-full py-6'
                 variant='secondary'
                 disabled={!terms}
-                className='w-full h-12 px-6 bg-blue-500 dark:bg-blue-700 text-white dark:text-gray-100 disabled:bg-gray-400 disabled:dark:bg-gray-600 disabled:cursor-not-allowed'
+                className='w-full h-12 px-6 bg-blue-500 dark:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed'
               >
                 Continue
                 <MoveRight className='ml-2 h-4 w-4' />

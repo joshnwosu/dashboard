@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import Header from '@/components/header';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,16 +32,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
-          {/* <SidebarProvider className='font-sans'>
-            <AppSidebar />
-            <SidebarInset>
-              <Header />
-              <div className='w-full py-6 max-w-7xl mx-auto flex flex-1 flex-col gap-4 p-8'> */}
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='dark'
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
-          {/* </div>
-            </SidebarInset>
-          </SidebarProvider> */}
+          <Toaster richColors theme='system' toastOptions={{}} />
         </ThemeProvider>
       </body>
     </html>

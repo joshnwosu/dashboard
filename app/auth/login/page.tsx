@@ -14,9 +14,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Lock, Mail, MoveRight } from 'lucide-react';
+import { Loader2Icon, Lock, Mail, MoveRight } from 'lucide-react';
 import GoogleButton from '@/components/google-button';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { login } from '@/services/auth-service';
+import { toast } from 'sonner';
 
 // Zod schema remains the same
 const formSchema = z.object({
@@ -29,6 +33,12 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams(); // This requires Suspense
+  const from = searchParams.get('from') || '/dashboard';
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,7 +48,17 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('Form submitted:', values);
+    // console.log('Form submitted:', values);
+    setLoading(true);
+    try {
+      await login(values.email, values.password);
+      toast.success('Logged in successfully');
+      router.replace(from);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -62,8 +82,8 @@ export default function LoginPage() {
           transition={{ delay: 0.3, duration: 0.3 }}
         >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-              <div className='grid grid-cols-1 gap-6 items-start'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+              <div className='grid grid-cols-1 gap-4 items-start'>
                 <FormField
                   control={form.control}
                   name='email'
@@ -121,10 +141,20 @@ export default function LoginPage() {
               <Button
                 type='submit'
                 variant='secondary'
-                className='w-full h-12 px-6 bg-blue-500 dark:bg-blue-700 text-white dark:text-gray-100 disabled:bg-gray-400 disabled:dark:bg-gray-600 disabled:cursor-not-allowed'
+                className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                disabled={loading}
               >
-                Continue
-                <MoveRight className='ml-2 h-4 w-4' />
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Continue
+                    <MoveRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
               </Button>
 
               <GoogleButton />
