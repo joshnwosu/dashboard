@@ -4,8 +4,9 @@ export interface RegisterPayload {
   phone_number: string;
   country: string;
   email: string;
-  user_type: string;
   password: string;
+  reg_channel?: string;
+  user_type?: string;
 }
 
 // login response interface

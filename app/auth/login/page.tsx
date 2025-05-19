@@ -53,6 +53,7 @@ function LoginContent() {
       await login(values.email, values.password);
       toast.success('Logged in successfully');
       router.replace(from);
+      console.log('This place...');
     } catch (err: any) {
       toast.error(err.message);
     } finally {

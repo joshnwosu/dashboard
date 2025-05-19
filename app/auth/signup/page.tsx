@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   Building,
+  Loader2Icon,
   Lock,
   Mail,
   MessageSquare,
@@ -30,11 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { parsePhoneNumber } from 'react-phone-number-input';
 import Link from 'next/link';
 import GoogleButton from '@/components/google-button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
+import { register } from '@/services/auth-service';
+import { toast } from 'sonner';
 
 // Zod schema remains the same
 const formSchema = z.object({
@@ -44,19 +48,13 @@ const formSchema = z.object({
   email: z.string().email({
     message: 'Please enter a valid email address.',
   }),
-  phone_number: z
-    .string()
-    .min(10, {
-      message: 'Phone number must be at least 10 digits.',
-    })
-    .optional(),
-  country: z.string().optional(),
-  company_name: z
-    .string()
-    .min(2, {
-      message: 'Company name must be at least 2 characters.',
-    })
-    .optional(),
+  phone_number: z.string().min(10, {
+    message: 'Phone number must be at least 10 digits.',
+  }),
+  country: z.string(),
+  company_name: z.string().min(2, {
+    message: 'Company name must be at least 2 characters.',
+  }),
   reg_channel: z
     .string()
     // .min(2, {
@@ -92,6 +90,9 @@ const formSchema = z.object({
 });
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -136,6 +137,18 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log('Form submitted:', values);
+    setLoading(true);
+    try {
+      const { terms, ...payload } = values; // omit terms
+      await register({ ...payload, user_type: 'company' });
+      router.push('/auth/login');
+      toast.success('Registration successful');
+    } catch (err: any) {
+      console.error('Login failed:', err);
+      toast.error(err.response.data.message || err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -350,11 +363,20 @@ export default function SignupPage() {
                 type='submit'
                 //   className='w-full py-6'
                 variant='secondary'
-                disabled={!terms}
+                disabled={!terms || loading}
                 className='w-full h-12 px-6 bg-blue-500 dark:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed'
               >
-                Continue
-                <MoveRight className='ml-2 h-4 w-4' />
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Continue
+                    <MoveRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
               </Button>
 
               <GoogleButton />
