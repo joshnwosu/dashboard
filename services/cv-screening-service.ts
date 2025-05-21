@@ -23,3 +23,12 @@ export const addCvToJob = async (payload: AddCvToJobPayload) => {
     throw error;
   }
 };
+
+export const getCvScreening = async () => {
+  try {
+    const response = await apiClient.get<any>('/jobs/cv_screening');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

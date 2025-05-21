@@ -41,3 +41,20 @@ export const reQueryJobCandidatesScraping = async (id: string) => {
     throw error;
   }
 };
+
+export const getSearchHistory = async (
+  page: number = 1,
+  perPage: number = 15
+) => {
+  try {
+    const response = await apiClient.get<any>('/jobs', {
+      params: {
+        page,
+        perPage,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
