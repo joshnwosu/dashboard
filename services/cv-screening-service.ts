@@ -1,0 +1,25 @@
+import apiClient from '@/lib/axios';
+import { AddCvToJobPayload, SubmitJobDescriptionPayload } from '@/types/job';
+
+export const submitJobDescription = async (
+  payload: SubmitJobDescriptionPayload
+) => {
+  try {
+    const response = await apiClient.post<any>(
+      '/jobs/submit_job_description',
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addCvToJob = async (payload: AddCvToJobPayload) => {
+  try {
+    const response = await apiClient.post<any>('/jobs/add_cv_to_job', payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,5 +1,10 @@
 import apiClient from '@/lib/axios';
-import { LoginResponse, RegisterPayload } from '@/types/auth';
+import {
+  ChangePasswordPayload,
+  LoginResponse,
+  RegisterPayload,
+  ResetPasswordPayload,
+} from '@/types/auth';
 
 export const register = async (payload: RegisterPayload) => {
   try {
@@ -46,5 +51,26 @@ export const logout = async () => {
     console.error('Logout failed:', error);
     // Redirect even if API call fails
     window.location.href = '/auth/login';
+  }
+};
+
+export const changePassword = async (payload: ChangePasswordPayload) => {
+  try {
+    const response = await apiClient.post<any>(
+      '/user/change_password',
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload) => {
+  try {
+    const response = await apiClient.post<any>('/user/reset_password', payload);
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };

@@ -31,3 +31,16 @@ export interface LoginResponse {
     access_token: string;
   };
 }
+
+// Interface for password-related payloads (adjust as needed)
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ResetPasswordPayload {
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+}
