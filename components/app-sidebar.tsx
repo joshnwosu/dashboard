@@ -28,6 +28,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
+import { useUserStore } from '@/store/userStore';
 
 // This is sample data.
 const data = {
@@ -129,17 +130,17 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { user } = useUserStore();
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar {...props}>
       <SidebarHeader className='border-b'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} pathname={pathname} />
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
