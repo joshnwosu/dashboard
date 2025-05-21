@@ -1,3 +1,5 @@
+import LoadingScreen from '@/components/loading-screen';
+
 export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -6,6 +8,8 @@ export default function AuthLayout({
       <div className='relative z-10 flex items-center justify-center min-h-screen py-12'>
         {children}
       </div>
+
+      {/* <LoadingScreen title='Authenticating...' /> */}
     </main>
   );
 }

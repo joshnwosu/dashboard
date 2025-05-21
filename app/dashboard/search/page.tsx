@@ -24,6 +24,8 @@ import {
 import { cn } from '@/lib/utils';
 import { LexicalInput } from '@/components/lexical-input';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
+import { sourceCandidate } from '@/services/search-service';
 
 // Define badge variants
 const badgeVariants = {
@@ -75,7 +77,7 @@ const badgeTooltips: Record<keyof BadgeStates, string> = {
   Experience: 'E.g., 5+ years',
   Industry: 'E.g., Fintech, Healthcare',
   Skills: 'E.g., Python, Figma',
-  'Job Type': 'E.g., Remote, On-site, Part Time',
+  'Job Type': 'E.g., Full Time, Remote, On-site, Part Time',
 };
 
 export default function Search() {
@@ -113,12 +115,25 @@ export default function Search() {
 
   // Handle send action
   const handleSend = useCallback(
-    (prompt: string) => {
+    async (prompt: string) => {
       if (!areAllBadgesActive()) {
-        console.log('Cannot send: Not all badges are active');
+        // console.log('Cannot send: Not all badges are active');
+        toast.warning('Cannot send: Not all badges are active');
         return;
       }
-      console.log('Prompt:', prompt);
+      // console.log('Prompt:', prompt);
+
+      try {
+        await sourceCandidate({
+          job_description: prompt,
+          search_github: true,
+          search_indeed: false,
+          search_linkedin: false,
+        });
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+      }
     },
     [areAllBadgesActive]
   );
@@ -137,7 +152,7 @@ export default function Search() {
         content={input}
         onInputChange={setInput}
         onSend={handleSend}
-        isSendAllowed={areAllBadgesActive}
+        // isSendAllowed={areAllBadgesActive}
       />
 
       <div className='flex gap-4 items-center justify-center'>

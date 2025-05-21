@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 
 // Create the Axios instance
 const apiClient = axios.create({
@@ -7,26 +7,6 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// // Add a request interceptor to attach the bearer token
-// apiClient.interceptors.request.use(
-//   (config: AxiosRequestConfig) => {
-//     // Retrieve the token from storage (e.g., localStorage)
-//     const token = localStorage.getItem("access_token"); // Adjust based on your storage method
-
-//     // If token exists, add it to the Authorization header
-//     if (token) {
-//       config.headers = config.headers || {};
-//       config.headers["Authorization"] = `Bearer ${token}`;
-//     }
-
-//     return config;
-//   },
-//   (error) => {
-//     // Handle request errors
-//     return Promise.reject(error);
-//   }
-// );
 
 // Add a request interceptor to attach the bearer token
 apiClient.interceptors.request.use(

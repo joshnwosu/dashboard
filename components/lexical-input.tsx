@@ -398,11 +398,12 @@ export function LexicalInput({
                       variant={btn.variant || 'default'}
                       className='w-9 h-9 rounded-full cursor-pointer'
                       onClick={btn.onClick || (() => handleSend(input))}
-                      disabled={
-                        btn.title === 'Send' &&
-                        isSendAllowed &&
-                        !isSendAllowed()
-                      }
+                      // disabled={
+                      //   btn.title === 'Send' &&
+                      //   isSendAllowed &&
+                      //   !isSendAllowed()
+                      // }
+                      disabled={btn.title === 'Send' && content === ''}
                       aria-label={btn.title}
                     >
                       <btn.icon className='size-4' />
