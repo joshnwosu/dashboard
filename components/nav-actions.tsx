@@ -2,20 +2,14 @@
 
 import * as React from 'react';
 import {
-  ArrowDown,
-  ArrowUp,
-  Bell,
-  Copy,
-  CornerUpLeft,
-  CornerUpRight,
-  EllipsisVertical,
   FileText,
-  GalleryVerticalEnd,
-  LineChart,
+  Headset,
+  HelpCircle,
   Link,
+  Notebook,
   Settings2,
-  Trash,
-  Trash2,
+  SettingsIcon,
+  ShieldAlert,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -37,65 +31,15 @@ import { ModeToggle } from './mode-toggle';
 import { NotificationPopup } from './notification-popup';
 
 const data = [
+  [{ label: 'Settings', icon: Settings2 }],
   [
-    {
-      label: 'Customize Page',
-      icon: Settings2,
-    },
-    {
-      label: 'Turn into wiki',
-      icon: FileText,
-    },
-  ],
-  [
-    {
-      label: 'Copy Link',
-      icon: Link,
-    },
-    {
-      label: 'Duplicate',
-      icon: Copy,
-    },
-    {
-      label: 'Move to',
-      icon: CornerUpRight,
-    },
-    {
-      label: 'Move to Trash',
-      icon: Trash2,
-    },
-  ],
-  [
-    {
-      label: 'Undo',
-      icon: CornerUpLeft,
-    },
-    {
-      label: 'View analytics',
-      icon: LineChart,
-    },
-    {
-      label: 'Version History',
-      icon: GalleryVerticalEnd,
-    },
-    {
-      label: 'Show delete pages',
-      icon: Trash,
-    },
-    {
-      label: 'Notifications',
-      icon: Bell,
-    },
-  ],
-  [
-    {
-      label: 'Import',
-      icon: ArrowUp,
-    },
-    {
-      label: 'Export',
-      icon: ArrowDown,
-    },
+    { label: "What's New", icon: Notebook },
+    { label: 'FAQs', icon: HelpCircle },
+    { label: 'Support Center', icon: Headset },
+    { label: 'Security', icon: ShieldAlert },
+    { label: 'Privacy Policy', icon: FileText },
+    { label: 'Terms', icon: FileText },
+    { label: '@sourzer', icon: Link },
   ],
 ];
 
@@ -112,7 +56,7 @@ export function NavActions() {
             className='gap-4 data-[state=open]:bg-accent'
             size='icon'
           >
-            <EllipsisVertical className='size-4' />
+            <SettingsIcon className='size-4' />
           </Button>
         </PopoverTrigger>
         <PopoverContent
