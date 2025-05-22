@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/sidebar';
 import { ModeToggle } from './mode-toggle';
 import { NotificationPopup } from './notification-popup';
+import { useSettingsStore } from '@/store/settingsStore';
 
 const data = [
   [{ label: 'Settings', icon: Settings2 }],
@@ -44,12 +45,23 @@ const data = [
 ];
 
 export function NavActions() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+  const { setIsOpen } = useSettingsStore();
+
+  const handleMenuItemClick = (label: string) => {
+    if (label === 'Settings') {
+      setIsOpen(true); // Open SettingsDialog
+      setIsPopoverOpen(false); // Close Popover
+    } else {
+      // Handle other menu items (e.g., navigate or log)
+      console.log(`Clicked: ${label}`);
+    }
+  };
 
   return (
     <div className='flex items-center gap-4 text-sm'>
       <NotificationPopup />
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             variant='outline'
@@ -60,19 +72,24 @@ export function NavActions() {
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className='w-56 overflow-hidden rounded-lg p-0'
+          className='w-48 overflow-hidden rounded-lg p-0'
           align='end'
         >
           <Sidebar collapsible='none' className='bg-transparent'>
-            <SidebarContent>
+            <SidebarContent className='gap-0'>
               {data.map((group, index) => (
                 <SidebarGroup key={index} className='border-b last:border-none'>
                   <SidebarGroupContent className='gap-0'>
                     <SidebarMenu>
                       {group.map((item, index) => (
                         <SidebarMenuItem key={index}>
-                          <SidebarMenuButton>
-                            <item.icon /> <span>{item.label}</span>
+                          <SidebarMenuButton
+                            asChild
+                            onClick={() => handleMenuItemClick(item.label)}
+                          >
+                            <button>
+                              <item.icon /> <span>{item.label}</span>
+                            </button>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
