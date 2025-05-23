@@ -23,9 +23,10 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { LexicalInput } from '@/components/lexical-input';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { sourceCandidate } from '@/services/search-service';
+import { useJobStore } from '@/store/jobStore';
+import { useRouter } from 'next/navigation';
+import { SourceCandidateResponse } from '@/types/job';
 
 // Define badge variants
 const badgeVariants = {
@@ -81,6 +82,7 @@ const badgeTooltips: Record<keyof BadgeStates, string> = {
 };
 
 export default function Search() {
+  const router = useRouter();
   const [input, setInput] = useState('');
   const [activeBadges, setActiveBadges] = useState<BadgeStates>({
     Location: false,
@@ -92,6 +94,19 @@ export default function Search() {
   });
   const [updateEditorContent, setUpdateEditorContent] =
     useState<(content: string) => void | undefined>();
+  const [toastId, setToastId] = useState<string | number | undefined>(
+    undefined
+  );
+
+  // Access store
+  const {
+    searchHistory,
+    sourceCandidate,
+    fetchSearchHistory,
+    loading,
+    error,
+    clearError,
+  } = useJobStore();
 
   // Check if all badges are active
   const areAllBadgesActive = useCallback(() => {
@@ -113,35 +128,73 @@ export default function Search() {
     setActiveBadges(analyzePrompt(input));
   }, [input]);
 
+  // Handle error and loading states
+  useEffect(() => {
+    if (loading && !toastId) {
+      // Show loading toast and store its ID
+      const id = toast.loading('Sourcing candidate...');
+      setToastId(id);
+    } else if (!loading && toastId) {
+      // Dismiss loading toast when loading is complete
+      toast.dismiss(toastId);
+      setToastId(undefined);
+    }
+
+    if (error) {
+      // Dismiss loading toast if present
+      if (toastId) {
+        toast.dismiss(toastId);
+        setToastId(undefined);
+      }
+      toast.error(error);
+      clearError(); // Clear error after displaying
+    }
+  }, [loading, error, toastId, clearError]);
+
   // Handle send action
   const handleSend = useCallback(
     async (prompt: string) => {
       if (!areAllBadgesActive()) {
-        // console.log('Cannot send: Not all badges are active');
         toast.warning('Cannot send: Not all badges are active');
         return;
       }
-      // console.log('Prompt:', prompt);
 
       try {
-        await sourceCandidate({
+        const res = (await sourceCandidate({
           job_description: prompt,
           search_github: true,
           search_indeed: false,
           search_linkedin: false,
-        });
-      } catch (error: any) {
-        toast.error(error.message);
-      } finally {
+        })) as any;
+        // Dismiss loading toast if present
+        if (toastId) {
+          toast.dismiss(toastId);
+          setToastId(undefined);
+        }
+        toast.success('Candidate sourced successfully!');
+
+        // Navigate to search history page
+        // `history/[slug]/[title]`
+        if (res) {
+          // Fetch search history after successful sourcing
+          await fetchSearchHistory(); // Uses default page=1, perPage=15
+          router.push(
+            `/dashboard/history/search-history/${encodeURIComponent(res.title)}`
+          );
+          toast.success('Candidate sourced successfully!');
+        } else {
+          throw new Error('Invalid response from sourceCandidate');
+        }
+      } catch (error) {
+        // Error is handled by the store and displayed via useEffect
       }
     },
-    [areAllBadgesActive]
+    [areAllBadgesActive, sourceCandidate, toastId]
   );
 
   return (
     <div className='flex flex-1 flex-col items-center justify-end gap-3 px-4 py-2 max-w-6xl mx-auto'>
       <div className='flex flex-col items-center text-3xl mb-6'>
-        {/* <p className='text-xl'>Who are you looking for?</p> */}
         <h2 className='text-4xl tracking-tighter font-geist bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] text-center'>
           Who are you looking for?
         </h2>

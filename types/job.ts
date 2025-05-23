@@ -13,3 +13,8 @@ export interface AddCvToJobPayload {
   job_id: number;
   cv_description: string;
 }
+
+export interface SourceCandidateResponse {
+  id: number;
+  title: string;
+}
