@@ -378,7 +378,7 @@ export function BadgeDelta({
               'text-amber-700 dark:text-amber-500'
           )}
         >
-          {value}
+          {value}%
         </span>
         <span
           className={cn(
@@ -409,7 +409,7 @@ export function BadgeDelta({
         deltaType={computedDeltaType}
         iconStyle={iconStyle ?? 'filled'}
       />
-      {value}
+      {value}%
     </span>
   );
 }

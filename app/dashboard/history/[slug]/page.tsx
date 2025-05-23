@@ -23,8 +23,8 @@ export default async function HistoryPage({ params }: PageProps) {
     slug === 'search-history' ? 'Clear History' : 'Export History';
 
   return (
-    <div>
-      <TitleDescription title={title} showButton buttonText={buttonText} />
+    <div className=''>
+      {/* <TitleDescription title={title} showButton buttonText={buttonText} /> */}
 
       <SearchList slug={slug} />
     </div>

@@ -285,7 +285,7 @@ export function LexicalInput({
   return (
     <div
       className={cn(
-        'mx-auto w-full max-w-3xl rounded-4xl bg-muted dark:bg-sidebar border border-border cursor-text relative overflow-hidden p-4',
+        'mx-auto w-full max-w-3xl rounded-2xl bg-muted dark:bg-sidebar border border-border cursor-text relative overflow-hidden p-4',
         className
       )}
       onClick={handleContainerClick}
@@ -330,12 +330,12 @@ export function LexicalInput({
               <ContentEditable
                 aria-placeholder={placeholder}
                 placeholder={
-                  <div className='absolute top-2 left-0 text-md text-gray-400 pointer-events-none flex-1'>
+                  <div className='absolute py-2 top-0 left-0 text-sm text-gray-400 pointer-events-none flex-1'>
                     {placeholder}
                   </div>
                 }
                 className={cn(
-                  'relative py-2 bg-accent dark:bg-sidebar outline-0 max-h-[300px] overflow-auto text-md',
+                  'relative py-2 bg-accent dark:bg-sidebar outline-0 max-h-[200px] overflow-auto text-sm border-0',
                   contentEditableClassName
                 )}
                 onKeyDown={handleKeyDown}
