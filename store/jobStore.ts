@@ -39,7 +39,8 @@ export interface SearchItem {
   search_linkedin: boolean;
   search_indeed: boolean;
   search_cv: boolean;
-  created_at?: string; // Optional, as it’s not in the provided response but used in SearchList
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface SearchHistory {

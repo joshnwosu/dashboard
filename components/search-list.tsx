@@ -140,7 +140,7 @@ export default function SearchList({ slug }: SearchListProps) {
   };
 
   return (
-    <div className='max-w-2xl relative'>
+    <div className='max-w-3xl relative'>
       {/* Header Section */}
       <div className='mb-12'>
         <div className='flex items-center justify-between mb-6'>
@@ -277,11 +277,30 @@ export default function SearchList({ slug }: SearchListProps) {
                                   <h3 className='text-sm font-normal text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-tight'>
                                     {search.title}
                                   </h3>
-                                  <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                  <p className='text-sm text-gray-600 dark:text-gray-400 hidden'>
                                     {isSearchHistory
                                       ? 'Job search query'
                                       : 'CV screening session'}
                                   </p>
+                                </div>
+
+                                <div className='flex items-center gap-6 text-xs'>
+                                  {search.createdAt && (
+                                    <>
+                                      <div className='flex items-center gap-1.5 text-gray-500 dark:text-gray-400'>
+                                        <Calendar className='h-3.5 w-3.5' />
+                                        <span className='font-medium'>
+                                          {formatDate(search.createdAt)}
+                                        </span>
+                                      </div>
+                                      <div className='flex items-center gap-1.5 text-gray-500 dark:text-gray-400'>
+                                        <Clock className='h-3.5 w-3.5' />
+                                        <span>
+                                          {formatTime(search.createdAt)}
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             </div>

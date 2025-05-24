@@ -44,7 +44,7 @@ export default function CandidateList() {
       }
 
       fetchAllCandidates(id);
-    }, 10000); // Changed to 10 seconds (10000ms)
+    }, 5000); // Changed to 10 seconds (10000ms)
 
     // Cleanup interval on unmount or when id changes
     return () => {
@@ -69,7 +69,7 @@ export default function CandidateList() {
       intervalRef.current = null;
     }
 
-    // console.log('cl: ', candidates);
+    console.log('cl: ', candidates);
   }, [candidates, hasInitiallyLoaded]);
 
   return (

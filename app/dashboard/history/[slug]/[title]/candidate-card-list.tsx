@@ -9,7 +9,19 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Bookmark, Eye, FileText, Search, Users } from 'lucide-react';
+import {
+  Bookmark,
+  Eye,
+  FileText,
+  Search,
+  Users,
+  Grid3X3,
+  List,
+  MapPin,
+  Building,
+  Mail,
+  ExternalLink,
+} from 'lucide-react';
 import { BadgeDelta } from '@/components/badge-delta';
 import { GithubIcon, GmailIcon, LinkedinIcon } from '@/icon';
 
@@ -34,6 +46,8 @@ interface CardGridProps {
   items: ItemProps[];
   loading?: boolean;
 }
+
+type ViewMode = 'grid' | 'list';
 
 // Helper function to check if a field is empty or loading
 const isFieldLoading = (value: string | null | undefined): boolean => {
@@ -94,12 +108,14 @@ const Avatar = ({
   className = '',
   index,
   hasAnimated,
+  size = 'default',
 }: {
   src: string | null | undefined;
   name: string;
   className?: string;
   index: number;
   hasAnimated: boolean;
+  size?: 'default' | 'large';
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -107,6 +123,7 @@ const Avatar = ({
   const shouldShowImage = src && !imageError && !isFieldLoading(src);
   const initials = getInitials(name);
   const avatarColor = getAvatarColor(name);
+  const sizeClasses = size === 'large' ? 'w-16 h-16' : 'w-12 h-12';
 
   useEffect(() => {
     setImageError(false);
@@ -116,7 +133,7 @@ const Avatar = ({
   if (shouldShowImage) {
     return (
       <motion.div
-        className={`w-12 h-12 rounded-full overflow-hidden ${className}`}
+        className={`${sizeClasses} rounded-full overflow-hidden ${className}`}
         initial={
           hasAnimated ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }
         }
@@ -142,9 +159,7 @@ const Avatar = ({
         <img
           src={src}
           alt={`${name}'s profile`}
-          className={`w-full h-full object-cover transition-opacity duration-200 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0 absolute'
-          }`}
+          className={`w-full h-full object-cover transition-opacity duration-200 `}
           onLoad={() => setImageLoaded(true)}
           onError={() => {
             setImageError(true);
@@ -157,7 +172,7 @@ const Avatar = ({
 
   return (
     <motion.div
-      className={`w-12 h-12 rounded-full ${avatarColor} flex items-center justify-center text-white font-semibold ${className}`}
+      className={`${sizeClasses} rounded-full ${avatarColor} flex items-center justify-center text-white font-semibold ${className}`}
       initial={
         hasAnimated ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }
       }
@@ -232,32 +247,43 @@ const cardVariants = {
   },
 };
 
-const emptyStateVariants = {
+const listItemVariants = {
   hidden: {
     opacity: 0,
-    y: 40,
+    x: -60,
     scale: 0.95,
   },
   visible: {
     opacity: 1,
-    y: 0,
+    x: 0,
     scale: 1,
     transition: {
       type: 'spring',
       damping: 25,
       stiffness: 200,
-      delay: 0.2,
+      mass: 0.8,
     },
   },
-};
-
-const floatingVariants = {
-  float: {
-    y: [-10, 10, -10],
+  static: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+  },
+  hover: {
+    x: 4,
+    scale: 1.01,
     transition: {
-      duration: 4,
-      repeat: Infinity,
-      ease: 'easeInOut',
+      type: 'spring',
+      damping: 20,
+      stiffness: 300,
+    },
+  },
+  tap: {
+    scale: 0.98,
+    transition: {
+      type: 'spring',
+      damping: 30,
+      stiffness: 400,
     },
   },
 };
@@ -269,6 +295,7 @@ export default function CandidateCardList({
   const [selectedItem, setSelectedItem] = useState<ItemProps | null>(null);
   const [cardBounds, setCardBounds] = useState<DOMRect | null>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const cardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   // Set hasAnimated to true after initial render
@@ -292,103 +319,26 @@ export default function CandidateCardList({
     setCardBounds(null);
   };
 
+  const toggleViewMode = () => {
+    setViewMode((prev) => (prev === 'grid' ? 'list' : 'grid'));
+  };
+
   // Empty state component
   const EmptyState = () => (
-    <motion.div
-      variants={{
-        hidden: {
-          opacity: 0,
-          y: 40,
-          scale: 0.95,
-        },
-        visible: {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          transition: {
-            type: 'spring',
-            damping: 25,
-            stiffness: 200,
-            delay: 0.2,
-          },
-        },
-        static: { opacity: 1, y: 0, scale: 1 },
-      }}
-      initial={hasAnimated ? 'static' : 'hidden'}
-      animate={hasAnimated ? 'static' : 'visible'}
-      className='flex flex-col items-center justify-center py-16 px-4 text-center'
-    >
-      <motion.div
-        variants={{
-          float: hasAnimated
-            ? {}
-            : {
-                y: [-10, 10, -10],
-                transition: {
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                },
-              },
-        }}
-        animate={hasAnimated ? {} : 'float'}
-        className='mb-6 relative'
-      >
+    <div className='flex flex-col items-center justify-center py-16 px-4 text-center'>
+      <div className='mb-6 relative'>
         <div className='w-24 h-24 bg-muted/30 rounded-full flex items-center justify-center mb-4'>
           <Users className='w-12 h-12 text-muted-foreground/60' />
         </div>
-        <motion.div
-          className='absolute -top-2 -right-2 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center'
-          animate={
-            hasAnimated
-              ? {}
-              : {
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, -10, 0],
-                }
-          }
-          transition={
-            hasAnimated
-              ? {}
-              : {
-                  duration: 3,
-                  repeat: Infinity,
-                  delay: 1.5,
-                }
-          }
-        >
+        <div className='absolute -top-2 -right-2 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center'>
           <Search className='w-4 h-4 text-primary/60' />
-        </motion.div>
-        <motion.div
-          className='absolute -bottom-1 -left-3 w-6 h-6 bg-secondary/20 rounded-full flex items-center justify-center'
-          animate={
-            hasAnimated
-              ? {}
-              : {
-                  scale: [1, 1.1, 1],
-                  x: [0, 5, 0],
-                }
-          }
-          transition={
-            hasAnimated
-              ? {}
-              : {
-                  duration: 2.5,
-                  repeat: Infinity,
-                  delay: 0.8,
-                }
-          }
-        >
+        </div>
+        <div className='absolute -bottom-1 -left-3 w-6 h-6 bg-secondary/20 rounded-full flex items-center justify-center'>
           <FileText className='w-3 h-3 text-secondary/60' />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
-      <motion.div
-        initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={hasAnimated ? {} : { delay: 0.4 }}
-        className='space-y-3 max-w-md'
-      >
+      <div className='space-y-3 max-w-md'>
         <h3 className='text-xl font-semibold text-foreground'>
           No candidates found
         </h3>
@@ -396,16 +346,9 @@ export default function CandidateCardList({
           We couldn't find any candidates matching your criteria. Try adjusting
           your search filters or check back later for new profiles.
         </p>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={
-          hasAnimated ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
-        }
-        animate={{ opacity: 1, scale: 1 }}
-        transition={hasAnimated ? {} : { delay: 0.6 }}
-        className='flex flex-col sm:flex-row gap-3 mt-8'
-      >
+      <motion.div className='flex flex-col sm:flex-row gap-3 mt-8'>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button variant='default' className='px-6'>
             <Search className='w-4 h-4 mr-2' />
@@ -420,92 +363,211 @@ export default function CandidateCardList({
         </motion.div>
       </motion.div>
 
-      <motion.div
-        initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={hasAnimated ? {} : { delay: 0.8 }}
-        className='mt-8 text-xs text-muted-foreground'
-      >
+      <div className='mt-8 text-xs text-muted-foreground'>
         Need help?{' '}
         <span className='text-primary cursor-pointer hover:underline'>
           Contact support
         </span>
-      </motion.div>
+      </div>
+    </div>
+  );
+
+  // Grid View Component
+  const GridView = () => (
+    <motion.div
+      className='grid auto-rows-min gap-4 md:grid-cols-3'
+      variants={containerVariants}
+      initial={hasAnimated ? 'static' : 'hidden'}
+      animate={hasAnimated ? 'static' : 'visible'}
+      key='grid-view'
+    >
+      {items?.map((item, index) => (
+        <motion.div
+          key={`grid-${item.name}-${item.email}-${index}`}
+          variants={cardVariants}
+          initial={hasAnimated ? 'static' : 'hidden'}
+          animate={hasAnimated ? 'static' : 'visible'}
+          whileHover='hover'
+          whileTap='tap'
+          layout
+          className='rounded-xl dark:bg-sidebar/50 ring-2 dark:ring-1 ring-accent p-6 flex flex-col gap-4 cursor-pointer transition-shadow duration-300 ease-out will-change-transform'
+          onClick={() => handleCardClick(item, index)}
+          ref={(el) => {
+            if (el) cardRefs.current.set(index, el);
+            else cardRefs.current.delete(index);
+          }}
+        >
+          <div className='flex justify-between items-start gap-4'>
+            <div className='flex gap-4 items-start'>
+              <Avatar
+                src={item.profile_pic_url}
+                name={item.name}
+                index={index}
+                hasAnimated={hasAnimated}
+              />
+              <div className='flex flex-1 flex-col'>
+                <motion.h2
+                  className='text-sm line-clamp-1 font-medium'
+                  initial={
+                    hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
+                  }
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={hasAnimated ? {} : { delay: index * 0.05 + 0.3 }}
+                >
+                  {isFieldLoading(item.name) ? (
+                    <SkeletonLine width='w-32' height='h-4' />
+                  ) : (
+                    item.name
+                  )}
+                </motion.h2>
+                <motion.div
+                  className='mt-2 flex gap-2'
+                  initial={
+                    hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={hasAnimated ? {} : { delay: index * 0.05 + 0.4 }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <GmailIcon
+                      width={24}
+                      height={24}
+                      className={`transition-opacity duration-200 ${
+                        !item.email ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <LinkedinIcon
+                      width={24}
+                      height={24}
+                      className={`transition-opacity duration-200 ${
+                        !item.linkedin_url ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <GithubIcon
+                      width={24}
+                      height={24}
+                      className={`transition-opacity duration-200 ${
+                        !item.github_url ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {isFieldLoading(item.justification) ? (
+            <motion.div
+              className='space-y-2'
+              initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={hasAnimated ? {} : { delay: index * 0.05 + 0.5 }}
+            >
+              <SkeletonLine />
+              <SkeletonLine width='w-5/6' />
+              <SkeletonLine width='w-4/6' />
+            </motion.div>
+          ) : (
+            <motion.p
+              className='line-clamp-3 text-md text-muted-foreground'
+              initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={hasAnimated ? {} : { delay: index * 0.05 + 0.5 }}
+            >
+              {item.justification}
+            </motion.p>
+          )}
+
+          <motion.div
+            className='flex flex-wrap justify-between items-center mt-auto pt-4'
+            initial={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={hasAnimated ? {} : { delay: index * 0.05 + 0.6 }}
+          >
+            <BadgeDelta
+              variant='complex'
+              iconStyle='line'
+              value={item?.talent_score ?? 0}
+            />
+
+            <div className='flex items-center gap-2'>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant='outline' size='sm' className='text-xs'>
+                  <span>Shortlist</span>
+                  <Bookmark className='w-3 h-3 ml-1' />
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant='outline' size='sm' className='text-xs'>
+                  <span>View</span>
+                  <ExternalLink className='w-3 h-3 ml-1' />
+                </Button>
+              </motion.div>
+            </div>
+          </motion.div>
+        </motion.div>
+      ))}
     </motion.div>
   );
 
-  if (loading) {
-    return (
-      <motion.div
-        className='grid auto-rows-min gap-4 md:grid-cols-3'
-        variants={containerVariants}
-        initial='hidden'
-        animate='visible'
-      >
-        {Array.from({ length: 5 }).map((_, index) => (
-          <motion.div
-            key={`skeleton-${index}`}
-            variants={cardVariants}
-            className='rounded-xl bg-muted/30 animate-pulse p-6 flex flex-col gap-4 h-50'
-          >
-            <div className='flex gap-4 items-start'>
-              <div className='w-12 h-12 rounded-full bg-muted/50' />
-              <div className='flex-1'>
-                <div className='h-4 bg-muted/50 rounded mb-2 w-3/4' />
-                <div className='h-3 bg-muted/50 rounded w-1/2' />
-              </div>
-            </div>
-            <div className='space-y-2'>
-              <div className='h-3 bg-muted/50 rounded' />
-              <div className='h-3 bg-muted/50 rounded w-5/6' />
-              <div className='h-3 bg-muted/50 rounded w-4/6' />
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-    );
-  }
+  // List View Component
+  const ListView = () => (
+    <motion.div
+      className='space-y-3'
+      variants={containerVariants}
+      initial={hasAnimated ? 'static' : 'hidden'}
+      animate={hasAnimated ? 'static' : 'visible'}
+      key='list-view'
+    >
+      {items?.map((item, index) => (
+        <motion.div
+          key={`list-${item.name}-${item.email}-${index}`}
+          variants={listItemVariants}
+          initial={hasAnimated ? 'static' : 'hidden'}
+          animate={hasAnimated ? 'static' : 'visible'}
+          whileHover='hover'
+          whileTap='tap'
+          layout
+          className='rounded-lg dark:bg-sidebar/50 ring-2 dark:ring-1 ring-accent p-4 cursor-pointer transition-shadow duration-300 ease-out will-change-transform'
+          onClick={() => handleCardClick(item, index)}
+          ref={(el) => {
+            if (el) cardRefs.current.set(index, el);
+            else cardRefs.current.delete(index);
+          }}
+        >
+          <div className='flex items-center gap-6'>
+            <Avatar
+              src={item.profile_pic_url}
+              name={item.name}
+              index={index}
+              hasAnimated={hasAnimated}
+              size='large'
+            />
 
-  // Show empty state when no items
-  if (!items || items.length === 0) {
-    return <EmptyState />;
-  }
-
-  return (
-    <div>
-      <motion.div
-        className='grid auto-rows-min gap-4 md:grid-cols-3'
-        variants={containerVariants}
-        initial={hasAnimated ? 'static' : 'hidden'}
-        animate={hasAnimated ? 'static' : 'visible'}
-      >
-        {items?.map((item, index) => (
-          <motion.div
-            key={`${item.name}-${item.email}-${index}`} // More stable key
-            variants={cardVariants}
-            initial={hasAnimated ? 'static' : 'hidden'}
-            animate={hasAnimated ? 'static' : 'visible'}
-            whileHover='hover'
-            whileTap='tap'
-            layout
-            className='rounded-xl dark:bg-sidebar/50 ring-2 dark:ring-1 ring-accent p-6 flex flex-col gap-4 cursor-pointer transition-shadow duration-300 ease-out will-change-transform'
-            onClick={() => handleCardClick(item, index)}
-            ref={(el) => {
-              if (el) cardRefs.current.set(index, el);
-              else cardRefs.current.delete(index);
-            }}
-          >
-            <div className='flex justify-between items-start gap-4'>
-              <div className='flex gap-4 items-start'>
-                <Avatar
-                  src={item.profile_pic_url}
-                  name={item.name}
-                  index={index}
-                  hasAnimated={hasAnimated}
-                />
-                <div className='flex flex-1 flex-col'>
+            <div className='flex-1 min-w-0'>
+              <div className='flex items-start justify-between gap-4 mb-2'>
+                <div className='flex-1 min-w-0'>
                   <motion.h2
-                    className='text-sm line-clamp-1 font-medium'
+                    className='text-lg font-semibold truncate'
                     initial={
                       hasAnimated
                         ? { opacity: 1, x: 0 }
@@ -517,122 +579,216 @@ export default function CandidateCardList({
                     }
                   >
                     {isFieldLoading(item.name) ? (
-                      <SkeletonLine width='w-32' height='h-4' />
+                      <SkeletonLine width='w-48' height='h-5' />
                     ) : (
                       item.name
                     )}
                   </motion.h2>
+
+                  <div className='flex items-center gap-4 mt-1 text-sm text-muted-foreground'>
+                    {!isFieldLoading(item.jobTitle) && (
+                      <div className='flex items-center gap-1'>
+                        <Building className='w-3 h-3' />
+                        <span className='truncate'>{item.jobTitle}</span>
+                        {!isFieldLoading(item.company) && (
+                          <span>at {item.company}</span>
+                        )}
+                      </div>
+                    )}
+                    {!isFieldLoading(item.country) && (
+                      <div className='flex items-center gap-1'>
+                        <MapPin className='w-3 h-3' />
+                        <span>{item.country}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3'>
+                  <BadgeDelta
+                    variant='complex'
+                    iconStyle='line'
+                    value={item?.talent_score ?? 0}
+                  />
+                </div>
+              </div>
+
+              {!isFieldLoading(item.justification) && (
+                <motion.p
+                  className='text-sm text-muted-foreground line-clamp-2 mb-3'
+                  initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={hasAnimated ? {} : { delay: index * 0.05 + 0.5 }}
+                >
+                  {item.justification}
+                </motion.p>
+              )}
+
+              <div className='flex items-center justify-between'>
+                <motion.div
+                  className='flex gap-3'
+                  initial={
+                    hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={hasAnimated ? {} : { delay: index * 0.05 + 0.4 }}
+                >
                   <motion.div
-                    className='mt-2 flex gap-2'
-                    initial={
-                      hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
-                    }
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={
-                      hasAnimated ? {} : { delay: index * 0.05 + 0.4 }
-                    }
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <GmailIcon
-                        width={24}
-                        height={24}
-                        className={`transition-opacity duration-200 ${
-                          !item.email ? 'opacity-20' : 'hover:opacity-80'
-                        }`}
-                      />
-                    </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <LinkedinIcon
-                        width={24}
-                        height={24}
-                        className={`transition-opacity duration-200 ${
-                          !item.linkedin_url ? 'opacity-20' : 'hover:opacity-80'
-                        }`}
-                      />
-                    </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <GithubIcon
-                        width={24}
-                        height={24}
-                        className={`transition-opacity duration-200 ${
-                          !item.github_url ? 'opacity-20' : 'hover:opacity-80'
-                        }`}
-                      />
-                    </motion.div>
+                    <GmailIcon
+                      width={20}
+                      height={20}
+                      className={`transition-opacity duration-200 ${
+                        !item.email ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <LinkedinIcon
+                      width={20}
+                      height={20}
+                      className={`transition-opacity duration-200 ${
+                        !item.linkedin_url ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <GithubIcon
+                      width={20}
+                      height={20}
+                      className={`transition-opacity duration-200 ${
+                        !item.github_url ? 'opacity-20' : 'hover:opacity-80'
+                      }`}
+                    />
+                  </motion.div>
+                </motion.div>
+
+                <div className='flex items-center gap-2'>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button variant='outline' size='sm' className='text-xs'>
+                      <span>Shortlist</span>
+                      <Bookmark className='w-3 h-3 ml-1' />
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button variant='outline' size='sm' className='text-xs'>
+                      <span>View</span>
+                      <ExternalLink className='w-3 h-3 ml-1' />
+                    </Button>
                   </motion.div>
                 </div>
               </div>
             </div>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
 
-            {isFieldLoading(item.justification) ? (
-              <motion.div
-                className='space-y-2'
-                initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={hasAnimated ? {} : { delay: index * 0.05 + 0.5 }}
-              >
-                <SkeletonLine />
-                <SkeletonLine width='w-5/6' />
-                <SkeletonLine width='w-4/6' />
-              </motion.div>
-            ) : (
-              <motion.p
-                className='line-clamp-3 text-md text-muted-foreground'
-                initial={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={hasAnimated ? {} : { delay: index * 0.05 + 0.5 }}
-              >
-                {item.justification}
-              </motion.p>
-            )}
-
+  if (loading) {
+    return (
+      <div>
+        <motion.div
+          className={
+            viewMode === 'grid'
+              ? 'grid auto-rows-min gap-4 md:grid-cols-3'
+              : 'space-y-3'
+          }
+          variants={containerVariants}
+          initial='hidden'
+          animate='visible'
+        >
+          {Array.from({ length: 5 }).map((_, index) => (
             <motion.div
-              className='flex flex-wrap justify-between items-center mt-auto pt-4'
-              initial={
-                hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-              }
-              animate={{ opacity: 1, y: 0 }}
-              transition={hasAnimated ? {} : { delay: index * 0.05 + 0.6 }}
+              key={`skeleton-${index}`}
+              variants={viewMode === 'grid' ? cardVariants : listItemVariants}
+              className={`rounded-xl bg-muted/30 animate-pulse p-6 flex ${
+                viewMode === 'grid'
+                  ? 'flex-col gap-4 h-50'
+                  : 'items-center gap-6'
+              }`}
             >
-              <BadgeDelta
-                variant='complex'
-                iconStyle='line'
-                value={item?.talent_score ?? 0}
-              />
-
-              <div className='flex items-center gap-2'>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button variant='outline' size='sm' className='text-xs'>
-                    <span>Shortlist</span>
-                    <Bookmark className='w-3 h-3 ml-1' />
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button variant='outline' size='sm' className='text-xs'>
-                    <span>Hide</span>
-                    <Eye className='w-3 h-3 ml-1' />
-                  </Button>
-                </motion.div>
-              </div>
+              <>
+                <div className='flex gap-4 items-start'>
+                  <div className='w-12 h-12 rounded-full bg-muted/50' />
+                  <div className='flex-1'>
+                    <div className='h-4 bg-muted/50 rounded mb-2 w-3/4' />
+                    <div className='h-3 bg-muted/50 rounded w-1/2' />
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <div className='h-3 bg-muted/50 rounded' />
+                  <div className='h-3 bg-muted/50 rounded w-5/6' />
+                  <div className='h-3 bg-muted/50 rounded w-4/6' />
+                </div>
+              </>
             </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Show empty state when no items
+  if (!items || items.length === 0) {
+    return <EmptyState />;
+  }
+
+  return (
+    <div>
+      {/* View Mode Toggle */}
+      <motion.div
+        className='flex justify-between items-center mb-6'
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className='flex items-center gap-2'>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={toggleViewMode}
+              className='transition-all duration-200 hover:bg-accent'
+            >
+              {viewMode === 'grid' ? (
+                <>
+                  <List className='w-4 h-4 mr-2' />
+                  List View
+                </>
+              ) : (
+                <>
+                  <Grid3X3 className='w-4 h-4 mr-2' />
+                  Grid View
+                </>
+              )}
+            </Button>
           </motion.div>
-        ))}
+        </div>
+
+        <div className='text-sm text-muted-foreground'>
+          {items.length} candidate{items.length !== 1 ? 's' : ''} found
+        </div>
       </motion.div>
+
+      {/* Content based on view mode */}
+      <AnimatePresence mode='wait'>
+        {viewMode === 'grid' ? <GridView /> : <ListView />}
+      </AnimatePresence>
 
       <AnimatePresence mode='wait'>
         {selectedItem && (

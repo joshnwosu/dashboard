@@ -33,10 +33,12 @@ export default function TitleDescription({
           >
             <ArrowLeft />
           </Button>
-          <h1 className='text-2xl font-normal'>{title ?? 'Page Title'}</h1>
-          {description && (
-            <p className='text-lg text-gray-500 mt-1'>{description}</p>
-          )}
+          <div>
+            <h1 className='text-2xl font-normal'>{title ?? 'Page Title'}</h1>
+            {description && (
+              <p className='text-lg text-gray-500'>{description}</p>
+            )}
+          </div>
         </div>
         {showButton && (
           <Button onClick={onButtonClick} className='ml-4 mt-1'>

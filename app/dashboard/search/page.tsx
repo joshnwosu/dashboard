@@ -45,21 +45,21 @@ const samplePrompt = [
   {
     title: 'Software Engineer',
     prompt:
-      'Software Engineer with 5+ years in fintech, skilled in Python, JavaScript, AWS, based in Nigeria.',
+      'Remote Software Engineer with 5+ years in fintech, skilled in Python, JavaScript, AWS, based in Nigeria.',
     icon: CodeXml,
     gradient: 'from-blue-500 to-indigo-600',
   },
   {
     title: 'UI/UX Designer',
     prompt:
-      'UI/UX Designer with 2+ years in fintech, skilled in Figma, Adobe XD, usability testing, Asia.',
+      'Full time UI/UX Designer with 2+ years in fintech, skilled in Figma, Adobe XD, usability testing, Asia.',
     icon: Snowflake,
     gradient: 'from-purple-500 to-pink-600',
   },
   {
     title: 'Marketing Manager',
     prompt:
-      'Marketing Manager with 3+ years in fintech, experienced in digital marketing, SEO, strategy, Europe.',
+      'Part time Marketing Manager with 3+ years in fintech, experienced in digital marketing, SEO, strategy, Europe.',
     icon: Headset,
     gradient: 'from-orange-500 to-red-600',
   },
