@@ -154,10 +154,10 @@ export default function SearchList({ slug }: SearchListProps) {
                 )}
               </div>
               <div>
-                <h1 className='text-xl font-normal text-gray-900 dark:text-white'>
+                <h1 className='text-lg font-normal text-gray-900 dark:text-white'>
                   {isSearchHistory ? 'Search History' : 'CV Screening History'}
                 </h1>
-                <p className='text-md text-gray-600 dark:text-gray-400'>
+                <p className='text-sm text-gray-600 dark:text-gray-400'>
                   Track and manage your{' '}
                   {isSearchHistory ? 'job searches' : 'candidate screenings'}
                 </p>

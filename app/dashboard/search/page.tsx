@@ -259,7 +259,7 @@ export default function Search() {
         </div>
       )}
 
-      <div className='w-full max-w-6xl mt-12'>
+      <div className='w-full max-w-6xl mt-8'>
         <div className='text-center mb-8'>
           <h3 className='text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2'>
             Quick Start Templates

@@ -34,9 +34,9 @@ export default function TitleDescription({
             <ArrowLeft />
           </Button>
           <div>
-            <h1 className='text-2xl font-normal'>{title ?? 'Page Title'}</h1>
+            <h1 className='text-lg font-normal'>{title ?? 'Page Title'}</h1>
             {description && (
-              <p className='text-lg text-gray-500'>{description}</p>
+              <p className='text-sm text-gray-500'>{description}</p>
             )}
           </div>
         </div>
