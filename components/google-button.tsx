@@ -7,7 +7,11 @@ export default function GoogleButton() {
         <span className='text-xs text-muted-foreground'>Or create with</span>
       </div>
 
-      <Button variant='outline' className='w-full h-12' type='button'>
+      <Button
+        variant='outline'
+        className='w-full h-12 font-normal cursor-pointer'
+        type='button'
+      >
         <svg
           stroke='currentColor'
           fill='currentColor'
@@ -43,7 +47,7 @@ c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z'
 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z'
           ></path>
         </svg>
-        Google
+        Log in with Google
       </Button>
     </>
   );

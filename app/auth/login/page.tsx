@@ -62,117 +62,115 @@ function LoginContent() {
   }
 
   return (
-    <div className='w-full max-w-[600px] mx-auto p-8 space-y-12'>
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.3 }}
-      >
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-            <div className='grid grid-cols-1 gap-4 items-start'>
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-gray-700 dark:text-gray-200'>
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.3, duration: 0.3 }}
+      className='w-full max-w-[400px] mx-auto p-8 space-y-12 bg-sidebar border rounded-2xl'
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <div className='grid grid-cols-1 gap-4 items-start'>
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  {/* <FormLabel className='text-gray-700 dark:text-gray-200'>
                       Email address
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                        <Input
-                          placeholder='Email address'
-                          className='h-12 pl-10'
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-gray-700 dark:text-gray-200'>
-                      Password
-                    </FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                        <Input
-                          type='password'
-                          placeholder='Enter your password'
-                          className='h-12 pl-10 bg-white dark:bg-gray-800 dark:text-white'
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className='flex flex-col items-end'>
-                <Link href='/forgot-password' className='text-blue-500'>
-                  Forgot password
-                </Link>
-              </div>
-            </div>
-
-            <Button
-              type='submit'
-              variant='secondary'
-              className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  Continue
-                  <MoveRight className='ml-2 h-4 w-4' />
-                </>
+                    </FormLabel> */}
+                  <FormControl>
+                    <div className='relative'>
+                      <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                      <Input
+                        placeholder='Email address'
+                        className='h-12 pl-10'
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </Button>
+            />
 
-            <GoogleButton />
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  {/* <FormLabel className='text-gray-700 dark:text-gray-200'>
+                      Password
+                    </FormLabel> */}
+                  <FormControl>
+                    <div className='relative'>
+                      <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                      <Input
+                        type='password'
+                        placeholder='Enter your password'
+                        className='h-12 pl-10 bg-white dark:bg-gray-800 dark:text-white'
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <p className='text-md leading-relaxed tracking-tight text-muted-foreground text-center font-sans max-w-xl mx-auto px-4'>
-              Not using Sourzer yet?{' '}
-              <Link href='/auth/signup' className='text-blue-500'>
-                Create an account now
+            <div className='flex flex-col items-end'>
+              <Link href='/forgot-password' className='text-blue-500 text-sm'>
+                Forgot password?
               </Link>
-            </p>
-          </form>
-        </Form>
-      </motion.div>
-    </div>
+            </div>
+          </div>
+
+          <Button
+            type='submit'
+            variant='secondary'
+            className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                Loading...
+              </>
+            ) : (
+              <>
+                Continue
+                <MoveRight className='ml-2 h-4 w-4' />
+              </>
+            )}
+          </Button>
+
+          <GoogleButton />
+
+          <p className='text-md leading-relaxed tracking-tight text-sm text-muted-foreground text-center font-sans max-w-xl mx-auto px-4'>
+            Not using Sourzer yet?{' '}
+            <Link href='/auth/signup' className='text-blue-500'>
+              Sign up
+            </Link>
+          </p>
+        </form>
+      </Form>
+    </motion.div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className='flex flex-col items-center justify-center'>
-      <div className='space-y-6 text-center'>
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.3 }}
-        >
-          <h1 className='text-3xl md:text-5xl tracking-tighter font-sans bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]'>
-            <span>Sign in </span>
-          </h1>
-        </motion.div>
-      </div>
+    <div className='w-full flex flex-col items-center justify-center p-4'>
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+        className='space-y-6 text-center mb-4'
+      >
+        <h1 className='text-4xl tracking-tighter font-sans bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]'>
+          <span>Log in </span>
+        </h1>
+      </motion.div>
 
       <Suspense fallback={<div>Loading...</div>}>
         <LoginContent />
