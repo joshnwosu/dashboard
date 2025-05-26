@@ -37,7 +37,9 @@ export default function DashboardLayout({
   }, [router]);
 
   if (loading || !user) {
-    return <LoadingScreen title='Setting up your profile...' />;
+    return (
+      <LoadingScreen title="Welcome back! We're setting everything up for you ..." />
+    );
   }
 
   return (

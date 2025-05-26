@@ -1,4 +1,4 @@
-import LoadingScreen from '@/components/loading-screen';
+
 
 export default function AuthLayout({
   children,
@@ -9,7 +9,6 @@ export default function AuthLayout({
         {children}
       </div>
 
-      {/* <LoadingScreen title='Authenticating...' /> */}
     </main>
   );
 }

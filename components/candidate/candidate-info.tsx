@@ -36,7 +36,12 @@ const CandidateInfo = ({
         )}
       </motion.h2>
 
-      <div className='flex items-center gap-4 mt-1 text-sm text-muted-foreground'>
+      <motion.div
+        className='flex items-center gap-4 mt-1 text-sm text-muted-foreground'
+        initial={hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={animationDelay}
+      >
         {!isFieldLoading(item.jobTitle) && (
           <div className='flex items-center gap-1'>
             <Building className='w-3 h-3' />
@@ -50,7 +55,7 @@ const CandidateInfo = ({
             <span>{item.country}</span>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
