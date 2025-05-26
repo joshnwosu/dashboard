@@ -26,7 +26,6 @@ import { LexicalInput } from '@/components/lexical-input';
 import { toast } from 'sonner';
 import { useJobStore } from '@/store/jobStore';
 import { useRouter } from 'next/navigation';
-import { SourceCandidateResponse } from '@/types/job';
 
 // Define badge variants
 const badgeVariants = {
@@ -106,7 +105,7 @@ export default function Search() {
     searchHistory,
     sourceCandidate,
     fetchSearchHistory,
-    loading,
+    loading, // This is the loading state from your store
     error,
     clearError,
   } = useJobStore();
@@ -169,11 +168,13 @@ export default function Search() {
           search_indeed: false,
           search_linkedin: false,
         })) as any;
+
         // Dismiss loading toast if present
         if (toastId) {
           toast.dismiss(toastId);
           setToastId(undefined);
         }
+
         toast.success('Candidate sourced successfully!');
 
         // Navigate to search history page
@@ -186,31 +187,32 @@ export default function Search() {
               res.title
             )}?id=${res.id}`
           );
-          toast.success('Candidate sourced successfully!');
         } else {
           throw new Error('Invalid response from sourceCandidate');
         }
       } catch (error) {
         // Error is handled by the store and displayed via useEffect
+        console.error('Error sourcing candidate:', error);
       }
     },
-    [areAllBadgesActive, sourceCandidate, toastId]
+    [areAllBadgesActive, sourceCandidate, toastId, router, fetchSearchHistory]
   );
 
   return (
     <div className='flex flex-1 flex-col items-center justify-end gap-3 px-4 py-2 max-w-6xl mx-auto'>
-      {/* <div className='flex flex-col items-center text-3xl mb-6'>
-        <h2 className='text-4xl tracking-tighter font-geist bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] text-center'>
-          Who are you looking for?
+      <div className='flex flex-col items-center text-3xl mb-4'>
+        <h2 className='text-4xl tracking-tighter font-bold bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)] text-center'>
+          Ask Sourzer
         </h2>
-      </div> */}
+      </div>
 
       <LexicalInput
         placeholder='Describe your ideal candidate...'
         content={input}
         onInputChange={setInput}
         onSend={handleSend}
-        // isSendAllowed={areAllBadgesActive}
+        loading={loading}
+        isSendAllowed={areAllBadgesActive}
       />
 
       <div className='flex gap-2 items-center justify-center'>
@@ -273,8 +275,11 @@ export default function Search() {
           {samplePrompt.map((card, index) => (
             <Card
               key={card.title}
-              className='group relative p-5 cursor-pointer bg-white/80 dark:bg-sidebar backdrop-blur-sm border-0 shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20 transition-all duration-500 ease-out transform hover:scale-105 hover:-translate-y-2 overflow-hidden'
-              onClick={() => handleCardClick(card.prompt)}
+              className={cn(
+                'group relative p-5 cursor-pointer bg-white/80 dark:bg-sidebar backdrop-blur-sm border-0 shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20 transition-all duration-500 ease-out transform hover:scale-105 hover:-translate-y-2 overflow-hidden',
+                loading && 'pointer-events-none opacity-60' // Disable cards when loading
+              )}
+              onClick={() => !loading && handleCardClick(card.prompt)} // Prevent clicks when loading
               style={{
                 animationDelay: `${index * 1500}ms`,
               }}
