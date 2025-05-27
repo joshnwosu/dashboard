@@ -51,7 +51,7 @@ export const getSearchHistory = async (
   perPage: number = 15
 ) => {
   try {
-    const response = await apiClient.get<any>('/jobs', {
+    const response = await apiClient.get<any>('/jobs/search', {
       params: {
         page,
         perPage,

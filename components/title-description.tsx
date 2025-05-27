@@ -22,7 +22,7 @@ export default function TitleDescription({
 }: TitleDescriptionProps) {
   const router = useRouter();
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col mb-4'>
       <div className='flex items-start justify-between'>
         <div className='flex items-center gap-4'>
           <Button
@@ -46,7 +46,7 @@ export default function TitleDescription({
           </Button>
         )}
       </div>
-      <Separator className='my-4' />
+      {/* <Separator className='my-4' /> */}
     </div>
   );
 }

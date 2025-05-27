@@ -5,13 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { FileText, Search, Users, Grid3X3, List } from 'lucide-react';
 import { BadgeDelta } from '@/components/badge-delta';
-import { Candidate } from '@/types/candidate';
+import { Candidate, CandidateData } from '@/types/candidate';
 import CandidateDetailSheet from '@/components/candidate/candidate-detail-sheet';
 import CandidateInfo from '@/components/candidate/candidate-info';
 import CandidateSummary from '@/components/candidate/candidate-summary';
 import SocialMediaIcons from '@/components/candidate/social-media-icons';
 import ActionButtons from '@/components/candidate/action-button';
 import Avatar from '@/components/candidate/avatar';
+import { useJobStore } from '@/store/jobStore';
+import { candidateDummyData } from '@/data/candidate';
 
 interface CardGridProps {
   items: Candidate[];
@@ -74,11 +76,13 @@ export default function CandidateCardList({
   items,
   loading = false,
 }: CardGridProps) {
-  const [selectedItem, setSelectedItem] = useState<Candidate | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
   const [cardBounds, setCardBounds] = useState<DOMRect | null>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const cardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  const { fetchCandidate } = useJobStore();
 
   useEffect(() => {
     if (!loading && items && items.length > 0 && !hasAnimated) {
@@ -92,11 +96,12 @@ export default function CandidateCardList({
     if (card) {
       setCardBounds(card.getBoundingClientRect());
     }
-    setSelectedItem(item);
+    // setSelectedItem(item);
+    setOpen(true);
   };
 
   const handleClose = () => {
-    setSelectedItem(null);
+    setOpen(false);
     setCardBounds(null);
   };
 
@@ -408,8 +413,8 @@ export default function CandidateCardList({
       </AnimatePresence>
 
       <CandidateDetailSheet
-        item={selectedItem}
-        open={!!selectedItem}
+        item={candidateDummyData}
+        open={!!open}
         onOpenChange={handleClose}
       />
     </div>
