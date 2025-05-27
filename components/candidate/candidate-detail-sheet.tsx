@@ -95,10 +95,10 @@ const CandidateDetailSheet = ({
             <div className='flex-1 space-y-2'>
               <div className='flex items-start justify-between'>
                 <div>
-                  <SheetTitle className='text-2xl font-bold'>
+                  <SheetTitle className='text-xl font-bold'>
                     {item.name}
                   </SheetTitle>
-                  <p className='text-muted-foreground text-lg'>
+                  <p className='text-muted-foreground text-sm'>
                     @{item.username}
                   </p>
                 </div>
@@ -138,8 +138,8 @@ const CandidateDetailSheet = ({
         <div className='space-y-8'>
           {/* Assessment Section */}
           <section className='space-y-4'>
-            <h3 className='text-lg font-semibold flex items-center gap-2'>
-              <Award className='w-5 h-5' />
+            <h3 className='text-sm font-semibold flex items-center gap-2'>
+              <Award className='w-4 h-4' />
               Assessment
             </h3>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
@@ -148,7 +148,7 @@ const CandidateDetailSheet = ({
                   <span className='text-sm font-medium'>Talent Score</span>
                   <Star className='w-4 h-4 text-yellow-500' />
                 </div>
-                <div className='text-2xl font-bold text-primary'>
+                <div className='text-xl font-bold text-primary'>
                   {item.talent_score}/100
                 </div>
               </div>
@@ -171,10 +171,10 @@ const CandidateDetailSheet = ({
             {item.justification && (
               <div className='p-4 rounded-lg border bg-card space-y-2'>
                 <div className='flex items-center gap-2'>
-                  <MessageSquare className='w-4 h-4' />
-                  <span className='font-medium'>Justification</span>
+                  <MessageSquare className='w-4 h-4 text-muted-foreground' />
+                  <span className='text-sm font-medium'>Justification</span>
                 </div>
-                <p className='text-sm text-muted-foreground leading-relaxed'>
+                <p className='text-sm text-muted-foreground leading-loose mt-4'>
                   {item.justification}
                 </p>
               </div>
@@ -185,8 +185,8 @@ const CandidateDetailSheet = ({
 
           {/* Contact Information */}
           <section className='space-y-4'>
-            <h3 className='text-lg font-semibold flex items-center gap-2'>
-              <Mail className='w-5 h-5' />
+            <h3 className='text-sm font-semibold flex items-center gap-2'>
+              <Mail className='w-4 h-4 text-muted-foreground' />
               Contact Information
             </h3>
             <div className='space-y-3'>
@@ -194,10 +194,10 @@ const CandidateDetailSheet = ({
                 <div className='flex items-center justify-between p-3 rounded-lg border bg-card'>
                   <div className='flex items-center gap-3'>
                     <Mail className='w-4 h-4 text-muted-foreground' />
-                    <span className='font-medium'>Email</span>
+                    <span className='text-sm font-medium'>Email</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <span className='text-sm text-muted-foreground'>
+                    <span className='text-xs text-muted-foreground'>
                       {item.email}
                     </span>
                     <Button
@@ -246,8 +246,8 @@ const CandidateDetailSheet = ({
 
           {/* Social Profiles */}
           <section className='space-y-4'>
-            <h3 className='text-lg font-semibold flex items-center gap-2'>
-              <Globe className='w-5 h-5' />
+            <h3 className='text-sm font-semibold flex items-center gap-2'>
+              <Globe className='w-4 h-4 text-muted-foreground' />
               Social Profiles
             </h3>
             <div className='space-y-3'>
@@ -269,14 +269,14 @@ const CandidateDetailSheet = ({
                     >
                       <div className='flex items-center gap-3'>
                         <Icon className='w-4 h-4 text-muted-foreground' />
-                        <span className='font-medium'>{label}</span>
+                        <span className='text-sm font-medium'>{label}</span>
                       </div>
                       <div className='flex items-center gap-2'>
                         <a
                           href={url}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-sm text-primary hover:underline truncate max-w-[200px]'
+                          className='text-xs text-primary hover:underline truncate max-w-[200px]'
                         >
                           {url}
                         </a>
@@ -301,11 +301,13 @@ const CandidateDetailSheet = ({
           <Separator />
 
           {/* Activity Status */}
-          <section className='space-y-4'>
-            <h3 className='text-lg font-semibold flex items-center gap-2'>
-              <UserCheck className='w-5 h-5' />
+
+          <section className='space-y-6'>
+            <h3 className='text-sm font-semibold flex items-center gap-3 text-gray-900 dark:text-gray-100'>
+              <UserCheck className='w-4 h-4 text-muted-foreground' />
               Activity Status
             </h3>
+
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
               <div className='p-4 rounded-lg border bg-card text-center'>
                 <div
@@ -352,25 +354,25 @@ const CandidateDetailSheet = ({
 
           {/* Timeline */}
           <section className='space-y-4'>
-            <h3 className='text-lg font-semibold flex items-center gap-2'>
-              <Clock className='w-5 h-5' />
+            <h3 className='text-sm font-semibold flex items-center gap-2'>
+              <Clock className='w-4 h-4 text-muted-foreground' />
               Timeline
             </h3>
-            <div className='space-y-3'>
-              <div className='flex items-center justify-between p-3 rounded-lg border bg-card'>
-                <span className='font-medium'>Profile Created</span>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between p-3 rounded-sm border bg-card'>
+                <span className='text-sm'>Profile Created</span>
                 <span className='text-sm text-muted-foreground'>
                   {formatDate(item.createdAt)}
                 </span>
               </div>
-              <div className='flex items-center justify-between p-3 rounded-lg border bg-card'>
-                <span className='font-medium'>Last Updated</span>
+              <div className='flex items-center justify-between p-3 rounded-sm border bg-card'>
+                <span className='text-sm'>Last Updated</span>
                 <span className='text-sm text-muted-foreground'>
                   {formatDate(item.updatedAt)}
                 </span>
               </div>
-              <div className='flex items-center justify-between p-3 rounded-lg border bg-card'>
-                <span className='font-medium'>Last Profile Sync</span>
+              <div className='flex items-center justify-between p-3 rounded-sm border bg-card'>
+                <span className='text-sm'>Last Profile Sync</span>
                 <span className='text-sm text-muted-foreground'>
                   {formatDateTime(item.last_profile_sync)}
                 </span>
