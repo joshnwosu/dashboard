@@ -739,7 +739,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Bookmark,
@@ -773,6 +773,9 @@ import {
   ChevronRight,
   MoreHorizontal,
   FileText,
+  Minimize2,
+  Maximize,
+  Maximize2,
 } from 'lucide-react';
 import { GithubIcon, GmailIcon, LinkedinIcon } from '@/icon';
 import {
@@ -829,9 +832,46 @@ const CandidateDetailSheet = ({
   const tabs = [
     { id: 'application', label: 'Application' },
     { id: 'experiences', label: 'Experiences' },
-    { id: 'certifications', label: 'Certification & Others' },
+    { id: 'social-media', label: 'Social Media' },
+    { id: 'eduaction', label: 'Education' },
     { id: 'calendar', label: 'Calendar' },
   ];
+
+  // Add these interfaces at the top of your file:
+  interface Tab {
+    id: string;
+    label: string;
+  }
+
+  interface TabsProps {
+    tabs: Tab[];
+    activeTab: string;
+    setActiveTab: (id: string) => void;
+  }
+
+  // Add these hooks at the top of your component:
+  const activeTabRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (activeTabRef.current) {
+      activeTabRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center', // This centers the active tab horizontally
+      });
+    }
+  }, [activeTab]);
+
+  // Alternative approach using callback refs (if you prefer):
+  const scrollToTab = useCallback((node: HTMLButtonElement | null) => {
+    if (node) {
+      node.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, []);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -853,9 +893,9 @@ const CandidateDetailSheet = ({
               size='sm'
             >
               {isExpanded ? (
-                <Minimize className='w-4 h-4' />
+                <Minimize2 className='w-4 h-4' />
               ) : (
-                <Expand className='w-4 h-4' />
+                <Maximize2 className='w-4 h-4' />
               )}
             </Button>
             <Button
@@ -893,22 +933,45 @@ const CandidateDetailSheet = ({
           </div>
 
           {/* Tabs */}
-          <div className='bg-muted border-b'>
-            <div className='flex space-x-8 px-6'>
-              {tabs.map((tab) => (
+          {/* <div className='bg-sidebar border-b'>
+            <ScrollArea>
+              <div className='flex space-x-8 px-6  overflow-x-auto'>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`py-4 text-sm font-medium border-b-2 transition-colors text-nowrap ${
+                      activeTab === tab.id
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-muted-foreground hover:text-muted-foreground/50'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </div> */}
+
+          <div className='flex overflow-x-auto'>
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+
+              return (
                 <button
                   key={tab.id}
+                  ref={isActive ? activeTabRef : null} // Add ref to active tab
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === tab.id
+                  className={`py-4 px-4 text-sm font-medium border-b-2 transition-colors text-nowrap ${
+                    isActive
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-muted-foreground hover:text-muted-foreground/50'
                   }`}
                 >
                   {tab.label}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
           {/* Tab Content */}
@@ -1144,8 +1207,8 @@ const CandidateDetailSheet = ({
           {/* Other tab contents would go here */}
           {activeTab !== 'application' && (
             <div className='p-6'>
-              <div className='bg-white rounded-lg p-8 text-center'>
-                <p className='text-gray-500'>
+              <div className='bg-sidebar rounded-lg p-8 text-center'>
+                <p className='text-muted-foreground/50'>
                   Content for {tabs.find((t) => t.id === activeTab)?.label} tab
                 </p>
               </div>
