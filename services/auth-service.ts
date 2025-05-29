@@ -68,7 +68,7 @@ export const changePassword = async (payload: ChangePasswordPayload) => {
 
 export const resetPassword = async (payload: ResetPasswordPayload) => {
   try {
-    const response = await apiClient.post<any>('/user/reset_password', payload);
+    const response = await apiClient.post<any>('/auth/reset_password', payload);
     return response.data;
   } catch (error) {
     throw error;

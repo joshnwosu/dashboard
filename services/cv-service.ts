@@ -29,13 +29,13 @@ export const addCvToJob = async (payload: AddCvToJobPayload) => {
   }
 };
 
-export const getCvScreening = async () => {
-  try {
-    const response = await apiClient.get<any>(
-      '/jobs/cv_screening?page=1&perPage=15'
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+// export const getCvScreening = async () => {
+//   try {
+//     const response = await apiClient.get<any>(
+//       '/jobs/cv_screening?page=1&perPage=15'
+//     );
+//     return response.data;
+//   } catch (error) {
+//     throw error;
+//   }
+// };

@@ -48,7 +48,7 @@ export const reQueryJobCandidatesScraping = async (id: string) => {
 
 export const getSearchHistory = async (
   page: number = 1,
-  perPage: number = 15
+  perPage: number = 10
 ) => {
   try {
     const response = await apiClient.get<any>('/jobs/search', {
@@ -86,11 +86,17 @@ export const addCvToJob = async (payload: AddCvToJobPayload) => {
   }
 };
 
-export const getCvScreening = async () => {
+export const getCvScreening = async (
+  page: number = 1,
+  perPage: number = 10
+) => {
   try {
-    const response = await apiClient.get<any>(
-      '/jobs/cv_screening?page=1&perPage=15'
-    );
+    const response = await apiClient.get<any>('/jobs/cv_screening', {
+      params: {
+        page,
+        perPage,
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;

@@ -64,7 +64,7 @@ interface JobState {
   fetchSearchHistory: (page?: number, perPage?: number) => Promise<void>;
   submitJobDescription: (payload: SubmitJobDescriptionPayload) => Promise<void>;
   addCvToJob: (payload: AddCvToJobPayload) => Promise<void>;
-  fetchCvScreeningHistory: () => Promise<void>;
+  fetchCvScreeningHistory: (page?: number, perPage?: number) => Promise<void>;
   clearError: () => void;
 }
 
@@ -133,7 +133,7 @@ export const useJobStore = create<JobState>((set) => ({
     }
   },
 
-  fetchSearchHistory: async (page: number = 1, perPage: number = 15) => {
+  fetchSearchHistory: async (page: number = 1, perPage: number = 10) => {
     set({ loading: true, error: null });
     try {
       const data = await getSearchHistory(page, perPage);
@@ -180,10 +180,10 @@ export const useJobStore = create<JobState>((set) => ({
     }
   },
 
-  fetchCvScreeningHistory: async () => {
+  fetchCvScreeningHistory: async (page: number = 1, perPage: number = 1) => {
     set({ loading: true, error: null });
     try {
-      const data = await getCvScreening();
+      const data = await getCvScreening(page, perPage);
       set({ cvScreeningHistory: data.data, loading: false });
     } catch (error: any) {
       set({

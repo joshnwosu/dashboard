@@ -41,7 +41,7 @@ export default function SearchList({ slug }: SearchListProps) {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
+  const [perPage] = useState(6);
 
   // Select the appropriate history based on slug
   const history =
@@ -50,9 +50,9 @@ export default function SearchList({ slug }: SearchListProps) {
 
   useEffect(() => {
     if (slug === 'search-history') {
-      fetchSearchHistory();
+      fetchSearchHistory(currentPage, perPage);
     } else {
-      fetchCvScreeningHistory();
+      fetchCvScreeningHistory(currentPage, perPage);
     }
   }, [slug, currentPage, perPage, fetchSearchHistory, fetchCvScreeningHistory]);
 

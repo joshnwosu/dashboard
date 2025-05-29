@@ -53,7 +53,7 @@ function LoginContent() {
       await login(values.email, values.password);
       toast.success('Logged in successfully');
       router.replace(from);
-      console.log('This place...');
+      console.log('This place...', values);
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -119,7 +119,10 @@ function LoginContent() {
             />
 
             <div className='flex flex-col items-end'>
-              <Link href='/forgot-password' className='text-blue-500 text-sm'>
+              <Link
+                href='/auth/forgot-password'
+                className='text-blue-500 text-sm'
+              >
                 Forgot password?
               </Link>
             </div>

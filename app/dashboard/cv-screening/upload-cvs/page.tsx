@@ -8,7 +8,7 @@ import { CVUploadZone } from '@/components/cv-upload-zone';
 import { CVList } from '@/components/cv-list';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
-import { addCvToJob, getCvScreening } from '@/services/job-service';
+import { addCvToJob } from '@/services/job-service';
 import { CVScreeningItem } from '@/types/cv-screening';
 import { extractTextFromFile } from '@/utils/file-extractor';
 
@@ -30,20 +30,7 @@ export default function UploadCVs() {
       return;
     }
     setJobId(storedJobId);
-    fetchCvScreenings();
   }, [router]);
-
-  const fetchCvScreenings = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getCvScreening();
-      setCvScreenings(response.data || []);
-    } catch (error) {
-      console.error('Error fetching CV screenings:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleFileUpload = async (file: File) => {
     if (!jobId) return;
@@ -63,9 +50,6 @@ export default function UploadCVs() {
         cv_description: extractedContent,
         // candidate_name: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension
       });
-
-      // Refresh the CV list after successful upload
-      await fetchCvScreenings();
     } catch (error) {
       console.error('Error uploading CV:', error);
       // You might want to show an error toast here
@@ -88,7 +72,7 @@ export default function UploadCVs() {
 
         <Button
           variant='outline'
-          onClick={fetchCvScreenings}
+          // onClick={fetchCvScreenings}
           disabled={isLoading}
           className='gap-2'
         >
