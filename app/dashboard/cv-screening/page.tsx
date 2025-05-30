@@ -124,6 +124,7 @@ export default function CvScreening() {
           content={input}
           onInputChange={setInput}
           onSend={handleSend}
+          showIntegrations={false}
         />
       </div>
     </div>
