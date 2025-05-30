@@ -32,11 +32,6 @@ import { useUserStore } from '@/store/userStore';
 
 // This is sample data.
 const data = {
-  user: {
-    name: 'Joshua Nwosu',
-    email: 'joshua@sourzer.co',
-    avatar: '',
-  },
   teams: [
     {
       name: 'Sourzer',
@@ -103,28 +98,11 @@ const data = {
       url: '/dashboard/integrations',
       icon: Frame,
     },
-    {
-      title: 'Settings',
-      url: '/dashboard/settings',
-      icon: Settings2,
-    },
-  ],
-  projects: [
-    {
-      name: 'Emails',
-      url: '/emails',
-      icon: Mail,
-    },
-    {
-      name: 'Integrations',
-      url: '/integrations',
-      icon: Frame,
-    },
-    {
-      name: 'Settings',
-      url: '/settings',
-      icon: Settings2,
-    },
+    // {
+    //   title: 'Settings',
+    //   url: '/dashboard/settings',
+    //   icon: Settings2,
+    // },
   ],
 };
 
