@@ -2,13 +2,13 @@ import {
   getAllTransactions,
   getDashboardAnalysis,
 } from '@/services/transaction-service';
-import { DashboardAnalysisResponse } from '@/types/transaction';
+import { DashboardAnalysisData } from '@/types/transaction';
 import { create } from 'zustand';
 
 interface TransactionState {
   loading: boolean;
   transactions: any | null;
-  dashboardAnalysis: DashboardAnalysisResponse | null;
+  dashboardAnalysis: DashboardAnalysisData | null;
   fecthAllTransactions?: () => void;
   fecthDashboardAnalysis: () => void;
 }
@@ -29,7 +29,7 @@ export const useTransactionStore = create<TransactionState>((set) => {
     fecthDashboardAnalysis: async () => {
       try {
         const response = await getDashboardAnalysis();
-        set({ dashboardAnalysis: response.data.data, loading: true });
+        set({ dashboardAnalysis: response.data, loading: true });
       } catch (error) {
         throw error;
       }

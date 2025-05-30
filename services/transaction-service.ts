@@ -1,5 +1,5 @@
 import apiClient from '@/lib/axios';
-import { DashboardAnalysisResponse } from '@/types/transaction';
+import { DashboardAnalysisData } from '@/types/transaction';
 
 export const getAllTransactions = async () => {
   try {

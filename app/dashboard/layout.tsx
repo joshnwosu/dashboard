@@ -9,6 +9,7 @@ import LoadingScreen from '@/components/loading-screen';
 import { useUserStore } from '@/store/userStore';
 import { SettingsDialog } from '@/components/settings-dialog';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useTransactionStore } from '@/store/transactionStore';
 
 export default function DashboardLayout({
   children,
@@ -17,6 +18,7 @@ export default function DashboardLayout({
 }>) {
   const router = useRouter();
   const { getUserProfile, user } = useUserStore();
+  const { fecthDashboardAnalysis } = useTransactionStore();
   const [loading, setLoading] = useState(false);
 
   const { isOpen, setIsOpen } = useSettingsStore();
@@ -24,7 +26,9 @@ export default function DashboardLayout({
   const initialize = async () => {
     setLoading(true);
     try {
-      await Promise.all([!user && getUserProfile()]);
+      await Promise.all([
+        !user && getUserProfile() && fecthDashboardAnalysis(),
+      ]);
     } catch (error: any) {
       router.push('/auth/login');
     } finally {

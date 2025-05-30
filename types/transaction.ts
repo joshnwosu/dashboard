@@ -1,4 +1,4 @@
-export interface DashboardAnalysisResponse {
+export interface DashboardAnalysisData {
   total_amount_of_transaction: number;
   total_number_of_transaction: number;
   total_jobs: number;

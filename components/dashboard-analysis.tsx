@@ -13,8 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { DashboardAnalysisData } from '@/types/transaction';
 
-export function DashboardAnalysis() {
+export function DashboardAnalysis({ data }: { data: DashboardAnalysisData }) {
   return (
     <div className='*:data-[slot=card]:bg-background *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4'>
       <Card className='@container/card'>
@@ -30,14 +31,8 @@ export function DashboardAnalysis() {
             <CardDescription>Total Search</CardDescription>
           </div>
           <CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
-            450
+            {data.total_search_jobs}
           </CardTitle>
-          <div className='absolute right-4 bottom-0'>
-            <Badge variant='outline' className='flex gap-1 rounded-lg text-xs'>
-              <TrendingUpIcon className='size-3' />
-              +12.5%
-            </Badge>
-          </div>
         </CardHeader>
       </Card>
 
@@ -51,17 +46,11 @@ export function DashboardAnalysis() {
             >
               <BookmarkIcon className='size-4' />
             </div>
-            <CardDescription>Shotlist</CardDescription>
+            <CardDescription>Total CV Screning</CardDescription>
           </div>
           <CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
-            1,234
+            {data.total_cv_screening_jobs}
           </CardTitle>
-          <div className='absolute right-4 bottom-0'>
-            <Badge variant='outline' className='flex gap-1 rounded-lg text-xs'>
-              <TrendingUpIcon className='size-3' />
-              +12.5%
-            </Badge>
-          </div>
         </CardHeader>
       </Card>
 
@@ -75,10 +64,10 @@ export function DashboardAnalysis() {
             >
               <UsersIcon className='size-4' />
             </div>
-            <CardDescription>Interested Candidates</CardDescription>
+            <CardDescription>Total Transactions</CardDescription>
           </div>
           <CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
-            230
+            {data.total_number_of_transaction}
           </CardTitle>
         </CardHeader>
       </Card>
@@ -93,10 +82,10 @@ export function DashboardAnalysis() {
             >
               <BriefcaseIcon className='size-4' />
             </div>
-            <CardDescription>Total Jobs</CardDescription>
+            <CardDescription>Credit Balance</CardDescription>
           </div>
           <CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
-            5
+            {data.subscription_credit_balance}
           </CardTitle>
         </CardHeader>
       </Card>
