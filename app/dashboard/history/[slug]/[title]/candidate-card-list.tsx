@@ -13,11 +13,11 @@ import SocialMediaIcons from '@/components/candidate/social-media-icons';
 import ActionButtons from '@/components/candidate/action-button';
 import Avatar from '@/components/candidate/avatar';
 import { useJobStore } from '@/store/jobStore';
-import { candidateDummyData } from '@/data/candidate';
 
 interface CardGridProps {
   items: Candidate[];
   loading?: boolean;
+  sourceCompleted?: boolean;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -75,14 +75,14 @@ const createCardVariants = (isListView = false) => ({
 export default function CandidateCardList({
   items,
   loading = false,
+  sourceCompleted,
 }: CardGridProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const [cardBounds, setCardBounds] = useState<DOMRect | null>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const cardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
-  const { fetchCandidate } = useJobStore();
+  const { selectedCandidate, fetchingCandidate } = useJobStore();
 
   useEffect(() => {
     if (!loading && items && items.length > 0 && !hasAnimated) {
@@ -91,18 +91,8 @@ export default function CandidateCardList({
     }
   }, [loading, items, hasAnimated]);
 
-  const handleCardClick = (item: Candidate, index: number) => {
-    const card = cardRefs.current.get(index);
-    if (card) {
-      setCardBounds(card.getBoundingClientRect());
-    }
-    // setSelectedItem(item);
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
-    setCardBounds(null);
   };
 
   const toggleViewMode = () => {
@@ -181,17 +171,10 @@ export default function CandidateCardList({
         variants={cardVariants}
         initial={hasAnimated ? 'static' : 'hidden'}
         animate={hasAnimated ? 'static' : 'visible'}
-        // whileHover='hover'
-        // whileTap='tap'
         layout
-        className={`rounded-xl dark:bg-sidebar/50 ring-2 dark:ring-1 ring-accent cursor-default hover:bg-sidebar hover:dark:bg-sidebar ${
+        className={`rounded-xl dark:bg-sidebar/50 ring-2 dark:ring-1 ring-accent cursor-pointer hover:bg-sidebar hover:dark:bg-sidebar transition-colors duration-200 ${
           isListView ? 'p-4' : 'p-6 flex flex-col gap-4'
         }`}
-        // onClick={() => handleCardClick(item, index)}
-        ref={(el) => {
-          if (el) cardRefs.current.set(index, el);
-          else cardRefs.current.delete(index);
-        }}
       >
         {isListView ? (
           // List View Layout
@@ -241,7 +224,7 @@ export default function CandidateCardList({
                 <ActionButtons
                   item={item}
                   index={index}
-                  onCardClick={handleCardClick}
+                  setOpen={() => setOpen(true)}
                 />
               </div>
             </div>
@@ -300,7 +283,7 @@ export default function CandidateCardList({
               <ActionButtons
                 item={item}
                 index={index}
-                onCardClick={handleCardClick}
+                setOpen={() => setOpen(true)}
               />
             </motion.div>
           </>
@@ -412,11 +395,14 @@ export default function CandidateCardList({
         </motion.div>
       </AnimatePresence>
 
-      <CandidateDetailSheet
-        item={candidateDummyData}
-        open={!!open}
-        onOpenChange={handleClose}
-      />
+      {selectedCandidate && (
+        <CandidateDetailSheet
+          item={selectedCandidate}
+          open={open}
+          onOpenChange={handleClose}
+          isLoading={fetchingCandidate}
+        />
+      )}
     </div>
   );
 }

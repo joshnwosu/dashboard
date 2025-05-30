@@ -29,10 +29,10 @@ const CandidateInfo = ({
         animate={{ opacity: 1, x: 0 }}
         transition={animationDelay}
       >
-        {isFieldLoading(item.name) ? (
+        {isFieldLoading(item?.name) ? (
           <SkeletonLine width='w-32' height='h-4' />
         ) : (
-          item.name
+          item?.name
         )}
       </motion.h2>
 
@@ -49,10 +49,10 @@ const CandidateInfo = ({
             {!isFieldLoading(item.company) && <span>at {item.company}</span>}
           </div>
         )}
-        {!isFieldLoading(item.country) && (
+        {!isFieldLoading(item?.country) && (
           <div className='flex items-center gap-1'>
             <MapPin className='w-3 h-3' />
-            <span>{item.country}</span>
+            <span>{item?.country}</span>
           </div>
         )}
       </motion.div>

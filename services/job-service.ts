@@ -26,7 +26,7 @@ export const getAllCandidates = async (id: string) => {
   }
 };
 
-export const getCandidate = async (id: string) => {
+export const getCandidate = async (id: number) => {
   try {
     const response = await apiClient.get<any>(`/jobs/candidate/${id}`);
     return response.data;
@@ -97,6 +97,38 @@ export const getCvScreening = async (
         perPage,
       },
     });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// New shortlist endpoints
+export const addCandidateToShortlist = async (id: number) => {
+  try {
+    const response = await apiClient.put<any>(
+      `/jobs/add_candidate_to_shortlist/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getShortlistCandidate = async (id: number) => {
+  try {
+    const response = await apiClient.get<any>(
+      `/jobs/get_shortlist_candidate/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllShortlistCandidates = async () => {
+  try {
+    const response = await apiClient.get<any>('/jobs/get_shortlist_candidate');
     return response.data;
   } catch (error) {
     throw error;

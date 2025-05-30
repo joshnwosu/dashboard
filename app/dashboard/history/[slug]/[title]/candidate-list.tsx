@@ -61,6 +61,7 @@ export default function CandidateList() {
       items={candidates?.candiddates || []}
       loading={loading && !hasInitiallyLoaded}
       key={hasInitiallyLoaded ? 'loaded' : 'loading'}
+      sourceCompleted={candidates.source_completed}
     />
   );
 }

@@ -4,9 +4,14 @@ import CreditHistoryTable from '@/components/credit-history-table';
 import { DashboardAnalysis } from '@/components/dashboard-analysis';
 import TransactionTable from '@/components/transaction-table';
 import { useTransactionStore } from '@/store/transactionStore';
+import { useEffect } from 'react';
 
 export default function Home() {
-  const { dashboardAnalysis } = useTransactionStore();
+  const { dashboardAnalysis, fecthDashboardAnalysis } = useTransactionStore();
+
+  useEffect(() => {
+    fecthDashboardAnalysis();
+  }, []);
 
   return (
     <div className='flex flex-1 flex-col'>
