@@ -407,7 +407,7 @@ export default function SearchList({ slug }: SearchListProps) {
                       href={
                         isSearchHistory
                           ? '/dashboard/search'
-                          : '/dashboard/screening'
+                          : '/dashboard/cv-screening'
                       }
                       className='inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md'
                     >

@@ -63,7 +63,7 @@ export default function UploadCVs() {
       <div className='flex items-center justify-between'>
         <Button
           variant='ghost'
-          onClick={() => router.push('/cv-screening')}
+          onClick={() => router.push('/dashboard/cv-screening')}
           className='gap-2'
         >
           <ArrowLeft className='h-4 w-4' />

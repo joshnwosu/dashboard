@@ -20,15 +20,19 @@ export default function Home() {
           <DashboardAnalysis data={dashboardAnalysis!} />
         </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-6 gap-4 w-full'>
-          <div className='min-w-0 lg:col-span-3'>
-            <CreditHistoryTable />
-          </div>
+        <TransactionTable />
 
-          <div className='min-w-0 lg:col-span-3'>
-            <TransactionTable />
+        {false && (
+          <div className='grid grid-cols-1 lg:grid-cols-5 gap-4 w-full'>
+            <div className='min-w-0 lg:col-span-2'>
+              <CreditHistoryTable />
+            </div>
+
+            <div className='min-w-0 lg:col-span-3'>
+              <TransactionTable />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

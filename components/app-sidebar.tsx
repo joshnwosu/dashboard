@@ -85,13 +85,17 @@ const data = {
 
     {
       title: 'Job Board',
-      url: '/dashboard/job-board',
+      // url: '/dashboard/job-board',
+      url: '#',
       icon: Briefcase,
+      badge: 'Coming Soon',
     },
     {
       title: 'Emails',
-      url: '/dashboard/emails',
+      // url: '/dashboard/emails',
+      url: '#',
       icon: Mail,
+      badge: 'Coming Soon',
     },
     {
       title: 'Integrations',

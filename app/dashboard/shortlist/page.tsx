@@ -241,7 +241,7 @@ export default function Shortlist() {
         'https://res.cloudinary.com/dlzlfasou/raw/upload/users-01_fertyx.json'
       );
       const data = await res.json();
-      setData(data);
+      // setData(data);
     }
     fetchPosts();
   }, []);

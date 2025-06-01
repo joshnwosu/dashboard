@@ -9,7 +9,7 @@ interface TransactionState {
   loading: boolean;
   transactions: any | null;
   dashboardAnalysis: DashboardAnalysisData | null;
-  fecthAllTransactions?: () => void;
+  fecthAllTransactions: () => void;
   fecthDashboardAnalysis: () => void;
 }
 

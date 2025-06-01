@@ -102,3 +102,126 @@ export const generatePlaceholderText = (item: Candidate): string => {
   // Fallback
   return 'Verified professional candidate • Complete profile and background available upon request';
 };
+
+// Basic function to format numbers with commas
+export function formatAmount(amount: number | string): string {
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+  if (isNaN(num)) {
+    return '0';
+  }
+
+  return num.toLocaleString();
+}
+
+// More comprehensive function with options
+interface FormatAmountOptions {
+  decimals?: number;
+  currency?: string;
+  locale?: string;
+  showCurrency?: boolean;
+}
+
+export function formatAmountWithOptions(
+  amount: number | string,
+  options: FormatAmountOptions = {}
+): string {
+  const {
+    decimals = 2,
+    currency = 'USD',
+    locale = 'en-US',
+    showCurrency = false,
+  } = options;
+
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+  if (isNaN(num)) {
+    return showCurrency ? `$0.00` : '0.00';
+  }
+
+  if (showCurrency) {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(num);
+  }
+
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(num);
+}
+
+// Simple currency formatter
+export function formatCurrency(
+  amount: number | string,
+  currency: string = 'USD'
+): string {
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+  if (isNaN(num)) {
+    return '$0.00';
+  }
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+  }).format(num);
+}
+
+// Format large numbers with K, M, B suffixes
+export function formatAmountCompact(amount: number | string): string {
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+  if (isNaN(num)) {
+    return '0';
+  }
+
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1) + 'B';
+  }
+  if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1) + 'M';
+  }
+  if (num >= 1_000) {
+    return (num / 1_000).toFixed(1) + 'K';
+  }
+
+  return num.toLocaleString();
+}
+
+// Format percentage
+export function formatPercentage(
+  amount: number | string,
+  decimals: number = 1
+): string {
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+  if (isNaN(num)) {
+    return '0%';
+  }
+
+  return `${num.toFixed(decimals)}%`;
+}
+
+// Usage Examples:
+/*
+console.log(formatAmount(1234567.89));           // "1,234,567.89"
+console.log(formatAmount("1234567"));            // "1,234,567"
+
+console.log(formatAmountWithOptions(1234567.89, {
+  decimals: 0,
+  showCurrency: true
+}));                                             // "$1,234,568"
+
+console.log(formatCurrency(1234567.89));        // "$1,234,567.89"
+console.log(formatCurrency(1234567.89, 'EUR')); // "€1,234,567.89"
+
+console.log(formatAmountCompact(1234567));       // "1.2M"
+console.log(formatAmountCompact(1234567890));    // "1.2B"
+
+console.log(formatPercentage(12.345));           // "12.3%"
+console.log(formatPercentage(12.345, 2));        // "12.35%"
+*/

@@ -92,13 +92,15 @@ export default function Filters({ table, id, handleDeleteRows }: FiltersProps) {
           ref={inputRef}
           className={cn(
             'peer min-w-60 ps-9',
-            Boolean(table?.getColumn('description')?.getFilterValue()) && 'pe-9'
+            Boolean(table?.getColumn('payment_provider')?.getFilterValue()) &&
+              'pe-9'
           )}
           value={
-            (table.getColumn('description')?.getFilterValue() ?? '') as string
+            (table.getColumn('payment_provider')?.getFilterValue() ??
+              '') as string
           }
           onChange={(e) =>
-            table.getColumn('description')?.setFilterValue(e.target.value)
+            table.getColumn('payment_provider')?.setFilterValue(e.target.value)
           }
           placeholder='Filter by customer name or category...'
           type='text'
@@ -107,12 +109,12 @@ export default function Filters({ table, id, handleDeleteRows }: FiltersProps) {
         <div className='pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50'>
           <ListFilter size={16} strokeWidth={2} aria-hidden='true' />
         </div>
-        {Boolean(table.getColumn('description')?.getFilterValue()) && (
+        {Boolean(table.getColumn('payment_provider')?.getFilterValue()) && (
           <button
             className='absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
             aria-label='Clear filter'
             onClick={() => {
-              table.getColumn('description')?.setFilterValue('');
+              table.getColumn('payment_provider')?.setFilterValue('');
               if (inputRef.current) {
                 inputRef.current.focus();
               }
