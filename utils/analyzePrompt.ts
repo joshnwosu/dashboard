@@ -44,7 +44,7 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
   const terms: string[] = doc.terms().out('array');
   badgeStates['Job Title'] =
     nouns.some((noun) =>
-      /software|engineer|designer|manager|developer|analyst|architect|consultant/i.test(
+      /software|engineer|designer|manager|developer|analyst|architect|Director of Marketing|consultant/i.test(
         noun
       )
     ) ||

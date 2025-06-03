@@ -293,7 +293,7 @@ export default function CandidateCardList({
   };
 
   // Loading State
-  if (loading) {
+  if (loading || !items || items.length === 0) {
     return (
       <motion.div
         className={
@@ -331,10 +331,10 @@ export default function CandidateCardList({
     );
   }
 
-  // Empty State
-  if (!items || items.length === 0) {
-    return <EmptyState />;
-  }
+  // // Empty State
+  // if (!items || items.length === 0) {
+  //   return <EmptyState />;
+  // }
 
   return (
     <div>
