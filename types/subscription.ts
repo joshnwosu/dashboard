@@ -1,6 +1,8 @@
 export interface SubscriptionPayload {
   plan_id: string;
   pay_with_existing_card: boolean;
+  change_plan: boolean;
+  current_plan_id: string;
 }
 
 export interface SubscriptionResponse {
