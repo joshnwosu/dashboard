@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { BadgeCheck, ArrowRight } from 'lucide-react';
+import { BadgeCheck, ArrowRight, Loader2 } from 'lucide-react';
 import NumberFlow from '@number-flow/react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,12 @@ import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
+import { toast } from 'sonner';
 
 export interface PricingTier {
+  id: string;
   name: string;
   price: Record<string, number | string>;
   description: string;
@@ -36,6 +39,9 @@ export function PricingCard({
   const price = tier.price[paymentFrequency];
   const isHighlighted = tier.highlighted;
   const isPopular = tier.popular;
+  const isCustom = tier.id === 'business';
+  const { createSubscription } = useSubscriptionStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const controls = useAnimation();
   const [ref, inView] = useInView({ threshold: 0.3, triggerOnce: true });
@@ -45,6 +51,33 @@ export function PricingCard({
       controls.start('visible');
     }
   }, [controls, inView]);
+
+  const handleUpgradeClick = async () => {
+    if (isCustom) {
+      // Handle custom plan differently
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await createSubscription({
+        plan_id: '1', //tier.id
+        pay_with_existing_card: false,
+        change_plan: false,
+        current_plan_id: '',
+      });
+
+      // Redirect to payment URL from the response
+      if (response.data.payment_url) {
+        window.location.href = response.data.payment_url;
+      }
+    } catch (error) {
+      toast.error('Failed to create subscription. Please try again.');
+      console.error('Subscription error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Animation variants for the card
   const cardVariants = {
@@ -193,15 +226,24 @@ export function PricingCard({
             initial='hidden'
             animate={controls}
           >
-            <Link href='/waitlist'>
-              <Button
-                variant={isHighlighted ? 'secondary' : 'default'}
-                className='w-full relative z-10'
-              >
-                {tier.cta}
-                <ArrowRight className='ml-2 h-4 w-4' />
-              </Button>
-            </Link>
+            <Button
+              variant={isHighlighted ? 'secondary' : 'default'}
+              className='w-full relative z-10'
+              onClick={handleUpgradeClick}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Please wait
+                </>
+              ) : (
+                <>
+                  {tier.cta}
+                  <ArrowRight className='ml-2 h-4 w-4' />
+                </>
+              )}
+            </Button>
           </motion.div>
         </Card>
       </motion.div>
