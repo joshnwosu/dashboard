@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { completeGoogleSignup } from '@/services/auth-service';
 import { Button } from '@/components/ui/button';
@@ -30,15 +30,16 @@ const formSchema = z.object({
   }),
 });
 
-export default function OAuthCallbackPage() {
+// Separate the registration form into its own component
+function RegistrationForm({
+  email,
+  request_id,
+}: {
+  email: string;
+  request_id: string;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-
-  const email = searchParams.get('email');
-  const action = searchParams.get('action');
-  const request_id = searchParams.get('request_id');
-  const token = searchParams.get('token');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,36 +49,11 @@ export default function OAuthCallbackPage() {
     },
   });
 
-  useEffect(() => {
-    // Handle existing user with token
-    if (token && token !== 'NO-ACCESS-TOKEN') {
-      // Store the token and redirect to dashboard
-      localStorage.setItem('access_token', token);
-      document.cookie = `access_token=${token}; path=/; SameSite=Strict`;
-      router.replace('/dashboard');
-      return;
-    }
-
-    // Handle invalid URL
-    if (!email || !action) {
-      toast.error('Invalid callback URL');
-      router.push('/auth/login');
-      return;
-    }
-
-    // Handle new user registration
-    if (action !== 'COMPLETE_YOUR_REGISTRATION') {
-      router.push('/auth/login');
-      return;
-    }
-  }, [email, action, router, token]);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!email || !request_id) return;
 
     setLoading(true);
     try {
-      // Get country from phone number
       const parsedNumber = parsePhoneNumber(values.phone_number);
       const country = parsedNumber?.country
         ? new Intl.DisplayNames(['en'], { type: 'region' }).of(
@@ -88,7 +64,7 @@ export default function OAuthCallbackPage() {
       await completeGoogleSignup({
         ...values,
         email,
-        name: email.split('@')[0], // Use email username as name
+        name: email.split('@')[0],
         country: country || '',
         reg_channel: 'google',
         user_type: 'company',
@@ -102,16 +78,6 @@ export default function OAuthCallbackPage() {
       setLoading(false);
     }
   };
-
-  // Don't render the form for existing users or invalid URLs
-  if (
-    token !== 'NO-ACCESS-TOKEN' ||
-    !email ||
-    !action ||
-    action !== 'COMPLETE_YOUR_REGISTRATION'
-  ) {
-    return null;
-  }
 
   return (
     <div className='flex min-h-screen flex-col items-center justify-center p-4'>
@@ -138,7 +104,7 @@ export default function OAuthCallbackPage() {
                       <Building className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
                       <Input
                         placeholder='Company name'
-                        className='h-12 pl-10'
+                        className='pl-10'
                         {...field}
                       />
                     </div>
@@ -158,7 +124,6 @@ export default function OAuthCallbackPage() {
                     <div className='relative'>
                       <PhoneInput
                         placeholder='Phone number'
-                        className='h-12'
                         {...field}
                         defaultCountry='US'
                         onChange={(value) => {
@@ -187,4 +152,60 @@ export default function OAuthCallbackPage() {
       </div>
     </div>
   );
+}
+
+// Main page component with Suspense boundary
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={null}>
+      <OAuthContent />
+    </Suspense>
+  );
+}
+
+// Content component that uses useSearchParams
+function OAuthContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const email = searchParams.get('email');
+  const action = searchParams.get('action');
+  const request_id = searchParams.get('request_id');
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    // Handle existing user with token
+    if (token && token !== 'NO-ACCESS-TOKEN') {
+      // Store the token and redirect to dashboard
+      localStorage.setItem('access_token', token);
+      document.cookie = `access_token=${token}; path=/; SameSite=Strict`;
+      router.replace('/dashboard');
+      return;
+    }
+
+    // Handle invalid URL
+    if (!email || !action) {
+      toast.error('Invalid callback URL');
+      router.push('/auth/login');
+      return;
+    }
+
+    // Handle new user registration
+    if (action !== 'COMPLETE_YOUR_REGISTRATION') {
+      router.push('/auth/login');
+      return;
+    }
+  }, [email, action, router, token]);
+
+  // Don't render the form for existing users or invalid URLs
+  if (
+    token !== 'NO-ACCESS-TOKEN' ||
+    !email ||
+    !action ||
+    action !== 'COMPLETE_YOUR_REGISTRATION'
+  ) {
+    return null;
+  }
+
+  return <RegistrationForm email={email} request_id={request_id || ''} />;
 }
