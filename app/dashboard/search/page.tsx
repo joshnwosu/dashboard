@@ -12,6 +12,8 @@ import {
   CodeXml,
   Snowflake,
   Headset,
+  ArrowRightIcon,
+  Lightbulb,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { analyzePrompt, BadgeStates } from '@/utils/analyzePrompt';
@@ -26,6 +28,8 @@ import { LexicalInput } from '@/components/lexical-input';
 import { toast } from 'sonner';
 import { useJobStore } from '@/store/jobStore';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { PricingDialog } from '@/components/shared/pricing-dialog';
 
 // Define badge variants
 const badgeVariants = {
@@ -99,6 +103,7 @@ export default function Search() {
   const [toastId, setToastId] = useState<string | number | undefined>(
     undefined
   );
+  const [showPricing, setShowPricing] = useState(false);
 
   // Access store
   const {
@@ -276,7 +281,7 @@ export default function Search() {
             <Card
               key={card.title}
               className={cn(
-                'group relative p-5 cursor-pointer bg-white/80 dark:bg-sidebar backdrop-blur-sm border-0 shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20 transition-all duration-500 ease-out transform hover:scale-105 hover:-translate-y-2 overflow-hidden',
+                'group relative p-5 cursor-pointer bg-white/80 dark:bg-sidebar backdrop-blur-sm border shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20 transition-all duration-500 ease-out transform hover:scale-105 hover:-translate-y-2 overflow-hidden',
                 loading && 'pointer-events-none opacity-60' // Disable cards when loading
               )}
               onClick={() => !loading && handleCardClick(card.prompt)} // Prevent clicks when loading
@@ -315,6 +320,19 @@ export default function Search() {
           ))}
         </div>
       </div>
+
+      <div className='flex items-center gap-4 bg-background border px-4 py-2 text-sm mt-8 text-muted-foreground shadow-2xl '>
+        <Sparkles className='w-4 h-4' />
+        <span>You're currently on the free trial</span>
+        <Button
+          className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white cursor-pointer'
+          onClick={() => setShowPricing(true)}
+        >
+          Upgrade to Pro <ArrowRightIcon />
+        </Button>
+      </div>
+
+      <PricingDialog open={showPricing} onOpenChange={setShowPricing} />
     </div>
   );
 }
