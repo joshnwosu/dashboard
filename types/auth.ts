@@ -45,3 +45,14 @@ export interface ResetPasswordPayload {
   newPassword: string;
   confirmPassword: string;
 }
+
+export interface CompleteGoogleSignupPayload {
+  name: string;
+  company_name: string;
+  phone_number: string;
+  country: string;
+  email: string; // This will be pre-filled from Google data
+  reg_channel: 'google';
+  user_type?: string;
+  request_id: string; // Added for Google OAuth flow
+}

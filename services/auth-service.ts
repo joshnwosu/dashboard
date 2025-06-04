@@ -4,6 +4,7 @@ import {
   LoginResponse,
   RegisterPayload,
   ResetPasswordPayload,
+  CompleteGoogleSignupPayload,
 } from '@/types/auth';
 
 export const register = async (payload: RegisterPayload) => {
@@ -69,6 +70,37 @@ export const changePassword = async (payload: ChangePasswordPayload) => {
 export const resetPassword = async (payload: ResetPasswordPayload) => {
   try {
     const response = await apiClient.post<any>('/auth/reset_password', payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleGoogleCallback = async (code: string) => {
+  try {
+    const response = await apiClient.get<LoginResponse>(
+      `/auth/google/callback?code=${code}`
+    );
+    const { access_token } = response.data.data;
+    localStorage.setItem('access_token', access_token);
+    document.cookie = `access_token=${access_token}; path=/; SameSite=Strict`;
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const completeGoogleSignup = async (
+  payload: CompleteGoogleSignupPayload
+) => {
+  try {
+    const response = await apiClient.post<LoginResponse>(
+      '/auth/complete_gmail_signup',
+      payload
+    );
+    const { access_token } = response.data.data;
+    localStorage.setItem('access_token', access_token);
+    document.cookie = `access_token=${access_token}; path=/; SameSite=Strict`;
     return response.data;
   } catch (error) {
     throw error;
