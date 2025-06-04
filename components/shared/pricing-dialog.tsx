@@ -5,6 +5,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { PAYMENT_FREQUENCIES, TIERS } from '@/lib/pricing';
 import { Tab } from './pricing-tab';
 import { PricingCard } from './pricing-card';
+import { Lock } from 'lucide-react';
 
 interface PricingDialogProps {
   open: boolean;
@@ -17,7 +18,7 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[95%] lg:max-w-5xl bg-sidebar/70 backdrop-blur-xl'>
+      <DialogContent className='sm:max-w-[95%] lg:max-w-5xl bg-sidebar/60 backdrop-blur-xl overflow-hidden'>
         <div className='flex flex-col items-center gap-8 pt-4'>
           <div className='mx-auto flex w-fit rounded-full bg-muted p-1'>
             {PAYMENT_FREQUENCIES.map((freq) => (
@@ -42,6 +43,17 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
                 index={index}
               />
             ))}
+          </div>
+
+          <div className='w-full'>
+            <div className='flex items-center justify-center gap-3 text-sm font-medium text-muted-foreground'>
+              <span className='flex items-center justify-center gap-1.5'>
+                <Lock className='size-4 mb-0.5' />
+                Secure payments
+              </span>
+              <span>•</span>
+              <span>Cancel anytime</span>
+            </div>
           </div>
         </div>
       </DialogContent>
