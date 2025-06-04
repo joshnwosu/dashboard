@@ -164,9 +164,9 @@ export function PricingCard({
             variants={descriptionVariants}
             initial='hidden'
             animate={controls}
-            className='flex-1 space-y-2'
+            className='flex-1 space-y-6'
           >
-            <h3 className='text-sm font-medium'>{tier.description}</h3>
+            <h3 className='text-md'>{tier.description}</h3>
             <motion.ul
               variants={featuresVariants}
               initial='hidden'
@@ -177,7 +177,7 @@ export function PricingCard({
                 <li
                   key={idx}
                   className={cn(
-                    'flex items-center gap-2 text-sm font-medium',
+                    'flex items-center gap-2 text-sm',
                     isHighlighted ? 'text-background' : 'text-muted-foreground'
                   )}
                 >

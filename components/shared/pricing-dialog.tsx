@@ -18,8 +18,8 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[95%] lg:max-w-5xl bg-sidebar/60 backdrop-blur-xl overflow-hidden'>
-        <div className='flex flex-col items-center gap-8 pt-4'>
+      <DialogContent className='sm:max-w-[95%] max-h-[90vh] lg:max-w-6xl bg-sidebar/60 backdrop-blur-xl overflow-y-auto'>
+        <div className='flex flex-col items-center gap-8 pt-4 '>
           <div className='mx-auto flex w-fit rounded-full bg-muted p-1'>
             {PAYMENT_FREQUENCIES.map((freq) => (
               <Tab
