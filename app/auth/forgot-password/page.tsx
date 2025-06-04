@@ -31,6 +31,13 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { resetPassword } from '@/services/auth-service';
 import { ResetPasswordPayload } from '@/types/auth';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 // Step 1: Email validation schema
 const emailSchema = z.object({
@@ -238,315 +245,306 @@ function ForgotPasswordContent() {
   };
 
   return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.3, duration: 0.3 }}
-      className='w-full max-w-[400px] mx-auto p-8 space-y-8 bg-sidebar border rounded-2xl'
-    >
-      {/* Step indicator */}
-      <div className='flex justify-center items-center space-x-2 mb-6'>
-        {[1, 2, 3].map((step) => (
-          <div key={step} className='flex items-center'>
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                step === currentStep
-                  ? 'bg-primary text-primary-foreground'
-                  : step < currentStep
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-              }`}
-            >
-              {step < currentStep ? '✓' : step}
-            </div>
-            {step < 3 && (
+    <Card className='w-full max-w-[400px] mx-auto'>
+      <CardHeader className='space-y-2'>
+        <CardTitle className='text-2xl text-center'>{getStepTitle()}</CardTitle>
+        <CardDescription className='text-center'>
+          {getStepDescription()}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className='space-y-8'>
+        {/* Step indicator */}
+        <div className='flex justify-center items-center space-x-2 mb-6'>
+          {[1, 2, 3].map((step) => (
+            <div key={step} className='flex items-center'>
               <div
-                className={`w-8 h-0.5 mx-2 ${
-                  step < currentStep
-                    ? 'bg-green-500'
-                    : 'bg-gray-200 dark:bg-gray-700'
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step === currentStep
+                    ? 'bg-primary text-primary-foreground'
+                    : step < currentStep
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
                 }`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Back button */}
-      {currentStep > 1 && (
-        <Button
-          type='button'
-          variant='ghost'
-          size='sm'
-          onClick={goBack}
-          className='mb-4 p-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
-        >
-          <ArrowLeft className='h-4 w-4 mr-1' />
-          Back
-        </Button>
-      )}
-
-      {/* Step 1: Email Input */}
-      {currentStep === 1 && (
-        <Form {...emailForm}>
-          <form
-            onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-            className='space-y-6'
-          >
-            <FormField
-              control={emailForm.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className='relative'>
-                      <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                      <Input
-                        placeholder='Enter your email address'
-                        className='h-12 pl-10'
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type='submit'
-              className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                  Sending OTP...
-                </>
-              ) : (
-                <>
-                  Send Verification Code
-                  <ChevronRight className='ml-2 h-4 w-4' />
-                </>
-              )}
-            </Button>
-          </form>
-        </Form>
-      )}
-
-      {/* Step 2: OTP Input */}
-      {currentStep === 2 && (
-        <Form {...otpForm}>
-          <form
-            onSubmit={otpForm.handleSubmit(onOtpSubmit)}
-            className='space-y-6'
-          >
-            <div className='space-y-4'>
-              <div className='flex items-center gap-2 mb-2'>
-                <Shield className='h-4 w-4 text-gray-400' />
-                <span className='text-sm text-muted-foreground'>
-                  Enter verification code
-                </span>
-              </div>
-              <div className='flex gap-2 justify-center'>
-                {[1, 2, 3, 4, 5, 6].map((index) => (
-                  <FormField
-                    key={index}
-                    control={otpForm.control}
-                    name={`otp${index}` as keyof z.infer<typeof otpSchema>}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            ref={(el) => {
-                              otpRefs.current[index - 1] = el;
-                            }}
-                            type='text'
-                            inputMode='numeric'
-                            maxLength={1}
-                            className='w-12 h-12 text-center text-lg font-semibold bg-white dark:bg-gray-800'
-                            onChange={(e) =>
-                              handleOtpChange(index - 1, e.target.value)
-                            }
-                            onKeyDown={(e) => handleOtpKeyDown(index - 1, e)}
-                            onPaste={handleOtpPaste}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
-              {/* Show OTP validation errors */}
-              {(otpForm.formState.errors.otp1 ||
-                otpForm.formState.errors.otp2 ||
-                otpForm.formState.errors.otp3 ||
-                otpForm.formState.errors.otp4 ||
-                otpForm.formState.errors.otp5 ||
-                otpForm.formState.errors.otp6) && (
-                <p className='text-sm text-red-500 text-center'>
-                  Please enter all 6 digits
-                </p>
-              )}
-            </div>
-
-            <Button
-              type='submit'
-              className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                  Verifying...
-                </>
-              ) : (
-                <>
-                  Verify Code
-                  <ChevronRight className='ml-2 h-4 w-4' />
-                </>
-              )}
-            </Button>
-
-            <p className='text-sm text-muted-foreground text-center'>
-              Didn't receive the code?{' '}
-              <button
-                type='button'
-                className='text-blue-500 hover:underline'
-                onClick={() => onEmailSubmit({ email: formData.email })}
               >
-                Resend
-              </button>
-            </p>
-          </form>
-        </Form>
-      )}
-
-      {/* Step 3: Password Input */}
-      {currentStep === 3 && (
-        <Form {...passwordForm}>
-          <form
-            onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
-            className='space-y-6'
-          >
-            <div className='space-y-4'>
-              <FormField
-                control={passwordForm.control}
-                name='newPassword'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className='relative'>
-                        <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                        <Input
-                          type={showNewPassword ? 'text' : 'password'}
-                          placeholder='Enter new password'
-                          className='h-12 pl-10 pr-10 bg-white dark:bg-gray-800 dark:text-white'
-                          {...field}
-                        />
-                        <button
-                          type='button'
-                          onClick={() => setShowNewPassword(!showNewPassword)}
-                          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors'
-                        >
-                          {showNewPassword ? (
-                            <EyeOff className='h-5 w-5' />
-                          ) : (
-                            <Eye className='h-5 w-5' />
-                          )}
-                        </button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={passwordForm.control}
-                name='confirmPassword'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className='relative'>
-                        <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                        <Input
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder='Confirm new password'
-                          className='h-12 pl-10 pr-10 bg-white dark:bg-gray-800 dark:text-white'
-                          {...field}
-                        />
-                        <button
-                          type='button'
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors'
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className='h-5 w-5' />
-                          ) : (
-                            <Eye className='h-5 w-5' />
-                          )}
-                        </button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Button
-              type='submit'
-              className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                  Resetting Password...
-                </>
-              ) : (
-                <>
-                  Reset Password
-                  <MoveRight className='ml-2 h-4 w-4' />
-                </>
+                {step < currentStep ? '✓' : step}
+              </div>
+              {step < 3 && (
+                <div
+                  className={`w-8 h-0.5 mx-2 ${
+                    step < currentStep
+                      ? 'bg-green-500'
+                      : 'bg-gray-200 dark:bg-gray-700'
+                  }`}
+                />
               )}
-            </Button>
-          </form>
-        </Form>
-      )}
+            </div>
+          ))}
+        </div>
 
-      <p className='text-md leading-relaxed tracking-tight text-sm text-muted-foreground text-center font-sans max-w-xl mx-auto px-4'>
-        Remember your password?{' '}
-        <Link href='/auth/login' className='text-blue-500'>
-          Back to Login
-        </Link>
-      </p>
-    </motion.div>
+        {/* Back button */}
+        {currentStep > 1 && (
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={goBack}
+            className='mb-4 p-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+          >
+            <ArrowLeft className='h-4 w-4 mr-1' />
+            Back
+          </Button>
+        )}
+
+        {/* Step 1: Email Input */}
+        {currentStep === 1 && (
+          <Form {...emailForm}>
+            <form
+              onSubmit={emailForm.handleSubmit(onEmailSubmit)}
+              className='space-y-6'
+            >
+              <FormField
+                control={emailForm.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className='relative'>
+                        <Input
+                          placeholder='Enter your email address'
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type='submit'
+                className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Sending OTP...
+                  </>
+                ) : (
+                  <>
+                    Send Verification Code
+                    <ChevronRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
+
+        {/* Step 2: OTP Input */}
+        {currentStep === 2 && (
+          <Form {...otpForm}>
+            <form
+              onSubmit={otpForm.handleSubmit(onOtpSubmit)}
+              className='space-y-6'
+            >
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 mb-2 justify-center'>
+                  <Shield className='h-4 w-4 text-gray-400' />
+                  <span className='text-sm text-muted-foreground'>
+                    Enter verification code
+                  </span>
+                </div>
+                <div className='flex gap-2 justify-center'>
+                  {[1, 2, 3, 4, 5, 6].map((index) => (
+                    <FormField
+                      key={index}
+                      control={otpForm.control}
+                      name={`otp${index}` as keyof z.infer<typeof otpSchema>}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              ref={(el) => {
+                                otpRefs.current[index - 1] = el;
+                              }}
+                              type='text'
+                              inputMode='numeric'
+                              maxLength={1}
+                              className='w-12 h-12 text-center text-lg font-semibold bg-white dark:bg-gray-800'
+                              onChange={(e) =>
+                                handleOtpChange(index - 1, e.target.value)
+                              }
+                              onKeyDown={(e) => handleOtpKeyDown(index - 1, e)}
+                              onPaste={handleOtpPaste}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
+                {/* Show OTP validation errors */}
+                {(otpForm.formState.errors.otp1 ||
+                  otpForm.formState.errors.otp2 ||
+                  otpForm.formState.errors.otp3 ||
+                  otpForm.formState.errors.otp4 ||
+                  otpForm.formState.errors.otp5 ||
+                  otpForm.formState.errors.otp6) && (
+                  <p className='text-sm text-red-500 text-center'>
+                    Please enter all 6 digits
+                  </p>
+                )}
+              </div>
+
+              <Button
+                type='submit'
+                className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    Verify Code
+                    <ChevronRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
+              </Button>
+
+              <p className='text-sm text-muted-foreground text-center'>
+                Didn't receive the code?{' '}
+                <button
+                  type='button'
+                  className='text-blue-500 hover:underline'
+                  onClick={() => onEmailSubmit({ email: formData.email })}
+                >
+                  Resend
+                </button>
+              </p>
+            </form>
+          </Form>
+        )}
+
+        {/* Step 3: Password Input */}
+        {currentStep === 3 && (
+          <Form {...passwordForm}>
+            <form
+              onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+              className='space-y-6'
+            >
+              <div className='space-y-4'>
+                <FormField
+                  control={passwordForm.control}
+                  name='newPassword'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            type={showNewPassword ? 'text' : 'password'}
+                            placeholder='Enter new password'
+                            {...field}
+                          />
+                          <button
+                            type='button'
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors'
+                          >
+                            {showNewPassword ? (
+                              <EyeOff className='h-5 w-5' />
+                            ) : (
+                              <Eye className='h-5 w-5' />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={passwordForm.control}
+                  name='confirmPassword'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            placeholder='Confirm new password'
+                            {...field}
+                          />
+                          <button
+                            type='button'
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors'
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff className='h-5 w-5' />
+                            ) : (
+                              <Eye className='h-5 w-5' />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button
+                type='submit'
+                className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Resetting Password...
+                  </>
+                ) : (
+                  <>
+                    Reset Password
+                    <MoveRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
+
+        <div className='text-center text-sm'>
+          Remember your password?{' '}
+          <Link href='/auth/login' className='underline underline-offset-4'>
+            Back to Login
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function ForgotPasswordPage() {
   return (
-    <div className='w-full flex flex-col items-center justify-center p-4'>
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.3 }}
-        className='space-y-6 text-center mb-4'
-      >
-        <h1 className='text-4xl tracking-tighter font-sans bg-clip-text text-transparent mx-auto bg-[linear-gradient(180deg,_#000_0%,_rgba(0,_0,_0,_0.75)_100%)] dark:bg-[linear-gradient(180deg,_#FFF_0%,_rgba(255,_255,_255,_0.00)_202.08%)]'>
-          <span>Reset Password</span>
-        </h1>
-        <p className='text-muted-foreground text-sm max-w-md mx-auto'>
-          Follow the steps below to reset your password
-        </p>
-      </motion.div>
-
-      <ForgotPasswordContent />
+    <div className='container relative flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-1 lg:px-0'>
+      <div className='mx-auto w-full max-w-[400px] space-y-6'>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+        >
+          <ForgotPasswordContent />
+        </motion.div>
+      </div>
     </div>
   );
 }

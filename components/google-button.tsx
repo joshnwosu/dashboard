@@ -2,7 +2,13 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Loader2Icon } from 'lucide-react';
 
-export default function GoogleButton() {
+interface GoogleButtonProps {
+  buttonText?: string;
+}
+
+export default function GoogleButton({
+  buttonText = 'Log in with Google',
+}: GoogleButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -19,13 +25,9 @@ export default function GoogleButton() {
 
   return (
     <>
-      <div className='flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border'>
-        <span className='text-xs text-muted-foreground'>Or create with</span>
-      </div>
-
       <Button
         variant='outline'
-        className='w-full h-12 font-normal cursor-pointer'
+        className='w-full font-normal cursor-pointer'
         type='button'
         onClick={handleGoogleLogin}
         disabled={loading}
@@ -69,7 +71,7 @@ c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.
             ></path>
           </svg>
         )}
-        {loading ? 'Loading...' : 'Log in with Google'}
+        {loading ? 'Loading...' : buttonText}
       </Button>
     </>
   );
