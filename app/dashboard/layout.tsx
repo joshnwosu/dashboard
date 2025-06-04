@@ -18,7 +18,8 @@ export default function DashboardLayout({
 }>) {
   const router = useRouter();
   const { getUserProfile, user } = useUserStore();
-  const { fecthDashboardAnalysis } = useTransactionStore();
+  const { fecthDashboardAnalysis, fetchAllTransactions } =
+    useTransactionStore();
   const [loading, setLoading] = useState(false);
 
   const { isOpen, setIsOpen } = useSettingsStore();
@@ -28,6 +29,7 @@ export default function DashboardLayout({
     try {
       await Promise.all([
         !user && getUserProfile() && fecthDashboardAnalysis(),
+        fetchAllTransactions(),
       ]);
     } catch (error: any) {
       router.push('/auth/login');

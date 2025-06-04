@@ -16,7 +16,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { useId, useState } from 'react';
+import { useId, useState, useEffect } from 'react';
 import Filters from '@/components/custom-table/filters';
 import DataTable from '@/components/custom-table/data-table';
 import PaginationControls from '@/components/custom-table/pagination-controls';
@@ -285,52 +285,6 @@ const columns: ColumnDef<Transaction>[] = [
   },
 ];
 
-// Sample data generator based on your data structure
-const generateSampleTransactions = (): Transaction[] => {
-  return [
-    {
-      id: 2,
-      ref: 'TX-1748717530813.T3DGZ3J',
-      status: 'successful',
-      seat_count: 1,
-      transaction_type: 'subscription',
-      fee: '0.00',
-      amount: '0.00',
-      total: '0.00',
-      payment_provider: 'sourzer',
-      currency_code: 'NGN',
-      link_url: 'NONE',
-      plan_id: 0,
-      user_id: 2,
-      company_id: 2,
-      subscription_id: null,
-      flw_ref: null,
-      createdAt: '2025-05-31T18:52:10.000Z',
-      updatedAt: '2025-05-31T18:52:10.000Z',
-    },
-    {
-      id: 1,
-      ref: 'TX-1748435326826.GYJBI69',
-      status: 'successful',
-      seat_count: 1,
-      transaction_type: 'subscription',
-      fee: '0.00',
-      amount: '0.00',
-      total: '0.00',
-      payment_provider: 'sourzer',
-      currency_code: 'NGN',
-      link_url: 'NONE',
-      plan_id: 0,
-      user_id: 2,
-      company_id: 2,
-      subscription_id: null,
-      flw_ref: null,
-      createdAt: '2025-05-28T12:28:46.000Z',
-      updatedAt: '2025-05-28T12:28:46.000Z',
-    },
-  ];
-};
-
 export default function TransactionTable() {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -347,12 +301,14 @@ export default function TransactionTable() {
     },
   ]);
 
-  const { transactions, fecthAllTransactions } = useTransactionStore();
+  const { transactions, fetchAllTransactions } = useTransactionStore();
 
-  const [data, setData] = useState<Transaction[]>(generateSampleTransactions());
+  useEffect(() => {
+    fetchAllTransactions();
+  }, [transactions, fetchAllTransactions]);
 
   const table = useReactTable({
-    data,
+    data: transactions || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -374,10 +330,14 @@ export default function TransactionTable() {
 
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows;
-    const updatedData = data.filter(
-      (item) => !selectedRows.some((row) => row.original.id === item.id)
+    const updatedData = transactions.filter(
+      (item: { id: number }) =>
+        !selectedRows.some((row) => row.original.id === item.id)
     );
-    setData(updatedData);
+    // Update the transaction store with the new data
+    // This is a placeholder and should be replaced with the actual implementation
+    // to update the transaction store with the new data
+    console.log('Updating transaction store with new data:', updatedData);
     table.resetRowSelection();
   };
 

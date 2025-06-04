@@ -9,7 +9,7 @@ interface TransactionState {
   loading: boolean;
   transactions: any | null;
   dashboardAnalysis: DashboardAnalysisData | null;
-  fecthAllTransactions: () => void;
+  fetchAllTransactions: () => void;
   fecthDashboardAnalysis: () => void;
 }
 
@@ -18,10 +18,11 @@ export const useTransactionStore = create<TransactionState>((set) => {
     loading: false,
     transactions: null,
     dashboardAnalysis: null,
-    fecthAllTransactions: async () => {
+    fetchAllTransactions: async () => {
       try {
         const response = await getAllTransactions();
-        set({ transactions: response.data.data, loading: true });
+        set({ transactions: response.data.transactions, loading: true });
+        // console.log('response.data.data', response.data.transactions);
       } catch (error) {
         throw error;
       }
