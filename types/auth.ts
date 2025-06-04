@@ -31,3 +31,28 @@ export interface LoginResponse {
     access_token: string;
   };
 }
+
+// Interface for password-related payloads (adjust as needed)
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ResetPasswordPayload {
+  otp: string;
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface CompleteGoogleSignupPayload {
+  name: string;
+  company_name: string;
+  phone_number: string;
+  country: string;
+  email: string; // This will be pre-filled from Google data
+  reg_channel: 'google';
+  user_type?: string;
+  request_id: string; // Added for Google OAuth flow
+}

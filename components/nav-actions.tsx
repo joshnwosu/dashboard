@@ -2,20 +2,14 @@
 
 import * as React from 'react';
 import {
-  ArrowDown,
-  ArrowUp,
-  Bell,
-  Copy,
-  CornerUpLeft,
-  CornerUpRight,
-  EllipsisVertical,
   FileText,
-  GalleryVerticalEnd,
-  LineChart,
+  Headset,
+  HelpCircle,
   Link,
+  Notebook,
   Settings2,
-  Trash,
-  Trash2,
+  SettingsIcon,
+  ShieldAlert,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -35,100 +29,67 @@ import {
 } from '@/components/ui/sidebar';
 import { ModeToggle } from './mode-toggle';
 import { NotificationPopup } from './notification-popup';
+import { useSettingsStore } from '@/store/settingsStore';
 
 const data = [
+  [{ label: 'Settings', icon: Settings2 }],
   [
-    {
-      label: 'Customize Page',
-      icon: Settings2,
-    },
-    {
-      label: 'Turn into wiki',
-      icon: FileText,
-    },
-  ],
-  [
-    {
-      label: 'Copy Link',
-      icon: Link,
-    },
-    {
-      label: 'Duplicate',
-      icon: Copy,
-    },
-    {
-      label: 'Move to',
-      icon: CornerUpRight,
-    },
-    {
-      label: 'Move to Trash',
-      icon: Trash2,
-    },
-  ],
-  [
-    {
-      label: 'Undo',
-      icon: CornerUpLeft,
-    },
-    {
-      label: 'View analytics',
-      icon: LineChart,
-    },
-    {
-      label: 'Version History',
-      icon: GalleryVerticalEnd,
-    },
-    {
-      label: 'Show delete pages',
-      icon: Trash,
-    },
-    {
-      label: 'Notifications',
-      icon: Bell,
-    },
-  ],
-  [
-    {
-      label: 'Import',
-      icon: ArrowUp,
-    },
-    {
-      label: 'Export',
-      icon: ArrowDown,
-    },
+    { label: "What's New", icon: Notebook },
+    { label: 'FAQs', icon: HelpCircle },
+    { label: 'Support Center', icon: Headset },
+    { label: 'Security', icon: ShieldAlert },
+    { label: 'Privacy Policy', icon: FileText },
+    { label: 'Terms', icon: FileText },
+    { label: '@sourzer', icon: Link },
   ],
 ];
 
 export function NavActions() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+  const { setIsOpen } = useSettingsStore();
+
+  const handleMenuItemClick = (label: string) => {
+    if (label === 'Settings') {
+      setIsOpen(true); // Open SettingsDialog
+      setIsPopoverOpen(false); // Close Popover
+    } else {
+      // Handle other menu items (e.g., navigate or log)
+      console.log(`Clicked: ${label}`);
+    }
+  };
 
   return (
     <div className='flex items-center gap-4 text-sm'>
       <NotificationPopup />
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             variant='outline'
             className='gap-4 data-[state=open]:bg-accent'
             size='icon'
           >
-            <EllipsisVertical className='size-4' />
+            <SettingsIcon className='size-4' />
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className='w-56 overflow-hidden rounded-lg p-0'
+          className='w-48 overflow-hidden rounded-lg p-0'
           align='end'
         >
           <Sidebar collapsible='none' className='bg-transparent'>
-            <SidebarContent>
+            <SidebarContent className='gap-0'>
               {data.map((group, index) => (
                 <SidebarGroup key={index} className='border-b last:border-none'>
                   <SidebarGroupContent className='gap-0'>
                     <SidebarMenu>
                       {group.map((item, index) => (
                         <SidebarMenuItem key={index}>
-                          <SidebarMenuButton>
-                            <item.icon /> <span>{item.label}</span>
+                          <SidebarMenuButton
+                            asChild
+                            onClick={() => handleMenuItemClick(item.label)}
+                          >
+                            <button>
+                              <item.icon /> <span>{item.label}</span>
+                            </button>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}

@@ -28,14 +28,10 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
+import { useUserStore } from '@/store/userStore';
 
 // This is sample data.
 const data = {
-  user: {
-    name: 'Joshua Nwosu',
-    email: 'joshua@sourzer.co',
-    avatar: '',
-  },
   teams: [
     {
       name: 'Sourzer',
@@ -89,57 +85,44 @@ const data = {
 
     {
       title: 'Job Board',
-      url: '/dashboard/job-board',
+      // url: '/dashboard/job-board',
+      url: '#',
       icon: Briefcase,
+      badge: 'Coming Soon',
     },
     {
       title: 'Emails',
-      url: '/dashboard/emails',
+      // url: '/dashboard/emails',
+      url: '#',
       icon: Mail,
+      badge: 'Coming Soon',
     },
     {
       title: 'Integrations',
       url: '/dashboard/integrations',
       icon: Frame,
     },
-    {
-      title: 'Settings',
-      url: '/dashboard/settings',
-      icon: Settings2,
-    },
-  ],
-  projects: [
-    {
-      name: 'Emails',
-      url: '/emails',
-      icon: Mail,
-    },
-    {
-      name: 'Integrations',
-      url: '/integrations',
-      icon: Frame,
-    },
-    {
-      name: 'Settings',
-      url: '/settings',
-      icon: Settings2,
-    },
+    // {
+    //   title: 'Settings',
+    //   url: '/dashboard/settings',
+    //   icon: Settings2,
+    // },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { user } = useUserStore();
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar {...props}>
       <SidebarHeader className='border-b'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} pathname={pathname} />
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

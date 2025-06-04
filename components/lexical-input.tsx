@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -24,7 +25,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { ArrowUp, EllipsisVerticalIcon, UploadIcon, X } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  ArrowUp,
+  Settings,
+  UploadIcon,
+  X,
+  Loader2,
+  Github,
+  Linkedin,
+  Settings2,
+} from 'lucide-react';
+import { Separator } from './ui/separator';
 
 // State to hold the pdfjs library
 type PDFJSLib = typeof import('pdfjs-dist');
@@ -37,14 +53,22 @@ interface ActionButton {
   onClick?: () => void;
 }
 
+interface Integration {
+  name: string;
+  enabled: boolean;
+}
+
 interface LexicalInputProps {
   placeholder?: string;
   className?: string;
   contentEditableClassName?: string;
   content?: string;
+  loading?: boolean;
+  showIntegrations?: boolean; // New prop to show/hide integrations
   onInputChange?: (text: string) => void;
   onSend?: (text: string) => void;
   onFileUpload?: (files: File[]) => void;
+  onIntegrationToggle?: (integrationName: string, enabled: boolean) => void; // New callback for integration changes
   isSendAllowed?: () => boolean;
 }
 
@@ -53,9 +77,12 @@ export function LexicalInput({
   className,
   contentEditableClassName,
   content,
+  loading = false,
+  showIntegrations = true, // Default to true
   onInputChange,
   onSend,
   onFileUpload,
+  onIntegrationToggle,
   isSendAllowed,
 }: LexicalInputProps) {
   const [input, setInput] = useState('');
@@ -64,6 +91,12 @@ export function LexicalInput({
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
   const [pdfjsLib, setPdfjsLib] = useState<PDFJSLib | null>(null);
+  const [integrationPopoverOpen, setIntegrationPopoverOpen] = useState(false);
+  const [integrations, setIntegrations] = useState<Integration[]>([
+    { name: 'Github', enabled: false },
+    { name: 'LinkedIn', enabled: false },
+    { name: 'Indeed', enabled: false }, // Using Settings as placeholder for Indeed
+  ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const DEBOUNCE_DELAY = 30;
 
@@ -92,6 +125,21 @@ export function LexicalInput({
   const handleUploadClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  // Handle integration toggle
+  const handleIntegrationToggle = useCallback(
+    (integrationName: string, enabled: boolean) => {
+      setIntegrations((prev) =>
+        prev.map((integration) =>
+          integration.name === integrationName
+            ? { ...integration, enabled }
+            : integration
+        )
+      );
+      onIntegrationToggle?.(integrationName, enabled);
+    },
+    [onIntegrationToggle]
+  );
 
   // Parse PDF and extract text
   const parsePdf = async (file: File): Promise<string> => {
@@ -183,30 +231,34 @@ export function LexicalInput({
     [editorInstance, onFileUpload, onInputChange]
   );
 
-  // Internal action buttons
+  // Internal action buttons - conditionally include settings based on showIntegrations prop
   const configButtons: ActionButton[] = [
     {
       title: 'Upload',
       icon: UploadIcon,
-      tooltip: 'Attach',
+      tooltip: 'Upload a file',
       variant: 'outline',
       onClick: handleUploadClick,
     },
-    {
-      title: 'More',
-      icon: EllipsisVerticalIcon,
-      tooltip: 'View tools',
-      variant: 'outline',
-      onClick: () => console.log('More button clicked'),
-    },
+    ...(showIntegrations
+      ? [
+          {
+            title: 'Settings',
+            icon: Settings2,
+            tooltip: 'Add integration',
+            variant: 'outline' as const,
+            onClick: () => setIntegrationPopoverOpen(true),
+          },
+        ]
+      : []),
   ];
 
-  // Internal action buttons
+  // Internal action buttons with loading state consideration
   const actionButtons: ActionButton[] = [
     {
       title: 'Send',
-      icon: ArrowUp,
-      tooltip: 'Send your prompt',
+      icon: loading ? Loader2 : ArrowUp,
+      tooltip: loading ? 'Sending...' : 'Send your prompt',
       variant: 'default',
     },
   ];
@@ -225,7 +277,14 @@ export function LexicalInput({
   };
 
   // Handle container click to focus editor
-  const handleContainerClick = () => {
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // Don't focus editor if clicking on buttons/controls
+    if (
+      (e.target as HTMLElement).closest('button') ||
+      (e.target as HTMLElement).closest('[data-radix-popper-content-wrapper]')
+    ) {
+      return;
+    }
     editorInstance?.focus();
   };
 
@@ -245,13 +304,18 @@ export function LexicalInput({
   // Internal send handler
   const handleSend = useCallback(
     async (prompt: string) => {
+      // Don't send if loading
+      if (loading) {
+        return;
+      }
+
       if (isSendAllowed && !isSendAllowed()) {
         console.log('Cannot send: Not all badges are active');
         return;
       }
       onSend?.(prompt);
     },
-    [onSend, isSendAllowed, uploadedFiles]
+    [onSend, isSendAllowed, uploadedFiles, loading]
   );
 
   // Internal keydown handler
@@ -259,6 +323,12 @@ export function LexicalInput({
     (event: React.KeyboardEvent) => {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
+
+        // Don't send if loading
+        if (loading) {
+          return;
+        }
+
         if (isSendAllowed && !isSendAllowed()) {
           console.log('Cannot send: Not all badges are active');
           return;
@@ -266,7 +336,7 @@ export function LexicalInput({
         handleSend(input);
       }
     },
-    [handleSend, input, isSendAllowed]
+    [handleSend, input, isSendAllowed, loading]
   );
 
   // Update editor content when content prop changes
@@ -282,10 +352,14 @@ export function LexicalInput({
     }
   }, [editorInstance, content, input]);
 
+  // Determine if send button should be disabled
+  const isSendDisabled =
+    loading || content === '' || (isSendAllowed && !isSendAllowed());
+
   return (
     <div
       className={cn(
-        'mx-auto w-full max-w-3xl rounded-4xl bg-muted dark:bg-sidebar border border-border cursor-text relative overflow-hidden p-4',
+        'mx-auto w-full max-w-3xl rounded-2xl bg-muted dark:bg-sidebar border border-border cursor-text relative overflow-hidden p-4',
         className
       )}
       onClick={handleContainerClick}
@@ -305,6 +379,7 @@ export function LexicalInput({
                 className='ml-1 p-0 h-5 w-5'
                 onClick={() => handleRemoveFile(file)}
                 aria-label={`Remove ${file.name}`}
+                disabled={loading}
               >
                 <X className='size-4' />
               </Button>
@@ -330,12 +405,13 @@ export function LexicalInput({
               <ContentEditable
                 aria-placeholder={placeholder}
                 placeholder={
-                  <div className='absolute top-2 left-0 text-md text-gray-400 pointer-events-none flex-1'>
+                  <div className='absolute py-2 top-0 left-0 text-sm text-gray-400 pointer-events-none flex-1'>
                     {placeholder}
                   </div>
                 }
                 className={cn(
-                  'relative py-2 bg-accent dark:bg-sidebar outline-0 max-h-[300px] overflow-auto text-md',
+                  'relative py-2 bg-accent dark:bg-sidebar outline-0 max-h-[200px] overflow-auto text-sm border-0',
+                  loading && 'opacity-60',
                   contentEditableClassName
                 )}
                 onKeyDown={handleKeyDown}
@@ -363,26 +439,90 @@ export function LexicalInput({
           <TooltipProvider>
             <div className='flex gap-2'>
               {configButtons.map((btn, index) => (
-                <Tooltip key={index.toString()}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant={btn.variant || 'default'}
-                      className='w-9 h-9 rounded-full cursor-pointer'
-                      onClick={btn.onClick || (() => handleSend(input))}
-                      disabled={
-                        btn.title === 'Send' &&
-                        isSendAllowed &&
-                        !isSendAllowed()
-                      }
-                      aria-label={btn.title}
+                <div key={index.toString()}>
+                  {btn.title === 'Settings' && showIntegrations ? (
+                    <Popover
+                      open={integrationPopoverOpen}
+                      onOpenChange={setIntegrationPopoverOpen}
                     >
-                      <btn.icon className='size-4' />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className='text-md'>{btn.tooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
+                      <PopoverTrigger asChild>
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant={btn.variant || 'default'}
+                                className='w-9 h-9 rounded-full cursor-pointer'
+                                disabled={loading}
+                                aria-label={btn.title}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIntegrationPopoverOpen(true);
+                                }}
+                              >
+                                <btn.icon className='size-4' />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className='text-md'>{btn.tooltip}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-56 p-3' align='start'>
+                        <div className='space-y-3'>
+                          <h4 className='font-medium text-sm text-foreground'>
+                            Integrations
+                          </h4>
+                          <Separator />
+                          {integrations.map((integration) => (
+                            <div
+                              key={integration.name}
+                              className='flex items-center justify-between space-x-2'
+                            >
+                              <div className='flex items-center space-x-2'>
+                                <span className='text-sm'>
+                                  {integration.name}
+                                </span>
+                              </div>
+                              <Switch
+                                checked={integration.enabled}
+                                onCheckedChange={(checked) =>
+                                  handleIntegrationToggle(
+                                    integration.name,
+                                    checked
+                                  )
+                                }
+                                disabled={loading}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={btn.variant || 'default'}
+                          className='w-9 h-9 rounded-full cursor-pointer'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            btn.onClick ? btn.onClick() : handleSend(input);
+                          }}
+                          disabled={
+                            loading || (btn.title === 'Send' && isSendDisabled)
+                          }
+                          aria-label={btn.title}
+                        >
+                          <btn.icon className='size-4' />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className='text-md'>{btn.tooltip}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
               ))}
             </div>
           </TooltipProvider>
@@ -396,13 +536,15 @@ export function LexicalInput({
                   <TooltipTrigger asChild>
                     <Button
                       variant={btn.variant || 'default'}
-                      className='w-9 h-9 rounded-full cursor-pointer'
-                      onClick={btn.onClick || (() => handleSend(input))}
-                      disabled={
-                        btn.title === 'Send' &&
-                        isSendAllowed &&
-                        !isSendAllowed()
-                      }
+                      className={cn(
+                        'w-9 h-9 rounded-full cursor-pointer',
+                        loading && 'animate-spin'
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        btn.onClick ? btn.onClick() : handleSend(input);
+                      }}
+                      disabled={isSendDisabled}
                       aria-label={btn.title}
                     >
                       <btn.icon className='size-4' />

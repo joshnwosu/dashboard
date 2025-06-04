@@ -69,6 +69,14 @@ export function NavMain({
                   >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
+                    {item.badge && (
+                      <Badge
+                        variant='secondary'
+                        className='ml-auto mr-2 text-xs px-2 py-0.5'
+                      >
+                        {item.badge}
+                      </Badge>
+                    )}
                     <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -110,9 +118,12 @@ export function NavMain({
               >
                 <Link href={item.url}>
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <span className='flex-1'>{item.title}</span>
                   {item.badge && (
-                    <Badge variant='outline' className='absolute right-1'>
+                    <Badge
+                      variant='outline'
+                      className='ml-auto text-[10px] px-2 py-0.5 shrink-0'
+                    >
                       {item.badge}
                     </Badge>
                   )}

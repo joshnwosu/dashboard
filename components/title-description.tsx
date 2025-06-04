@@ -1,5 +1,9 @@
+'use client';
+
 import { Separator } from '@/components/ui/separator';
 import { Button } from './ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface TitleDescriptionProps {
   title: string;
@@ -16,14 +20,25 @@ export default function TitleDescription({
   buttonText = 'Continue',
   onButtonClick,
 }: TitleDescriptionProps) {
+  const router = useRouter();
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col mb-4'>
       <div className='flex items-start justify-between'>
-        <div>
-          <h1 className='text-3xl font-semibold'>{title ?? 'Page Title'}</h1>
-          {description && (
-            <p className='text-lg text-gray-500 mt-1'>{description}</p>
-          )}
+        <div className='flex items-center gap-4'>
+          <Button
+            variant='ghost'
+            size='icon'
+            className='rounded-full cursor-pointer hover:bg-muted dark:hover:bg-muted'
+            onClick={() => router.back()}
+          >
+            <ArrowLeft />
+          </Button>
+          <div>
+            <h1 className='text-lg font-normal'>{title ?? 'Page Title'}</h1>
+            {description && (
+              <p className='text-sm text-gray-500'>{description}</p>
+            )}
+          </div>
         </div>
         {showButton && (
           <Button onClick={onButtonClick} className='ml-4 mt-1'>
@@ -31,7 +46,7 @@ export default function TitleDescription({
           </Button>
         )}
       </div>
-      <Separator className='my-4' />
+      {/* <Separator className='my-4' /> */}
     </div>
   );
 }

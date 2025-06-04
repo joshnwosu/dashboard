@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { Button } from '@/components/ui/button';
@@ -14,9 +14,41 @@ import {
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
+  const [open, setOpen] = React.useState(false);
+
+  const handleThemeChange = (mode: string) => {
+    setTheme(mode);
+    setOpen(false); // Close the popover after selection
+  };
+
+  const getThemeIcon = (mode: string) => {
+    switch (mode) {
+      case 'light':
+        return <Sun className='h-4 w-4 mr-2' />;
+      case 'dark':
+        return <Moon className='h-4 w-4 mr-2' />;
+      case 'system':
+        return <Monitor className='h-4 w-4 mr-2' />;
+      default:
+        return null;
+    }
+  };
+
+  const getThemeLabel = (mode: string) => {
+    switch (mode) {
+      case 'light':
+        return 'Light';
+      case 'dark':
+        return 'Dark';
+      case 'system':
+        return 'System';
+      default:
+        return mode;
+    }
+  };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
@@ -29,17 +61,16 @@ export function ModeToggle() {
           <span className='sr-only'>Toggle theme</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-25 p-1' align='end'>
+      <PopoverContent className='w-40 p-1' align='end'>
         {['light', 'dark', 'system'].map((mode, index) => (
           <div
             key={index.toString()}
-            className='rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent'
+            className='rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent cursor-pointer'
+            onClick={() => handleThemeChange(mode)}
           >
-            <div
-              onClick={() => setTheme(mode)}
-              className='relative flex items-start'
-            >
-              {mode}
+            <div className='relative flex items-center'>
+              {getThemeIcon(mode)}
+              {getThemeLabel(mode)}
             </div>
           </div>
         ))}

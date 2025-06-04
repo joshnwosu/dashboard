@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -105,7 +107,23 @@ interface BadgeDeltaProps
   extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeDeltaVariants> {
   value: string | number;
+  label?: string;
 }
+
+// Helper function to determine deltaType based on numeric value
+const getDeltaTypeFromValue = (
+  value: string | number
+): 'increase' | 'decrease' | 'neutral' | 'medium' => {
+  const numericValue =
+    typeof value === 'string' ? parseFloat(value.replace('%', '')) : value;
+
+  if (isNaN(numericValue)) return 'neutral';
+
+  if (numericValue >= 70) return 'increase'; // Green: 75-100
+  if (numericValue >= 50) return 'medium'; // Amber/Yellow: 50-74
+  if (numericValue >= 25) return 'neutral'; // Gray: 25-49
+  return 'decrease'; // Red: 0-24
+};
 
 const DeltaIcon = ({
   deltaType,
@@ -128,8 +146,8 @@ const DeltaIcon = ({
       line: ArrowRight,
     },
     medium: {
-      filled: ArrowRight, // Using ArrowRight for warning, similar to neutral
-      line: ArrowRight,
+      filled: ArrowUp, // Changed to ArrowUp for medium scores
+      line: ArrowUp,
     },
   };
 
@@ -140,41 +158,49 @@ const DeltaIcon = ({
 export function BadgeDelta({
   className,
   variant = 'outline',
-  deltaType = 'neutral',
+  deltaType,
   iconStyle = 'filled',
   value,
+  label,
   ...props
 }: BadgeDeltaProps) {
+  // If deltaType is not provided, determine it from the value
+  const computedDeltaType = deltaType || getDeltaTypeFromValue(value);
+
   if (variant === 'complex') {
     return (
       <span
-        className={cn(badgeDeltaVariants({ variant, className }))}
+        className={cn(badgeDeltaVariants({ variant, className }), 'text-sm')}
         {...props}
       >
         <span
           className={cn(
             'text-tremor-label font-semibold',
-            deltaType === 'increase' &&
+            computedDeltaType === 'increase' &&
               'text-emerald-700 dark:text-emerald-500',
-            deltaType === 'decrease' && 'text-red-700 dark:text-red-500',
-            deltaType === 'neutral' &&
+            computedDeltaType === 'decrease' &&
+              'text-red-700 dark:text-red-500',
+            computedDeltaType === 'neutral' &&
               'text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis',
-            deltaType === 'medium' && 'text-amber-700 dark:text-amber-500'
+            computedDeltaType === 'medium' &&
+              'text-amber-700 dark:text-amber-500'
           )}
         >
-          {value}
+          {value}% {label && <span className='ml-1 text-[10px]'>{label}</span>}
         </span>
         <span
           className={cn(
             'rounded-md px-2 py-1 text-tremor-label font-medium',
-            deltaType === 'increase' && 'bg-emerald-100 dark:bg-emerald-400/10',
-            deltaType === 'decrease' && 'bg-red-100 dark:bg-red-400/10',
-            deltaType === 'neutral' &&
+            computedDeltaType === 'increase' &&
+              'bg-emerald-100 dark:bg-emerald-400/10',
+            computedDeltaType === 'decrease' && 'bg-red-100 dark:bg-red-400/10',
+            computedDeltaType === 'neutral' &&
               'bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle',
-            deltaType === 'medium' && 'bg-amber-100 dark:bg-amber-400/10'
+            computedDeltaType === 'medium' &&
+              'bg-amber-100 dark:bg-amber-400/10'
           )}
         >
-          <DeltaIcon deltaType={deltaType ?? 'neutral'} iconStyle='line' />
+          <DeltaIcon deltaType={computedDeltaType} iconStyle='line' />
         </span>
       </span>
     );
@@ -182,14 +208,21 @@ export function BadgeDelta({
 
   return (
     <span
-      className={cn(badgeDeltaVariants({ variant, deltaType, className }))}
+      className={cn(
+        badgeDeltaVariants({
+          variant,
+          deltaType: computedDeltaType,
+          className,
+        }),
+        'text-sm'
+      )}
       {...props}
     >
       <DeltaIcon
-        deltaType={deltaType ?? 'neutral'}
+        deltaType={computedDeltaType}
         iconStyle={iconStyle ?? 'filled'}
       />
-      {value}
+      {value}% {label && <span className='ml-1 text-[10px]'>{label}</span>}
     </span>
   );
 }

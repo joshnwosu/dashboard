@@ -1,5 +1,7 @@
 // utils/analyzePrompt.ts
 import { skills } from '@/data/skills';
+import { jobTitles } from '@/data/jobTitles';
+import { industries } from '@/data/industries';
 import nlp from 'compromise';
 
 // Minimal type for Compromise document to ensure type safety
@@ -19,12 +21,25 @@ export interface BadgeStates {
   'Job Type': boolean;
 }
 
-const skillsSet = new Set(skills.map((skill) => skill.toLowerCase()));
+// const skillsSet = new Set(skills.map((skill) => skill.toLowerCase()));
+// const jobTitlesSet = new Set(jobTitles.map((title) => title.toLowerCase()));
+// const industriesSet = new Set(
+//   industries.map((industry) => industry.toLowerCase())
+// );
+
+// Helper function to create a case-insensitive word boundary regex
+const createWordBoundaryRegex = (term: string): RegExp => {
+  return new RegExp(
+    `\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+    'i'
+  );
+};
 
 // Utility function to analyze prompt and determine active badges
 export const analyzePrompt = (prompt: string): BadgeStates => {
   // Initialize NLP document
   const doc = nlp(prompt) as unknown as CompromiseDoc;
+  const promptLower = prompt.toLowerCase();
 
   // Initialize badge states
   const badgeStates: BadgeStates = {
@@ -39,42 +54,44 @@ export const analyzePrompt = (prompt: string): BadgeStates => {
   // Location: Detect countries, states, cities, or other places
   badgeStates.Location = doc.places().length > 0;
 
-  // Job Title: Detect nouns or terms that resemble job titles
-  const nouns: string[] = doc.nouns().out('array');
-  const terms: string[] = doc.terms().out('array');
-  badgeStates['Job Title'] =
-    nouns.some((noun) =>
-      /software|engineer|designer|manager|developer|analyst|architect|consultant/i.test(
-        noun
-      )
-    ) ||
-    terms.some((term) =>
-      /software|engineer|designer|manager|developer|analyst|architect|consultant/i.test(
-        term
-      )
-    );
+  // Job Title: Check against our comprehensive list of job titles
+  badgeStates['Job Title'] = jobTitles.some((title) =>
+    createWordBoundaryRegex(title).test(prompt)
+  );
 
-  // Years of Experience: Regex for "X+ years" or "X years"
-  badgeStates.Experience = /\d+\+?\s*years/i.test(prompt);
+  // Years of Experience: Regex for "X+ years" or "X years" or "X yr" or "X year"
+  badgeStates.Experience = /\d+\+?\s*(years?|yr)/i.test(prompt);
 
-  // Industry: Common industry keywords (case-insensitive)
-  badgeStates.Industry =
-    /fintech|startup|tech|healthcare|finance|marketing|education/i.test(
-      prompt.toLowerCase()
-    );
+  // Industry: Check against our comprehensive list of industries
+  badgeStates.Industry = industries.some((industry) =>
+    createWordBoundaryRegex(industry).test(prompt)
+  );
 
+  // Skills: Check against our skills list
   badgeStates.Skills = skills.some((skill) =>
-    new RegExp(
-      `\\b${skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
-      'i'
-    ).test(prompt)
+    createWordBoundaryRegex(skill).test(prompt)
   );
 
   // Job Type: Common job types (case-insensitive)
-  badgeStates['Job Type'] =
-    /remote|fulltime|full time|full-time|onsite|on site|on-site|parttime|part time|part-time|contract/i.test(
-      prompt.toLowerCase()
-    );
+  const jobTypes = [
+    'remote',
+    'fulltime',
+    'full time',
+    'full-time',
+    'onsite',
+    'on site',
+    'on-site',
+    'parttime',
+    'part time',
+    'part-time',
+    'contract',
+    'permanent',
+    'temporary',
+    'freelance',
+    'hybrid',
+  ];
+
+  badgeStates['Job Type'] = jobTypes.some((type) => promptLower.includes(type));
 
   return badgeStates;
 };
