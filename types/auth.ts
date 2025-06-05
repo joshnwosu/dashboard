@@ -56,3 +56,13 @@ export interface CompleteGoogleSignupPayload {
   user_type?: string;
   request_id: string; // Added for Google OAuth flow
 }
+
+export interface SendOtpPayload {
+  email: string;
+  type: string;
+}
+
+export interface VerifyOtpPayload {
+  email: string;
+  otp: string;
+}

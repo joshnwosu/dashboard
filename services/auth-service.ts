@@ -5,6 +5,8 @@ import {
   RegisterPayload,
   ResetPasswordPayload,
   CompleteGoogleSignupPayload,
+  SendOtpPayload,
+  VerifyOtpPayload,
 } from '@/types/auth';
 
 export const register = async (payload: RegisterPayload) => {
@@ -101,6 +103,24 @@ export const completeGoogleSignup = async (
     const { access_token } = response.data.data;
     localStorage.setItem('access_token', access_token);
     document.cookie = `access_token=${access_token}; path=/; SameSite=Strict`;
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendOtp = async (payload: SendOtpPayload) => {
+  try {
+    const response = await apiClient.post<any>('/auth/send_otp', payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const verifyOtp = async (payload: VerifyOtpPayload) => {
+  try {
+    const response = await apiClient.post<any>('/auth/verify_email', payload);
     return response.data;
   } catch (error) {
     throw error;

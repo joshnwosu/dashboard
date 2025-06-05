@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
 import {
   Form,
   FormControl,
@@ -29,7 +28,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -62,7 +60,7 @@ function LoginContent() {
       toast.success('Logged in successfully');
       router.replace(from);
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.response.data.message);
     } finally {
       setLoading(false);
     }

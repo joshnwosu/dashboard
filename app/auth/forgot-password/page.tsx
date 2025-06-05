@@ -29,7 +29,7 @@ import Link from 'next/link';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { resetPassword } from '@/services/auth-service';
+import { resetPassword, sendOtp, verifyOtp } from '@/services/auth-service';
 import { ResetPasswordPayload } from '@/types/auth';
 import {
   Card,
@@ -38,6 +38,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useAuthStore } from '@/store/authStore';
 
 // Step 1: Email validation schema
 const emailSchema = z.object({
@@ -77,18 +78,19 @@ function ForgotPasswordContent() {
   const [loading, setLoading] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    otp: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+  const {
+    setResetPasswordEmail,
+    setResetPasswordOtp,
+    resetPasswordEmail,
+    resetPasswordOtp,
+    clearResetPasswordData,
+  } = useAuthStore();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Form instances for each step
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
-    defaultValues: { email: formData.email },
+    defaultValues: { email: resetPasswordEmail },
   });
 
   const otpForm = useForm<z.infer<typeof otpSchema>>({
@@ -106,8 +108,8 @@ function ForgotPasswordContent() {
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
-      newPassword: formData.newPassword,
-      confirmPassword: formData.confirmPassword,
+      newPassword: '',
+      confirmPassword: '',
     },
   });
 
@@ -153,17 +155,15 @@ function ForgotPasswordContent() {
   async function onEmailSubmit(values: z.infer<typeof emailSchema>) {
     setLoading(true);
     try {
-      // Call your send OTP API here
-      // await sendOTP(values.email);
-
-      // Mock API call for demonstration
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setFormData((prev) => ({ ...prev, email: values.email }));
+      await sendOtp({
+        email: values.email,
+        type: 'password',
+      });
+      setResetPasswordEmail(values.email);
       toast.success('OTP sent to your email');
       setCurrentStep(2);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to send OTP');
+      toast.error(err.response?.data?.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
     }
@@ -175,17 +175,20 @@ function ForgotPasswordContent() {
     try {
       const otp = `${values.otp1}${values.otp2}${values.otp3}${values.otp4}${values.otp5}${values.otp6}`;
 
-      // Call your verify OTP API here if needed
-      // await verifyOTP(formData.email, otp);
+      if (!resetPasswordEmail) {
+        throw new Error('Email not found. Please start over.');
+      }
 
-      // Mock API call for demonstration
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await verifyOtp({
+        email: resetPasswordEmail,
+        otp,
+      });
 
-      setFormData((prev) => ({ ...prev, otp }));
+      setResetPasswordOtp(otp);
       toast.success('OTP verified successfully');
       setCurrentStep(3);
     } catch (err: any) {
-      toast.error(err.message || 'Invalid OTP');
+      toast.error(err.response?.data?.message || 'Invalid OTP');
     } finally {
       setLoading(false);
     }
@@ -195,18 +198,23 @@ function ForgotPasswordContent() {
   async function onPasswordSubmit(values: z.infer<typeof passwordSchema>) {
     setLoading(true);
     try {
+      if (!resetPasswordEmail || !resetPasswordOtp) {
+        throw new Error('Missing required data. Please start over.');
+      }
+
       const payload: ResetPasswordPayload = {
-        otp: formData.otp,
-        email: formData.email,
+        otp: resetPasswordOtp,
+        email: resetPasswordEmail,
         newPassword: values.newPassword,
         confirmPassword: values.confirmPassword,
       };
 
       await resetPassword(payload);
+      clearResetPasswordData();
       toast.success('Password reset successfully');
       router.replace('/auth/login');
     } catch (err: any) {
-      toast.error(err.message || 'Something went wrong');
+      toast.error(err.response?.data?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -236,7 +244,7 @@ function ForgotPasswordContent() {
       case 1:
         return "Enter your email address and we'll send you a verification code";
       case 2:
-        return `Enter the 6-digit code sent to ${formData.email}`;
+        return `Enter the 6-digit code sent to ${resetPasswordEmail}`;
       case 3:
         return 'Create a new password for your account';
       default:
@@ -421,7 +429,7 @@ function ForgotPasswordContent() {
                 <button
                   type='button'
                   className='text-blue-500 hover:underline'
-                  onClick={() => onEmailSubmit({ email: formData.email })}
+                  onClick={() => onEmailSubmit({ email: resetPasswordEmail })}
                 >
                   Resend
                 </button>
