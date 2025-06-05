@@ -48,8 +48,14 @@ export const isFieldLoading = (value: string | null | undefined): boolean => {
 };
 
 export const getInitials = (name: string): string => {
-  if (!name || name.trim() === '') return '?';
-  return name.charAt(0).toUpperCase();
+  if (!name) return '';
+
+  const words = name.trim().split(' ');
+  if (words.length === 1) {
+    return words[0].substring(0, 2).toUpperCase();
+  }
+
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 };
 
 export const getAvatarColor = (name: string): string => {

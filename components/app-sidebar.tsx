@@ -102,11 +102,11 @@ const data = {
       url: '/dashboard/integrations',
       icon: Frame,
     },
-    // {
-    //   title: 'Settings',
-    //   url: '/dashboard/settings',
-    //   icon: Settings2,
-    // },
+    {
+      title: 'Settings',
+      url: '/dashboard/settings',
+      icon: Settings2,
+    },
   ],
 };
 

@@ -12,4 +12,5 @@ export interface UserProfile {
   admin: boolean;
   iat: number;
   exp: number;
+  avatar_url?: string;
 }

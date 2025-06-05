@@ -301,11 +301,7 @@ export default function TransactionTable() {
     },
   ]);
 
-  const { transactions, fetchAllTransactions } = useTransactionStore();
-
-  useEffect(() => {
-    fetchAllTransactions();
-  }, [transactions, fetchAllTransactions]);
+  const { transactions } = useTransactionStore();
 
   const table = useReactTable({
     data: transactions || [],

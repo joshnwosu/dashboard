@@ -22,8 +22,8 @@ export interface LoginResponse {
       company_name: string;
       name: string;
       phone_number: string | null;
-      email_verify: string | null;
-      phone_number_verify: string | null;
+      email_verify: boolean | null;
+      phone_number_verify: boolean | null;
       country: string;
       active: boolean;
       admin: boolean;

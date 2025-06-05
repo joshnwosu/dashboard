@@ -47,6 +47,8 @@ const emailSchema = z.object({
   }),
 });
 
+type EmailFormValues = z.infer<typeof emailSchema>;
+
 // Step 2: OTP validation schema
 const otpSchema = z.object({
   otp1: z.string().min(1, 'Required').max(1, 'Max 1 digit'),
@@ -57,12 +59,34 @@ const otpSchema = z.object({
   otp6: z.string().min(1, 'Required').max(1, 'Max 1 digit'),
 });
 
+type OtpFormValues = z.infer<typeof otpSchema>;
+
 // Step 3: Password validation schema
 const passwordSchema = z
   .object({
-    newPassword: z.string().min(8, {
-      message: 'Password must be at least 8 characters long.',
-    }),
+    newPassword: z
+      .string()
+      .min(8, {
+        message: 'Password must be at least 8 characters long.',
+      })
+      .regex(/[a-z]/, {
+        message: 'Password must contain at least one lowercase letter.',
+      })
+      .regex(/[A-Z]/, {
+        message: 'Password must contain at least one uppercase letter.',
+      })
+      .regex(/[0-9]/, {
+        message: 'Password must contain at least one number.',
+      })
+      .regex(/[^a-zA-Z0-9]/, {
+        message: 'Password must contain at least one special character.',
+      })
+      .max(128, {
+        message: 'Password cannot exceed 128 characters.',
+      })
+      .refine((val) => !/\s/.test(val), {
+        message: 'Password cannot contain spaces.',
+      }),
     confirmPassword: z.string().min(8, {
       message: 'Password must be at least 8 characters long.',
     }),
@@ -71,6 +95,8 @@ const passwordSchema = z
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
+
+type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 function ForgotPasswordContent() {
   const router = useRouter();
@@ -88,12 +114,14 @@ function ForgotPasswordContent() {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Form instances for each step
-  const emailForm = useForm<z.infer<typeof emailSchema>>({
+  const emailForm = useForm<EmailFormValues>({
     resolver: zodResolver(emailSchema),
-    defaultValues: { email: resetPasswordEmail },
+    defaultValues: {
+      email: resetPasswordEmail || '',
+    },
   });
 
-  const otpForm = useForm<z.infer<typeof otpSchema>>({
+  const otpForm = useForm<OtpFormValues>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
       otp1: '',
@@ -105,7 +133,7 @@ function ForgotPasswordContent() {
     },
   });
 
-  const passwordForm = useForm<z.infer<typeof passwordSchema>>({
+  const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
       newPassword: '',
@@ -152,7 +180,7 @@ function ForgotPasswordContent() {
   };
 
   // Step 1: Send OTP to email
-  async function onEmailSubmit(values: z.infer<typeof emailSchema>) {
+  async function onEmailSubmit(values: EmailFormValues) {
     setLoading(true);
     try {
       await sendOtp({
@@ -170,7 +198,7 @@ function ForgotPasswordContent() {
   }
 
   // Step 2: Verify OTP
-  async function onOtpSubmit(values: z.infer<typeof otpSchema>) {
+  async function onOtpSubmit(values: OtpFormValues) {
     setLoading(true);
     try {
       const otp = `${values.otp1}${values.otp2}${values.otp3}${values.otp4}${values.otp5}${values.otp6}`;
@@ -195,7 +223,7 @@ function ForgotPasswordContent() {
   }
 
   // Step 3: Reset password
-  async function onPasswordSubmit(values: z.infer<typeof passwordSchema>) {
+  async function onPasswordSubmit(values: PasswordFormValues) {
     setLoading(true);
     try {
       if (!resetPasswordEmail || !resetPasswordOtp) {
@@ -429,7 +457,10 @@ function ForgotPasswordContent() {
                 <button
                   type='button'
                   className='text-blue-500 hover:underline'
-                  onClick={() => onEmailSubmit({ email: resetPasswordEmail })}
+                  onClick={() =>
+                    resetPasswordEmail &&
+                    onEmailSubmit({ email: resetPasswordEmail })
+                  }
                 >
                   Resend
                 </button>
@@ -511,7 +542,7 @@ function ForgotPasswordContent() {
 
               <Button
                 type='submit'
-                className='w-full h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
                 disabled={loading}
               >
                 {loading ? (
