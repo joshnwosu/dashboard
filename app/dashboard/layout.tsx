@@ -50,7 +50,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider className='font-sans'>
-      <AppSidebar variant='sidebar' collapsible='icon' />
+      <AppSidebar variant='inset' collapsible='icon' />
       <SidebarInset>
         <Header />
         <div className='w-full py-6 max-w-7xl mx-auto flex flex-1 flex-col gap-4 p-8'>

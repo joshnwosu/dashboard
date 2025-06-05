@@ -110,7 +110,7 @@ export default function AccountSettings() {
       <div className='space-y-4'>
         <div className='flex items-center gap-4'>
           <Avatar className='h-20 w-20'>
-            <AvatarImage src={form.watch('avatar_url')} />
+            {/* <AvatarImage src={form.watch('avatar_url')} /> */}
             <AvatarFallback className='text-lg'>
               {getInitials(form.watch('name') || '')}
             </AvatarFallback>
@@ -168,19 +168,44 @@ export default function AccountSettings() {
                     Email
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type='email'
-                      disabled
-                      className='bg-gray-100'
-                      placeholder='email@example.com'
-                      {...field}
-                    />
+                    <div className='flex items-baseline gap-4'>
+                      <Input
+                        type='email'
+                        disabled
+                        className='bg-gray-100'
+                        placeholder='email@example.com'
+                        {...field}
+                      />
+
+                      <div className='text-right mt-1 text-xs'>
+                        {form.watch('email_verify') ? (
+                          <span className='text-green-600'>✓ Verified</span>
+                        ) : (
+                          <Button
+                            variant='outline'
+                            className='cursor-pointer text-xs'
+                            type='button'
+                          >
+                            Verify Email
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </FormControl>
-                  {form.watch('email_verify') && (
-                    <span className='text-xs text-green-600 mt-1'>
-                      ✓ Verified
-                    </span>
-                  )}
+
+                  {/* <div className='text-right mt-1 text-xs'>
+                    {form.watch('email_verify') ? (
+                      <span className='text-green-600'>✓ Verified</span>
+                    ) : (
+                      <Button
+                        variant='outline'
+                        className='cursor-pointer text-xs'
+                      >
+                        Verify Email
+                      </Button>
+                    )}
+                  </div> */}
+
                   <FormMessage />
                 </FormItem>
               )}

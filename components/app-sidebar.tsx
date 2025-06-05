@@ -99,12 +99,14 @@ const data = {
     },
     {
       title: 'Integrations',
-      url: '/dashboard/integrations',
+      // url: '/dashboard/integrations',
+      url: '#',
       icon: Frame,
+      badge: 'Coming Soon',
     },
     {
       title: 'Settings',
-      url: '/dashboard/settings',
+      url: '/dashboard/settings/account',
       icon: Settings2,
     },
   ],

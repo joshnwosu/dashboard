@@ -14,7 +14,10 @@ import { NavActions } from './nav-actions';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
+import { ArrowRightIcon, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PricingDialog } from './shared/pricing-dialog';
 
 export default function Header() {
   const pathname = usePathname();
@@ -32,8 +35,10 @@ export default function Header() {
     settings: 'Settings',
   };
 
+  const [showPricing, setShowPricing] = useState(false);
+
   return (
-    <header className='sticky top-0 bg-background flex h-[65px] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b z-10'>
+    <header className='sticky top-0 bg-background flex min-h-[65px] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 z-10 justify-between'>
       <div className='flex items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator orientation='vertical' className='mr-2 h-4' />
@@ -61,9 +66,23 @@ export default function Header() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className='ml-auto px-3'>
+
+      <div className='flex items-center gap-4 px-3'>
+        <div className='flex items-center gap-4 bg-background border px-4 py-2 text-sm text-muted-foreground'>
+          <Sparkles className='w-4 h-4' />
+          <span>You're currently on the free trial</span>
+          <Button
+            className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white cursor-pointer'
+            onClick={() => setShowPricing(true)}
+          >
+            Upgrade <ArrowRightIcon />
+          </Button>
+        </div>
+
         <NavActions />
       </div>
+
+      <PricingDialog open={showPricing} onOpenChange={setShowPricing} />
     </header>
   );
 }

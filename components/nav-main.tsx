@@ -121,10 +121,10 @@ export function NavMain({
                   <span className='flex-1'>{item.title}</span>
                   {item.badge && (
                     <Badge
-                      variant='outline'
-                      className='ml-auto text-[10px] px-2 py-0.5 shrink-0'
+                      variant='secondary'
+                      className='ml-auto text-[10px] px-2 py-0.5 shrink-0 text-muted-foreground'
                     >
-                      {item.badge}
+                      soon
                     </Badge>
                   )}
                 </Link>
