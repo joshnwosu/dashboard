@@ -30,6 +30,7 @@ import {
 import { ModeToggle } from './mode-toggle';
 import { NotificationPopup } from './notification-popup';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useRouter } from 'next/navigation';
 
 const data = [
   [{ label: 'Settings', icon: Settings2 }],
@@ -45,12 +46,14 @@ const data = [
 ];
 
 export function NavActions() {
+  const router = useRouter();
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
   const { setIsOpen } = useSettingsStore();
 
   const handleMenuItemClick = (label: string) => {
     if (label === 'Settings') {
-      setIsOpen(true); // Open SettingsDialog
+      // setIsOpen(true); // Open SettingsDialog
+      router.push('/dashboard/settings/account');
       setIsPopoverOpen(false); // Close Popover
     } else {
       // Handle other menu items (e.g., navigate or log)

@@ -124,7 +124,7 @@ export function NavMain({
                       variant='secondary'
                       className='ml-auto text-[10px] px-2 py-0.5 shrink-0 text-muted-foreground'
                     >
-                      soon
+                      {item.badge}
                     </Badge>
                   )}
                 </Link>

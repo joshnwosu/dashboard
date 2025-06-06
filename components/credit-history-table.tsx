@@ -18,8 +18,10 @@ import {
 import { useId, useState } from 'react';
 import DataTable from '@/components/custom-table/data-table';
 import { Badge } from '@/components/ui/badge';
-import { generateCreditHistory } from '@/script/generateFakeTransactions';
 import PaginationControls from './custom-table/pagination-controls';
+import { useCreditHistoryStore } from '@/store/creditHistoryStore';
+import { toast } from 'sonner';
+import { Copy } from 'lucide-react';
 
 const getStatusVariant = (status: string) => {
   switch (status) {
@@ -39,10 +41,10 @@ const getStatusVariant = (status: string) => {
 const columns: ColumnDef<any>[] = [
   {
     header: 'Date',
-    accessorKey: 'date',
+    accessorKey: 'createdAt',
     cell: ({ row }) => (
       <div className='text-xs'>
-        {new Date(row.getValue('date')).toLocaleDateString('en-GB', {
+        {new Date(row.getValue('createdAt')).toLocaleDateString('en-GB', {
           day: '2-digit',
           month: 'short',
           year: '2-digit',
@@ -52,39 +54,75 @@ const columns: ColumnDef<any>[] = [
     size: 70,
   },
   {
-    header: 'Provider',
-    accessorKey: 'provider',
-    cell: ({ row }) => (
-      <div className='text-xs text-muted-foreground'>
-        {row.getValue('provider')}
-      </div>
-    ),
-    size: 70,
-  },
-  {
-    header: 'Status',
-    accessorKey: 'status',
-    cell: ({ row }) => (
-      <Badge
-        variant='secondary'
-        className={cn(
-          'text-xs capitalize rounded-full px-2 py-0',
-          getStatusVariant(row.getValue('status'))
-        )}
-      >
-        {row.getValue('status')}
-      </Badge>
-    ),
-    size: 80,
+    header: 'Reference',
+    accessorKey: 'transaction_ref',
+    cell: ({ row }) => {
+      const ref = row.getValue('transaction_ref') as string;
+
+      const handleCopy = async () => {
+        try {
+          await navigator.clipboard.writeText(ref);
+          // You can add a toast notification here if you have one
+          toast.success('Reference copied to clipboard');
+        } catch (err) {
+          toast.error('Failed to copy reference');
+        }
+      };
+
+      return (
+        <div className='group relative flex items-center gap-2'>
+          <div className='font-mono text-sm'>{ref}</div>
+          <button
+            onClick={handleCopy}
+            className='opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-muted rounded-sm'
+            title='Copy reference'
+          >
+            <Copy className='h-4 w-4 text-muted-foreground hover:text-foreground' />
+          </button>
+        </div>
+      );
+    },
+    size: 250,
   },
 
   {
-    header: 'Accounts',
-    accessorKey: 'accounts',
-    cell: ({ row }) => (
-      <div className='text-xs text-center'>{row.getValue('accounts')}</div>
-    ),
-    size: 60,
+    header: () => <div className='w-full text-right'>Credit</div>,
+    accessorKey: 'credit',
+    cell: ({ row }) => {
+      const credit = parseFloat(row.getValue('credit'));
+      const currencyCode = row.original.currency_code;
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
+        minimumFractionDigits: 2,
+      }).format(credit);
+      return (
+        <div className='text-md font-medium text-right text-green-600'>
+          {formatted}
+        </div>
+      );
+    },
+    size: 100,
+  },
+
+  {
+    header: () => <div className='w-full text-right'>Balance</div>,
+    accessorKey: 'available_balance',
+    cell: ({ row }) => {
+      const balance = parseFloat(row.getValue('available_balance'));
+      const currencyCode = row.original.currency_code;
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
+        minimumFractionDigits: 2,
+      }).format(balance);
+      return (
+        <div className='text-sm font-medium text-right text-muted-foreground'>
+          {formatted}
+        </div>
+      );
+    },
+    size: 100,
   },
 ];
 
@@ -104,10 +142,10 @@ export default function CreditHistoryTable() {
     },
   ]);
 
-  const [data] = useState<any[]>(generateCreditHistory());
+  const { creditHistory } = useCreditHistoryStore();
 
   const table = useReactTable({
-    data,
+    data: creditHistory || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

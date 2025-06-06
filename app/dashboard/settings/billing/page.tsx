@@ -28,7 +28,10 @@ export default function BillingSettings() {
                     showCurrency: true,
                   }
                 )}
-                /month
+                /
+                {companySubscription?.data.plan.interval === 'monthly'
+                  ? 'month'
+                  : companySubscription?.data.plan.interval}
               </p>
             </div>
 
