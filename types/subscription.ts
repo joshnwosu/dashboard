@@ -15,6 +15,28 @@ export interface SubscriptionResponse {
   };
 }
 
+export interface CompanySubscriptionResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: {
+    id: number;
+    plan_id: string;
+    user_id: number;
+    company_id: number;
+    email: string;
+    activation_date: string;
+    expiring_date: string;
+    status: string;
+    credit: string;
+    is_free: boolean;
+    external_subscription_id: string;
+    email_token: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
 export interface SubscriptionError {
   success: boolean;
   message: string;

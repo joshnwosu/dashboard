@@ -13,4 +13,5 @@ export interface UserProfile {
   iat: number;
   exp: number;
   avatar_url?: string;
+  plan?: string;
 }

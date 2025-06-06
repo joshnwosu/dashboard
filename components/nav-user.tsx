@@ -28,8 +28,9 @@ import {
 import { logout } from '@/services/auth-service';
 import Link from 'next/link';
 import { getInitials } from '@/utils/formatter';
+import { UserProfile } from '@/types/user';
 
-export function NavUser({ user }: { user: any }) {
+export function NavUser({ user }: { user: UserProfile }) {
   const { isMobile } = useSidebar();
 
   const handleLogout = async () => {

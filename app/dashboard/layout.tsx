@@ -10,6 +10,7 @@ import { useUserStore } from '@/store/userStore';
 import { SettingsDialog } from '@/components/settings-dialog';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useTransactionStore } from '@/store/transactionStore';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
 
 export default function DashboardLayout({
   children,
@@ -18,8 +19,12 @@ export default function DashboardLayout({
 }>) {
   const router = useRouter();
   const { getUserProfile, user } = useUserStore();
+
   const { fecthDashboardAnalysis, fetchAllTransactions } =
     useTransactionStore();
+
+  const { fetchCompanySubscription: fetchComapnySubscription } =
+    useSubscriptionStore();
   const [loading, setLoading] = useState(false);
 
   const { isOpen, setIsOpen } = useSettingsStore();
@@ -30,6 +35,7 @@ export default function DashboardLayout({
       await Promise.all([
         !user && getUserProfile() && fecthDashboardAnalysis(),
         fetchAllTransactions(),
+        fetchComapnySubscription(),
       ]);
     } catch (error: any) {
       router.push('/auth/login');

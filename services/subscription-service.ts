@@ -1,5 +1,6 @@
 import apiClient from '@/lib/axios';
 import {
+  CompanySubscriptionResponse,
   SubscriptionPayload,
   SubscriptionResponse,
 } from '@/types/subscription';
@@ -16,9 +17,9 @@ export const createSubscription = async (payload: SubscriptionPayload) => {
   }
 };
 
-export const getActiveSubscription = async (id: string) => {
+export const activateSubscription = async (id: string) => {
   try {
-    const response = await apiClient.get<SubscriptionResponse>(
+    const response = await apiClient.put<SubscriptionResponse>(
       `/subscriptions/${id}/activate`
     );
     return response.data;
@@ -29,8 +30,19 @@ export const getActiveSubscription = async (id: string) => {
 
 export const cancelSubscription = async (id: string) => {
   try {
-    const response = await apiClient.post<SubscriptionResponse>(
+    const response = await apiClient.put<SubscriptionResponse>(
       `/subscriptions/${id}/cancel`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCompanySubscription = async () => {
+  try {
+    const response = await apiClient.get<CompanySubscriptionResponse>(
+      `subscriptions/get_company_subscription`
     );
     return response.data;
   } catch (error) {
