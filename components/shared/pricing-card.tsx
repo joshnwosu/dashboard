@@ -62,6 +62,7 @@ export function PricingCard({
     try {
       const response = await createSubscription({
         plan_id: '1', //tier.id
+        callback_url: '',
         pay_with_existing_card: false,
         change_plan: false,
         current_plan_id: '',
