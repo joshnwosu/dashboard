@@ -177,10 +177,8 @@ export default function AccountSettings() {
                         {...field}
                       />
 
-                      <div className='text-right mt-1 text-xs'>
-                        {form.watch('email_verify') ? (
-                          <span className='text-green-600'>✓ Verified</span>
-                        ) : (
+                      {!form.watch('email_verify') && (
+                        <div className='text-right mt-1 text-xs'>
                           <Button
                             variant='outline'
                             className='cursor-pointer text-xs'
@@ -188,10 +186,16 @@ export default function AccountSettings() {
                           >
                             Verify Email
                           </Button>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </FormControl>
+
+                  {form.watch('email_verify') && (
+                    <span className='text-right mt-0 text-xs text-green-600'>
+                      ✓ Verified
+                    </span>
+                  )}
 
                   {/* <div className='text-right mt-1 text-xs'>
                     {form.watch('email_verify') ? (

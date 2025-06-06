@@ -26,6 +26,8 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { logout } from '@/services/auth-service';
+import Link from 'next/link';
+import { getInitials } from '@/utils/formatter';
 
 export function NavUser({ user }: { user: any }) {
   const { isMobile } = useSidebar();
@@ -46,7 +48,9 @@ export function NavUser({ user }: { user: any }) {
             >
               <Avatar className='h-8 w-8 rounded-lg'>
                 {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+                <AvatarFallback className='rounded-lg'>
+                  {getInitials(user?.name)}
+                </AvatarFallback>
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>{user?.name}</span>
@@ -82,18 +86,18 @@ export function NavUser({ user }: { user: any }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              <Link href='/dashboard/settings/account'>
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Account
+                </DropdownMenuItem>
+              </Link>
+              <Link href='/dashboard/settings/billing'>
+                <DropdownMenuItem>
+                  <CreditCard />
+                  Billing
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
