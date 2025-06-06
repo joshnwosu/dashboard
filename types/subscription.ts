@@ -32,8 +32,19 @@ export interface CompanySubscriptionResponse {
     is_free: boolean;
     external_subscription_id: string;
     email_token: string | null;
+    last_notification_type_sent: string | null;
+    last_notification_date_sent: string | null;
     createdAt: string;
     updatedAt: string;
+    plan: {
+      name: string;
+      amount: number;
+      credit: string;
+      interval: string;
+      no_of_seat: number;
+      platform: string;
+      status: string;
+    };
   };
 }
 

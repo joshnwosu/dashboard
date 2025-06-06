@@ -82,29 +82,29 @@ const typeFilterFn: FilterFn<Transaction> = (
 };
 
 const columns: ColumnDef<Transaction>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-      />
-    ),
-    size: 28,
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: 'select',
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label='Select all'
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label='Select row'
+  //     />
+  //   ),
+  //   size: 28,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   // {
   //   header: 'Transaction ID',
   //   accessorKey: 'id',
@@ -261,21 +261,21 @@ const columns: ColumnDef<Transaction>[] = [
     },
     size: 120,
   },
-  {
-    header: () => <div className='w-full text-right'>Total</div>,
-    accessorKey: 'total',
-    cell: ({ row }) => {
-      const total = parseFloat(row.getValue('total'));
-      const currencyCode = row.original.currency_code;
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
-        minimumFractionDigits: 2,
-      }).format(total);
-      return <div className='text-md font-medium text-right'>{formatted}</div>;
-    },
-    size: 120,
-  },
+  // {
+  //   header: () => <div className='w-full text-right'>Total</div>,
+  //   accessorKey: 'total',
+  //   cell: ({ row }) => {
+  //     const total = parseFloat(row.getValue('total'));
+  //     const currencyCode = row.original.currency_code;
+  //     const formatted = new Intl.NumberFormat('en-US', {
+  //       style: 'currency',
+  //       currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
+  //       minimumFractionDigits: 2,
+  //     }).format(total);
+  //     return <div className='text-md font-medium text-right'>{formatted}</div>;
+  //   },
+  //   size: 120,
+  // },
   {
     id: 'actions',
     header: () => <span className='sr-only'>Actions</span>,
@@ -285,13 +285,17 @@ const columns: ColumnDef<Transaction>[] = [
   },
 ];
 
-export default function TransactionTable() {
+export default function TransactionTable({
+  title = 'Transaction History',
+}: {
+  title?: string;
+}) {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 8,
+    pageSize: 10,
   });
 
   const [sorting, setSorting] = useState<SortingState>([
@@ -340,7 +344,7 @@ export default function TransactionTable() {
   return (
     <Card className='bg-background shadow-xs'>
       <CardTitle className='px-6 text-md font-medium text-muted-foreground'>
-        Transaction History
+        {title}
       </CardTitle>
       <Filters table={table} id={id} handleDeleteRows={handleDeleteRows} />
       <CardContent className='space-y-4 overflow-hidden rounded-lg bg-background'>

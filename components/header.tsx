@@ -18,6 +18,7 @@ import React, { useState } from 'react';
 import { ArrowRightIcon, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PricingDialog } from './shared/pricing-dialog';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
 
 export default function Header() {
   const pathname = usePathname();
@@ -36,6 +37,8 @@ export default function Header() {
   };
 
   const [showPricing, setShowPricing] = useState(false);
+
+  const { companySubscription } = useSubscriptionStore();
 
   return (
     <header className='sticky top-0 bg-background flex min-h-[65px] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 z-10 justify-between'>
@@ -68,16 +71,18 @@ export default function Header() {
       </div>
 
       <div className='flex items-center gap-4 px-3'>
-        <div className='flex items-center gap-4 bg-background border px-4 py-2 text-sm text-muted-foreground'>
-          <Sparkles className='w-4 h-4' />
-          <span>You're currently on the free trial</span>
-          <Button
-            className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white cursor-pointer'
-            onClick={() => setShowPricing(true)}
-          >
-            Upgrade <ArrowRightIcon />
-          </Button>
-        </div>
+        {companySubscription?.data.is_free && (
+          <div className='flex items-center gap-4 bg-background border px-4 py-2 text-sm text-muted-foreground'>
+            <Sparkles className='w-4 h-4' />
+            <span>You're currently on the free trial</span>
+            <Button
+              className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white cursor-pointer'
+              onClick={() => setShowPricing(true)}
+            >
+              Upgrade <ArrowRightIcon />
+            </Button>
+          </div>
+        )}
 
         <NavActions />
       </div>

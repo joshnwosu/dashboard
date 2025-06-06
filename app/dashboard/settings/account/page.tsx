@@ -197,19 +197,6 @@ export default function AccountSettings() {
                     </span>
                   )}
 
-                  {/* <div className='text-right mt-1 text-xs'>
-                    {form.watch('email_verify') ? (
-                      <span className='text-green-600'>✓ Verified</span>
-                    ) : (
-                      <Button
-                        variant='outline'
-                        className='cursor-pointer text-xs'
-                      >
-                        Verify Email
-                      </Button>
-                    )}
-                  </div> */}
-
                   <FormMessage />
                 </FormItem>
               )}

@@ -20,7 +20,7 @@ export default function Home() {
           <DashboardAnalysis data={dashboardAnalysis!} />
         </div>
 
-        <TransactionTable />
+        <CreditHistoryTable />
 
         {false && (
           <div className='grid grid-cols-1 lg:grid-cols-5 gap-4 w-full'>

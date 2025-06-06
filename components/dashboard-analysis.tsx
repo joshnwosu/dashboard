@@ -125,7 +125,7 @@ export function DashboardAnalysis({ data }: { data: DashboardAnalysisData }) {
     if (format === 'currency') {
       return formatAmountWithOptions(value.toFixed(2), {
         decimals: 2,
-        showCurrency: false,
+        showCurrency: true,
       });
     }
     return value.toLocaleString();
