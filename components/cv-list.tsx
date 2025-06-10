@@ -95,7 +95,7 @@ export function CVList({ cvScreenings, isLoading, onRefresh }: CVListProps) {
         </h3>
       </div>
 
-      {/* <div className='grid gap-4'>
+      <div className='grid gap-4'>
         {cvScreenings &&
           cvScreenings?.map((cv) => (
             <Card key={cv.id}>
@@ -149,7 +149,7 @@ export function CVList({ cvScreenings, isLoading, onRefresh }: CVListProps) {
               </CardContent>
             </Card>
           ))}
-      </div> */}
+      </div>
     </div>
   );
 }
