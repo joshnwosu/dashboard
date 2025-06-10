@@ -27,7 +27,7 @@ export default function CreditsSettings() {
                   ).toFixed(2),
                   {
                     decimals: 2,
-                    showCurrency: true,
+                    showCurrency: false,
                   }
                 )}
               </p>

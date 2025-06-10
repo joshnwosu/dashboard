@@ -92,7 +92,7 @@ const columns: ColumnDef<any>[] = [
       const credit = parseFloat(row.getValue('credit'));
       const currencyCode = row.original.currency_code;
       const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
+        style: 'decimal',
         currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
         minimumFractionDigits: 2,
       }).format(credit);
@@ -112,7 +112,7 @@ const columns: ColumnDef<any>[] = [
       const balance = parseFloat(row.getValue('available_balance'));
       const currencyCode = row.original.currency_code;
       const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
+        style: 'decimal',
         currency: currencyCode === 'NGN' ? 'NGN' : 'USD',
         minimumFractionDigits: 2,
       }).format(balance);

@@ -416,7 +416,7 @@ const CandidateDetailSheet = ({
                   )}
 
                   {/* Education */}
-                  <div className='bg-sidebar rounded-lg p-6'>
+                  <div className='bg-sidebar rounded-lg p-6 hidden'>
                     <h4 className='text-base font-semibold mb-4'>Education</h4>
                     <div>
                       <p className='text-sm font-medium'>
@@ -587,14 +587,85 @@ const CandidateDetailSheet = ({
                 </div>
               )}
 
+              {/* <button onClick={() => console.log('Item: ', item)}>
+                log items
+              </button> */}
+
               {/* Other tab contents would go here */}
-              {activeTab !== 'application' && (
+              {activeTab === 'social-media' && (
                 <div className='p-6'>
-                  <div className='bg-sidebar rounded-lg p-8 text-center'>
-                    <p className='text-muted-foreground/50'>
-                      Content for {tabs.find((t) => t.id === activeTab)?.label}{' '}
-                      tab
-                    </p>
+                  <div className='bg-sidebar rounded-lg p-6'>
+                    <div className='space-y-3'>
+                      {item.email && (
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center space-x-2'>
+                            <Mail className='w-4 h-4 text-muted-foreground' />
+                            <span className='text-sm text-muted-foreground'>
+                              {item.email}
+                            </span>
+                          </div>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() => handleCopy(item.email, 'email')}
+                          >
+                            {copiedField === 'email' ? (
+                              <CheckCircle className='w-4 h-4 text-green-500' />
+                            ) : (
+                              <Copy className='w-4 h-4 text-muted-foreground' />
+                            )}
+                          </Button>
+                        </div>
+                      )}
+
+                      {item.github_url && (
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center space-x-2'>
+                            <GithubIcon className='w-4 h-4 text-gray-400' />
+                            <span className='text-sm text-muted-foreground'>
+                              {item.github_url}
+                            </span>
+                          </div>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() =>
+                              handleCopy(item.github_url, 'github_url')
+                            }
+                          >
+                            {copiedField === 'github_url' ? (
+                              <CheckCircle className='w-4 h-4 text-green-500' />
+                            ) : (
+                              <Copy className='w-4 h-4 text-gray-400' />
+                            )}
+                          </Button>
+                        </div>
+                      )}
+
+                      {item.linkedin_url && (
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center space-x-2'>
+                            <GithubIcon className='w-4 h-4 text-gray-400' />
+                            <span className='text-sm text-muted-foreground'>
+                              {item.linkedin_url}
+                            </span>
+                          </div>
+                          <Button
+                            variant='ghost'
+                            size='sm'
+                            onClick={() =>
+                              handleCopy(item.linkedin_url, 'linkedin_url')
+                            }
+                          >
+                            {copiedField === 'linkedin_url' ? (
+                              <CheckCircle className='w-4 h-4 text-green-500' />
+                            ) : (
+                              <Copy className='w-4 h-4 text-gray-400' />
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

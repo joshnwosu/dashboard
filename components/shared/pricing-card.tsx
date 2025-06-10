@@ -1,3 +1,265 @@
+// 'use client';
+
+// import * as React from 'react';
+// import { BadgeCheck, ArrowRight, Loader2 } from 'lucide-react';
+// import NumberFlow from '@number-flow/react';
+// import { cn } from '@/lib/utils';
+// import { Badge } from '@/components/ui/badge';
+// import { Button } from '@/components/ui/button';
+// import { Card } from '@/components/ui/card';
+// import Link from 'next/link';
+// import { motion, useAnimation } from 'framer-motion';
+// import { useInView } from 'react-intersection-observer';
+// import { useEffect, useState } from 'react';
+// import { useSubscriptionStore } from '@/store/subscriptionStore';
+// import { toast } from 'sonner';
+
+// export interface PricingTier {
+//   id: string;
+//   name: string;
+//   price: Record<string, number | string>;
+//   description: string;
+//   features: string[];
+//   cta: string;
+//   highlighted?: boolean;
+//   popular?: boolean;
+// }
+
+// interface PricingCardProps {
+//   tier: PricingTier;
+//   paymentFrequency: string;
+//   index: number; // For staggering across cards
+// }
+
+// export function PricingCard({
+//   tier,
+//   paymentFrequency,
+//   index,
+// }: PricingCardProps) {
+//   const price = tier.price[paymentFrequency];
+//   const isHighlighted = tier.highlighted;
+//   const isPopular = tier.popular;
+//   const isCustom = tier.id === 'business';
+//   const { createSubscription } = useSubscriptionStore();
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const controls = useAnimation();
+//   const [ref, inView] = useInView({ threshold: 0.3, triggerOnce: true });
+
+//   useEffect(() => {
+//     if (inView) {
+//       controls.start('visible');
+//     }
+//   }, [controls, inView]);
+
+//   const handleUpgradeClick = async () => {
+//     if (isCustom) {
+//       // Handle custom plan differently
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     try {
+//       const response = await createSubscription({
+//         plan_id: '1', //tier.id
+//         callback_url: '',
+//         pay_with_existing_card: false,
+//         change_plan: false,
+//         current_plan_id: '',
+//       });
+
+//       // Redirect to payment URL from the response
+//       if (response.data.payment_url) {
+//         window.location.href = response.data.payment_url;
+//       }
+//     } catch (error) {
+//       toast.error('Failed to create subscription. Please try again.');
+//       console.error('Subscription error:', error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   // Animation variants for the card
+//   const cardVariants = {
+//     hidden: { opacity: 0, y: 50 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.6, ease: 'easeOut', delay: index * 0.2 },
+//     },
+//   };
+
+//   // Animation variants for internal elements
+//   const titleVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: 'easeOut', delay: index * 0.2 + 0.2 },
+//     },
+//   };
+
+//   const priceVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: 'easeOut', delay: index * 0.2 + 0.3 },
+//     },
+//   };
+
+//   const descriptionVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: 'easeOut', delay: index * 0.2 + 0.4 },
+//     },
+//   };
+
+//   const featuresVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: {
+//       opacity: 1,
+//       y: 0,
+//       transition: { duration: 0.5, ease: 'easeOut', delay: index * 0.2 + 0.5 },
+//     },
+//   };
+
+//   const buttonVariants = {
+//     hidden: { opacity: 0, scale: 0.9 },
+//     visible: {
+//       opacity: 1,
+//       scale: 1,
+//       transition: { duration: 0.5, ease: 'easeOut', delay: index * 0.2 + 0.6 },
+//     },
+//   };
+
+//   return (
+//     <motion.div ref={ref} className='flex flex-1'>
+//       <motion.div
+//         variants={cardVariants}
+//         initial='hidden'
+//         animate={controls}
+//         className='flex flex-1'
+//       >
+//         <Card
+//           className={cn(
+//             'relative flex flex-col flex-1 gap-8 overflow-hidden p-6 font-sans',
+//             isHighlighted
+//               ? 'bg-foreground text-background'
+//               : 'bg-background text-foreground',
+//             isPopular && 'ring-2 ring-primary'
+//           )}
+//         >
+//           {isHighlighted && <HighlightedBackground />}
+//           {isPopular && <PopularBackground />}
+
+//           <motion.h2
+//             variants={titleVariants}
+//             initial='hidden'
+//             animate={controls}
+//             className='flex items-center gap-3 text-xl font-medium capitalize'
+//           >
+//             {tier.name}
+//             {isPopular && (
+//               <Badge variant='secondary' className='mt-1 z-10'>
+//                 🔥 Most Popular
+//               </Badge>
+//             )}
+//           </motion.h2>
+
+//           <motion.div
+//             variants={priceVariants}
+//             initial='hidden'
+//             animate={controls}
+//             className='relative h-12 z-10'
+//           >
+//             {typeof price === 'number' ? (
+//               <>
+//                 <NumberFlow
+//                   format={{
+//                     style: 'currency',
+//                     currency: 'USD',
+//                     trailingZeroDisplay: 'stripIfInteger',
+//                   }}
+//                   value={price}
+//                   className='text-4xl font-medium'
+//                 />
+//                 <p className='-mt-2 text-xs text-muted-foreground'>Per month</p>
+//               </>
+//             ) : (
+//               <h1 className='text-4xl font-medium'>{price}</h1>
+//             )}
+//           </motion.div>
+
+//           <motion.div
+//             variants={descriptionVariants}
+//             initial='hidden'
+//             animate={controls}
+//             className='flex-1 space-y-6'
+//           >
+//             <h3 className='text-md'>{tier.description}</h3>
+//             <motion.ul
+//               variants={featuresVariants}
+//               initial='hidden'
+//               animate={controls}
+//               className='space-y-2'
+//             >
+//               {tier.features.map((feature, idx) => (
+//                 <li
+//                   key={idx}
+//                   className={cn(
+//                     'flex items-center gap-2 text-sm',
+//                     isHighlighted ? 'text-background' : 'text-muted-foreground'
+//                   )}
+//                 >
+//                   <BadgeCheck className='h-4 w-4' />
+//                   <p className='flex-1'>{feature}</p>
+//                 </li>
+//               ))}
+//             </motion.ul>
+//           </motion.div>
+
+//           <motion.div
+//             variants={buttonVariants}
+//             initial='hidden'
+//             animate={controls}
+//           >
+//             <Button
+//               variant={isHighlighted ? 'secondary' : 'default'}
+//               className='w-full relative z-10'
+//               onClick={handleUpgradeClick}
+//               disabled={isLoading}
+//             >
+//               {isLoading ? (
+//                 <>
+//                   <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+//                   Please wait
+//                 </>
+//               ) : (
+//                 <>
+//                   {tier.cta}
+//                   <ArrowRight className='ml-2 h-4 w-4' />
+//                 </>
+//               )}
+//             </Button>
+//           </motion.div>
+//         </Card>
+//       </motion.div>
+//     </motion.div>
+//   );
+// }
+
+// const HighlightedBackground = () => (
+//   <div className='absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:45px_45px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] z-0' />
+// );
+
+// const PopularBackground = () => (
+//   <div className='absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))] z-0' />
+// );
+
 'use client';
 
 import * as React from 'react';
@@ -28,15 +290,30 @@ export interface PricingTier {
 interface PricingCardProps {
   tier: PricingTier;
   paymentFrequency: string;
+  selectedCurrency: string;
   index: number; // For staggering across cards
 }
+
+// Currency conversion rates and symbols
+const CURRENCY_CONFIG = {
+  USD: { symbol: '$', rate: 1 },
+  NGN: { symbol: '₦', rate: 1000 },
+};
 
 export function PricingCard({
   tier,
   paymentFrequency,
+  selectedCurrency,
   index,
 }: PricingCardProps) {
-  const price = tier.price[paymentFrequency];
+  const basePrice = tier.price[paymentFrequency];
+  const currencyConfig =
+    CURRENCY_CONFIG[selectedCurrency as keyof typeof CURRENCY_CONFIG];
+
+  // Convert price based on selected currency
+  const convertedPrice =
+    typeof basePrice === 'number' ? basePrice * currencyConfig.rate : basePrice;
+
   const isHighlighted = tier.highlighted;
   const isPopular = tier.popular;
   const isCustom = tier.id === 'business';
@@ -62,7 +339,7 @@ export function PricingCard({
     try {
       const response = await createSubscription({
         plan_id: '1', //tier.id
-        callback_url: '',
+        callback_url: `http://localhost:3000/dashboard/payment`,
         pay_with_existing_card: false,
         change_plan: false,
         current_plan_id: '',
@@ -176,21 +453,26 @@ export function PricingCard({
             animate={controls}
             className='relative h-12 z-10'
           >
-            {typeof price === 'number' ? (
+            {typeof convertedPrice === 'number' ? (
               <>
                 <NumberFlow
                   format={{
                     style: 'currency',
-                    currency: 'USD',
+                    currency: selectedCurrency,
                     trailingZeroDisplay: 'stripIfInteger',
                   }}
-                  value={price}
+                  value={convertedPrice}
                   className='text-4xl font-medium'
                 />
                 <p className='-mt-2 text-xs text-muted-foreground'>Per month</p>
               </>
             ) : (
-              <h1 className='text-4xl font-medium'>{price}</h1>
+              <div className='flex items-center gap-1'>
+                <span className='text-lg opacity-75'>
+                  {currencyConfig.symbol}
+                </span>
+                <h1 className='text-4xl font-medium'>{convertedPrice}</h1>
+              </div>
             )}
           </motion.div>
 

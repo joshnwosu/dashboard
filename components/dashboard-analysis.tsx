@@ -37,7 +37,7 @@ const ALL_METRICS: MetricCard[] = [
     title: 'Credit Balance',
     icon: CreditCardIcon,
     priority: 1,
-    format: 'currency',
+    format: 'number',
     bgColor: 'bg-green-500',
   },
   {
@@ -126,6 +126,7 @@ export function DashboardAnalysis({ data }: { data: DashboardAnalysisData }) {
       return formatAmountWithOptions(value.toFixed(2), {
         decimals: 2,
         showCurrency: true,
+        currency: 'NGN',
       });
     }
     return value.toLocaleString();

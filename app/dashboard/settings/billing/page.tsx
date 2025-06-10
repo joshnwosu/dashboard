@@ -4,9 +4,14 @@ import TransactionTable from '@/components/transaction-table';
 import { Button } from '@/components/ui/button';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { formatAmountWithOptions } from '@/utils/formatter';
+// import { useEffect } from 'react';
 
 export default function BillingSettings() {
   const { companySubscription } = useSubscriptionStore();
+
+  // useEffect(() => {
+  //   console.log('HII: ', companySubscription);
+  // }, []);
 
   return (
     <div className='space-y-6'>
@@ -26,6 +31,7 @@ export default function BillingSettings() {
                   {
                     decimals: 2,
                     showCurrency: true,
+                    currency: companySubscription?.data.plan.currency,
                   }
                 )}
                 /

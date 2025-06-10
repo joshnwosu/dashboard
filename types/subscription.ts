@@ -38,6 +38,7 @@ export interface CompanySubscriptionResponse {
     createdAt: string;
     updatedAt: string;
     plan: {
+      currency: string;
       name: string;
       amount: number;
       credit: string;
