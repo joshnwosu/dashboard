@@ -251,9 +251,12 @@ export default function SearchList({ slug }: SearchListProps) {
                   >
                     <Link
                       href={{
-                        pathname: `/dashboard/history/${slug}/${encodeURIComponent(
-                          search.title
-                        )}`,
+                        pathname:
+                          slug === 'search-history'
+                            ? `/dashboard/history/${slug}/${encodeURIComponent(
+                                search.title
+                              )}`
+                            : `/dashboard/cv-screening/upload-cvs`,
                         query: { id: search.id },
                       }}
                       className='block'
