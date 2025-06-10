@@ -16,8 +16,7 @@ export default async function HistoryPage({ params }: PageProps) {
     notFound();
   }
 
-  const title =
-    slug === 'search-history' ? 'Search History' : 'CV Screening History';
+  const title = slug === 'search-history' ? 'Search' : 'CV Screening';
 
   const buttonText =
     slug === 'search-history' ? 'Clear History' : 'Export History';

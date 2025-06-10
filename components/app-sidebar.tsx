@@ -73,11 +73,11 @@ const data = {
       isActive: true,
       items: [
         {
-          title: 'Search History',
+          title: 'Search',
           url: '/dashboard/history/search-history',
         },
         {
-          title: 'CV Screening History',
+          title: 'CV Screening',
           url: '/dashboard/history/cv-screening-history',
         },
       ],

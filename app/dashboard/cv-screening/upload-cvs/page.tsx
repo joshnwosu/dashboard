@@ -10,6 +10,8 @@ import { extractTextFromFile } from '@/utils/file-extractor';
 import { toast } from 'sonner';
 import CandidateCardList from '../../history/[slug]/[title]/candidate-card-list';
 import { useJobStore } from '@/store/jobStore';
+import { useTransactionStore } from '@/store/transactionStore';
+import { useCreditHistoryStore } from '@/store/creditHistoryStore';
 
 export default function UploadCVs() {
   const router = useRouter();
@@ -20,6 +22,9 @@ export default function UploadCVs() {
   const id = searchParams.get('id') || '0';
 
   const { candidates, fetchAllCandidates, loading } = useJobStore();
+  const { fecthDashboardAnalysis, fetchAllTransactions } =
+    useTransactionStore();
+  const { fetchAllCreditHistory } = useCreditHistoryStore();
 
   // Load job ID and fetch existing CVs
   useEffect(() => {
@@ -93,6 +98,13 @@ export default function UploadCVs() {
     try {
       await fetchAllCandidates(id);
       toast.success('Data refreshed successfully!');
+
+      // update dashboard and other data
+      await Promise.all([
+        fecthDashboardAnalysis(),
+        fetchAllTransactions(),
+        fetchAllCreditHistory(),
+      ]);
     } catch (error) {
       console.error('Error refreshing data:', error);
       toast.error('Failed to refresh data');

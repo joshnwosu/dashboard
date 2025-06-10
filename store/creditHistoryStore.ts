@@ -12,9 +12,9 @@ export const useCreditHistoryStore = create<creditHistoryState>((set) => {
   return {
     loading: false,
     creditHistory: null,
-    fetchAllCreditHistory: async () => {
+    fetchAllCreditHistory: async (page: number = 1, perPage: number = 10) => {
       try {
-        const response = await getAllCreditHistory();
+        const response = await getAllCreditHistory(page, perPage);
         set({ creditHistory: response.data.creditHistory, loading: true });
         // console.log('response.data.data', response.data.transactions);
       } catch (error) {
