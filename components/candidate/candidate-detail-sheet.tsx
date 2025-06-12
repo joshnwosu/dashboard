@@ -353,7 +353,7 @@ const CandidateDetailSheet = ({
                   </div>
 
                   {/* Resume */}
-                  <div className='bg-sidebar rounded-lg p-6'>
+                  <div className='bg-sidebar rounded-lg p-6 hidden'>
                     <h4 className='text-base font-semibold mb-4'>Resume</h4>
                     <div className='flex items-center justify-between p-4 bg-muted/50 rounded-lg'>
                       <div className='flex items-center space-x-3'>
