@@ -7,6 +7,7 @@ import {
   CompleteGoogleSignupPayload,
   SendOtpPayload,
   VerifyOtpPayload,
+  WaitlistResponse,
 } from '@/types/auth';
 
 export const register = async (payload: RegisterPayload) => {
@@ -121,6 +122,17 @@ export const sendOtp = async (payload: SendOtpPayload) => {
 export const verifyOtp = async (payload: VerifyOtpPayload) => {
   try {
     const response = await apiClient.post<any>('/auth/verify_email', payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const checkWaitlist = async (email: string) => {
+  try {
+    const response = await apiClient.get<WaitlistResponse>(
+      `/user/waitlist?email=${encodeURIComponent(email)}`
+    );
     return response.data;
   } catch (error) {
     throw error;

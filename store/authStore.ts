@@ -1,4 +1,4 @@
-import { RegisterPayload } from '@/types/auth';
+import { RegisterPayload, WaitlistUser } from '@/types/auth';
 import { create } from 'zustand';
 
 interface AuthState {
@@ -7,10 +7,14 @@ interface AuthState {
   registerData: any;
   resetPasswordEmail: string | null;
   resetPasswordOtp: string | null;
+  waitlistUser: WaitlistUser | null;
+  isOnWaitlist: boolean;
   setRegisterData: (data: any) => void;
   setResetPasswordEmail: (email: string | null) => void;
   setResetPasswordOtp: (otp: string | null) => void;
+  setWaitlistUser: (user: WaitlistUser | null) => void;
   clearResetPasswordData: () => void;
+  clearWaitlistData: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => {
@@ -27,6 +31,8 @@ export const useAuthStore = create<AuthState>((set, get) => {
     registerData: savedData as RegisterPayload,
     resetPasswordEmail: null,
     resetPasswordOtp: null,
+    waitlistUser: null,
+    isOnWaitlist: false,
 
     setRegisterData: (data) => {
       set((state) => {
@@ -46,8 +52,19 @@ export const useAuthStore = create<AuthState>((set, get) => {
       set({ resetPasswordOtp: otp });
     },
 
+    setWaitlistUser: (user) => {
+      set({
+        waitlistUser: user,
+        isOnWaitlist: !!user,
+      });
+    },
+
     clearResetPasswordData: () => {
       set({ resetPasswordEmail: null, resetPasswordOtp: null });
+    },
+
+    clearWaitlistData: () => {
+      set({ waitlistUser: null, isOnWaitlist: false });
     },
   };
 });

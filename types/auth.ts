@@ -66,3 +66,29 @@ export interface VerifyOtpPayload {
   email: string;
   otp: string;
 }
+
+// Type for waitlist user data
+export interface WaitlistUser {
+  id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+  country: string;
+  country_code: string;
+  company_name: string;
+  reg_channel: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WaitlistResponse {
+  success: boolean;
+  message: string;
+  statusCode: number;
+  data: {
+    success: boolean;
+    response_message: string;
+    response_code: string;
+    data: WaitlistUser;
+  };
+}
