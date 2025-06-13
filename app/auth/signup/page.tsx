@@ -205,12 +205,12 @@ function SignupContent() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Check if user is on waitlist before allowing registration
-    if (waitlistStatus !== 'approved') {
-      toast.error(
-        'You must be on our waitlist to register. Please join our waitlist first.'
-      );
-      return;
-    }
+    // if (waitlistStatus !== 'approved') {
+    //   toast.error(
+    //     'You must be on our waitlist to register. Please join our waitlist first.'
+    //   );
+    //   return;
+    // }
 
     console.log('Form submitted:', values);
     setLoading(true);
@@ -476,7 +476,7 @@ function SignupContent() {
               <Button
                 type='submit'
                 className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-                disabled={isRegistrationDisabled}
+                disabled={!terms || loading}
               >
                 {loading ? (
                   <>
@@ -485,9 +485,7 @@ function SignupContent() {
                   </>
                 ) : (
                   <>
-                    {waitlistStatus === 'approved'
-                      ? 'Create Account'
-                      : 'Join Waitlist Required'}
+                    Continue
                     <MoveRight className='ml-2 h-4 w-4' />
                   </>
                 )}
