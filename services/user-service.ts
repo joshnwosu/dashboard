@@ -12,7 +12,7 @@ export const getUserProfile = async () => {
 
 export const updateUserProfile = async (data: Partial<UserProfile>) => {
   try {
-    const response = await apiClient.put('/auth/profile', data);
+    const response = await apiClient.put('/user/update_profile', data);
     return response.data;
   } catch (error) {
     throw error;
