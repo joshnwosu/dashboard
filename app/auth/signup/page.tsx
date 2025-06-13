@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { parsePhoneNumber } from 'react-phone-number-input';
 import Link from 'next/link';
 import GoogleButton from '@/components/google-button';
@@ -96,7 +96,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -231,306 +231,307 @@ export default function SignupPage() {
     waitlistStatus !== 'approved' || !terms || loading;
 
   return (
-    <div className='container relative flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-1 lg:px-0'>
-      <div className='mx-auto w-full max-w-[600px] space-y-6'>
-        <Card>
-          <CardHeader className='text-center'>
-            <CardTitle className='text-2xl'>Create your account</CardTitle>
-            <CardDescription>
-              Sign up to get started with Sourzer
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Waitlist Status Alert */}
-            {waitlistStatus === 'checking' && (
-              <Alert className='mb-6'>
-                <Loader2Icon className='h-4 w-4 animate-spin' />
-                <AlertDescription>
-                  Checking if you're on our waitlist...
-                </AlertDescription>
-              </Alert>
-            )}
+    <div className='flex flex-col gap-6'>
+      <Card>
+        <CardHeader className='text-center'>
+          <CardTitle className='text-2xl'>Create your account</CardTitle>
+          <CardDescription>Sign up to get started with Sourzer</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Waitlist Status Alert */}
+          {waitlistStatus === 'checking' && (
+            <Alert className='mb-6'>
+              <Loader2Icon className='h-4 w-4 animate-spin' />
+              <AlertDescription>
+                Checking if you're on our waitlist...
+              </AlertDescription>
+            </Alert>
+          )}
 
-            {waitlistStatus === 'approved' && (
-              <Alert className='mb-6'>
-                <CheckCircle className='h-4 w-4' />
-                <AlertDescription>
-                  <strong>Welcome!</strong> You're approved from our waitlist.
-                  Your information has been pre-filled.
-                </AlertDescription>
-              </Alert>
-            )}
+          {waitlistStatus === 'approved' && (
+            <Alert className='mb-6'>
+              <CheckCircle className='h-4 w-4' />
+              <AlertDescription>
+                <strong>Welcome!</strong> You're approved from our waitlist.
+                Your information has been pre-filled.
+              </AlertDescription>
+            </Alert>
+          )}
 
-            {waitlistStatus === 'not_found' && (
-              <Alert className='mb-6'>
-                <AlertCircle className='h-4 w-4' />
-                <AlertDescription>
-                  You are not on our waitlist.
-                </AlertDescription>
-              </Alert>
-            )}
+          {waitlistStatus === 'not_found' && (
+            <Alert className='mb-6'>
+              <AlertCircle className='h-4 w-4' />
+              <AlertDescription>You are not on our waitlist.</AlertDescription>
+            </Alert>
+          )}
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='space-y-6'
-              >
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6 items-start'>
-                  <FormField
-                    control={form.control}
-                    name='name'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          Full name
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <User className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                            <Input
-                              placeholder='Fullname'
-                              className='pl-10'
-                              {...field}
-                              disabled={isOnWaitlist} // Disable if pre-filled from waitlist
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name='email'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          Email address
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                            <Input
-                              placeholder='Email address'
-                              className='pl-10'
-                              {...field}
-                              disabled={!!emailFromParams && isOnWaitlist} // Disable if email came from URL params
-                            />
-                            {checkingWaitlist && (
-                              <Loader2Icon className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400' />
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name='phone_number'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          Phone number
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <PhoneInput
-                              placeholder='Phone number'
-                              {...field}
-                              defaultCountry='US'
-                              disabled={isOnWaitlist}
-                              onChange={(value) => {
-                                field.onChange(value);
-                              }}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name='company_name'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          Company name
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <Building className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                            <Input
-                              placeholder='Company name'
-                              className='pl-10'
-                              {...field}
-                              disabled={isOnWaitlist}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name='reg_channel'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          How did you hear about us? (Optional)
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <MessageSquare className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                              disabled={isOnWaitlist}
-                            >
-                              <SelectTrigger className='pl-10 bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 w-full'>
-                                <SelectValue placeholder='Select an option' />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value='linkedin'>
-                                  LinkedIn
-                                </SelectItem>
-                                <SelectItem value='twitter'>Twitter</SelectItem>
-                                <SelectItem value='advertisement'>
-                                  Advertisement
-                                </SelectItem>
-                                <SelectItem value='search_engine'>
-                                  Search Engine
-                                </SelectItem>
-                                <SelectItem value='event'>
-                                  Event/Conference
-                                </SelectItem>
-                                <SelectItem value='other'>Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name='password'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className='text-gray-700 dark:text-gray-200'>
-                          Password
-                        </FormLabel>
-                        <FormControl>
-                          <div className='relative'>
-                            <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
-                            <Input
-                              type={showPassword ? 'text' : 'password'}
-                              placeholder='Enter your password'
-                              className='pl-10 pr-10'
-                              {...field}
-                            />
-                            <Button
-                              type='button'
-                              variant='ghost'
-                              size='icon'
-                              className='absolute right-0 top-1/2 transform -translate-y-1/2 h-full px-3 py-2 hover:bg-transparent'
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? (
-                                <EyeOff className='h-5 w-5 text-gray-400' />
-                              ) : (
-                                <Eye className='h-5 w-5 text-gray-400' />
-                              )}
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 items-start'>
                 <FormField
                   control={form.control}
-                  name='terms'
+                  name='name'
                   render={({ field }) => (
-                    <FormItem className='flex items-center space-x-2'>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className='border-gray-300 dark:border-gray-600'
-                        />
-                      </FormControl>
-                      <FormLabel className='text-sm text-gray-700 dark:text-gray-200'>
-                        I agree to the{' '}
-                        <Link
-                          href='/terms'
-                          className='underline hover:text-blue-500 dark:hover:text-blue-400'
-                        >
-                          Terms and Conditions
-                        </Link>
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        Full name
                       </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <User className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                          <Input
+                            placeholder='Fullname'
+                            className='pl-10'
+                            {...field}
+                            disabled={isOnWaitlist} // Disable if pre-filled from waitlist
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <Button
-                  type='submit'
-                  className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
-                  disabled={isRegistrationDisabled}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                      Creating account...
-                    </>
-                  ) : (
-                    <>
-                      {waitlistStatus === 'approved'
-                        ? 'Create Account'
-                        : 'Join Waitlist Required'}
-                      <MoveRight className='ml-2 h-4 w-4' />
-                    </>
+                <FormField
+                  control={form.control}
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        Email address
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Mail className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                          <Input
+                            placeholder='Email address'
+                            className='pl-10'
+                            {...field}
+                            disabled={!!emailFromParams && isOnWaitlist} // Disable if email came from URL params
+                          />
+                          {checkingWaitlist && (
+                            <Loader2Icon className='absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400' />
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
+                />
 
-                <>
-                  <div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>
-                    <span className='bg-card text-muted-foreground relative z-10 px-2'>
-                      Or continue with
-                    </span>
-                  </div>
+                <FormField
+                  control={form.control}
+                  name='phone_number'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        Phone number
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <PhoneInput
+                            placeholder='Phone number'
+                            {...field}
+                            defaultCountry='US'
+                            disabled={isOnWaitlist}
+                            onChange={(value) => {
+                              field.onChange(value);
+                            }}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <GoogleButton buttonText='Sign up with Google' />
-                </>
+                <FormField
+                  control={form.control}
+                  name='company_name'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        Company name
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Building className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                          <Input
+                            placeholder='Company name'
+                            className='pl-10'
+                            {...field}
+                            disabled={isOnWaitlist}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <div className='text-center text-sm'>
-                  Already have an account?{' '}
-                  <Link
-                    href='/auth/login'
-                    className='underline underline-offset-4'
-                  >
-                    Log in
-                  </Link>
+                <FormField
+                  control={form.control}
+                  name='reg_channel'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        How did you hear about us? (Optional)
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <MessageSquare className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={isOnWaitlist}
+                          >
+                            <SelectTrigger className='pl-10 bg-white dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 w-full'>
+                              <SelectValue placeholder='Select an option' />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value='linkedin'>LinkedIn</SelectItem>
+                              <SelectItem value='twitter'>Twitter</SelectItem>
+                              <SelectItem value='advertisement'>
+                                Advertisement
+                              </SelectItem>
+                              <SelectItem value='search_engine'>
+                                Search Engine
+                              </SelectItem>
+                              <SelectItem value='event'>
+                                Event/Conference
+                              </SelectItem>
+                              <SelectItem value='other'>Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-gray-700 dark:text-gray-200'>
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Lock className='absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400' />
+                          <Input
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder='Enter your password'
+                            className='pl-10 pr-10'
+                            {...field}
+                          />
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon'
+                            className='absolute right-0 top-1/2 transform -translate-y-1/2 h-full px-3 py-2 hover:bg-transparent'
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className='h-5 w-5 text-gray-400' />
+                            ) : (
+                              <Eye className='h-5 w-5 text-gray-400' />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name='terms'
+                render={({ field }) => (
+                  <FormItem className='flex items-center space-x-2'>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className='border-gray-300 dark:border-gray-600'
+                      />
+                    </FormControl>
+                    <FormLabel className='text-sm text-gray-700 dark:text-gray-200'>
+                      I agree to the{' '}
+                      <Link
+                        href='/terms'
+                        className='underline hover:text-blue-500 dark:hover:text-blue-400'
+                      >
+                        Terms and Conditions
+                      </Link>
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type='submit'
+                className='w-full px-6 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200'
+                disabled={isRegistrationDisabled}
+              >
+                {loading ? (
+                  <>
+                    <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
+                    Creating account...
+                  </>
+                ) : (
+                  <>
+                    {waitlistStatus === 'approved'
+                      ? 'Create Account'
+                      : 'Join Waitlist Required'}
+                    <MoveRight className='ml-2 h-4 w-4' />
+                  </>
+                )}
+              </Button>
+
+              <>
+                <div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>
+                  <span className='bg-card text-muted-foreground relative z-10 px-2'>
+                    Or continue with
+                  </span>
                 </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-        <div className='text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4'>
-          By clicking continue, you agree to our{' '}
-          <Link href='#'>Terms of Service</Link> and{' '}
-          <Link href='#'>Privacy Policy</Link>.
-        </div>
+
+                <GoogleButton buttonText='Sign up with Google' />
+              </>
+
+              <div className='text-center text-sm'>
+                Already have an account?{' '}
+                <Link
+                  href='/auth/login'
+                  className='underline underline-offset-4'
+                >
+                  Log in
+                </Link>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <div className='text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4'>
+        By clicking continue, you agree to our{' '}
+        <Link href='#'>Terms of Service</Link> and{' '}
+        <Link href='#'>Privacy Policy</Link>.
+      </div>
+    </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <div className='container relative flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-1 lg:px-0'>
+      <div className='mx-auto w-full max-w-[600px] space-y-6'>
+        <Suspense fallback={<div>Loading...</div>}>
+          <SignupContent />
+        </Suspense>
       </div>
     </div>
   );
