@@ -55,7 +55,8 @@ interface ActionButton {
 
 interface Integration {
   name: string;
-  enabled: boolean;
+  active: boolean;
+  disabled: boolean;
 }
 
 interface LexicalInputProps {
@@ -93,9 +94,9 @@ export function LexicalInput({
   const [pdfjsLib, setPdfjsLib] = useState<PDFJSLib | null>(null);
   const [integrationPopoverOpen, setIntegrationPopoverOpen] = useState(false);
   const [integrations, setIntegrations] = useState<Integration[]>([
-    { name: 'Github', enabled: false },
-    { name: 'LinkedIn', enabled: false },
-    { name: 'Indeed', enabled: false }, // Using Settings as placeholder for Indeed
+    { name: 'Github', active: true, disabled: false },
+    { name: 'LinkedIn', active: false, disabled: false },
+    { name: 'Indeed', active: false, disabled: true }, // Using Settings as placeholder for Indeed
   ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const DEBOUNCE_DELAY = 30;
@@ -128,15 +129,15 @@ export function LexicalInput({
 
   // Handle integration toggle
   const handleIntegrationToggle = useCallback(
-    (integrationName: string, enabled: boolean) => {
+    (integrationName: string, active: boolean) => {
       setIntegrations((prev) =>
         prev.map((integration) =>
           integration.name === integrationName
-            ? { ...integration, enabled }
+            ? { ...integration, active }
             : integration
         )
       );
-      onIntegrationToggle?.(integrationName, enabled);
+      onIntegrationToggle?.(integrationName, active);
     },
     [onIntegrationToggle]
   );
@@ -240,17 +241,17 @@ export function LexicalInput({
       variant: 'outline',
       onClick: handleUploadClick,
     },
-    ...(showIntegrations
-      ? [
-          {
-            title: 'Settings',
-            icon: Settings2,
-            tooltip: 'Add integration',
-            variant: 'outline' as const,
-            onClick: () => setIntegrationPopoverOpen(true),
-          },
-        ]
-      : []),
+    // ...(showIntegrations
+    //   ? [
+    //       {
+    //         title: 'Settings',
+    //         icon: Settings2,
+    //         tooltip: 'Add integration',
+    //         variant: 'outline' as const,
+    //         onClick: () => setIntegrationPopoverOpen(true),
+    //       },
+    //     ]
+    //   : []),
   ];
 
   // Internal action buttons with loading state consideration
@@ -485,7 +486,7 @@ export function LexicalInput({
                                 </span>
                               </div>
                               <Switch
-                                checked={integration.enabled}
+                                checked={integration.active}
                                 onCheckedChange={(checked) =>
                                   handleIntegrationToggle(
                                     integration.name,
@@ -522,6 +523,29 @@ export function LexicalInput({
                       </TooltipContent>
                     </Tooltip>
                   )}
+                </div>
+              ))}
+            </div>
+
+            <div className='flex items-center gap-4'>
+              {integrations.map((integration) => (
+                <div
+                  key={integration.name}
+                  className='flex items-center justify-between space-x-2'
+                >
+                  <div className='flex items-center space-x-2'>
+                    <span className='text-sm text-muted-foreground'>
+                      {integration.name}
+                    </span>
+                  </div>
+                  <Switch
+                    checked={integration.active}
+                    onCheckedChange={(checked) =>
+                      handleIntegrationToggle(integration.name, checked)
+                    }
+                    disabled={loading || integration.disabled}
+                    size='sm'
+                  />
                 </div>
               ))}
             </div>

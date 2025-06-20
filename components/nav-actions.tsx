@@ -5,7 +5,7 @@ import {
   FileText,
   Headset,
   HelpCircle,
-  Link,
+  LinkIcon,
   Notebook,
   Settings2,
   SettingsIcon,
@@ -35,13 +35,25 @@ import { useRouter } from 'next/navigation';
 const data = [
   [{ label: 'Settings', icon: Settings2 }],
   [
-    { label: "What's New", icon: Notebook },
-    { label: 'FAQs', icon: HelpCircle },
-    { label: 'Support Center', icon: Headset },
-    { label: 'Security', icon: ShieldAlert },
-    { label: 'Privacy Policy', icon: FileText },
-    { label: 'Terms', icon: FileText },
-    { label: '@sourzer', icon: Link },
+    { label: "What's New", icon: Notebook, url: 'https://www.sourzer.co' },
+    { label: 'FAQs', icon: HelpCircle, url: 'https://www.sourzer.co' },
+    { label: 'Support Center', icon: Headset, url: 'mailto:help@sourzer.co' },
+    { label: 'Security', icon: ShieldAlert, url: 'https://www.sourzer.co' },
+    {
+      label: 'Privacy Policy',
+      icon: FileText,
+      url: 'https://www.sourzer.co/privacy-policy',
+    },
+    {
+      label: 'Terms',
+      icon: FileText,
+      url: 'https://www.sourzer.co/terms-of-service',
+    },
+    {
+      label: '@sourzer',
+      icon: LinkIcon,
+      url: 'https://www.linkedin.com/company/sourzer',
+    },
   ],
 ];
 
@@ -85,16 +97,19 @@ export function NavActions() {
                   <SidebarGroupContent className='gap-0'>
                     <SidebarMenu>
                       {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
-                          <SidebarMenuButton
-                            asChild
-                            onClick={() => handleMenuItemClick(item.label)}
-                          >
-                            <button>
-                              <item.icon /> <span>{item.label}</span>
-                            </button>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
+                        // @ts-ignore
+                        <a href={item?.url!} key={index}>
+                          <SidebarMenuItem key={index}>
+                            <SidebarMenuButton
+                              asChild
+                              onClick={() => handleMenuItemClick(item.label)}
+                            >
+                              <button>
+                                <item.icon /> <span>{item.label}</span>
+                              </button>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        </a>
                       ))}
                     </SidebarMenu>
                   </SidebarGroupContent>

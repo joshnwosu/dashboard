@@ -78,30 +78,30 @@ export function NavUser({ user }: { user: UserProfile }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link href='/dashboard/settings/account'>
-                <DropdownMenuItem>
+                <DropdownMenuItem className='cursor-pointer'>
                   <BadgeCheck />
                   Account
                 </DropdownMenuItem>
               </Link>
               <Link href='/dashboard/settings/billing'>
-                <DropdownMenuItem>
+                <DropdownMenuItem className='cursor-pointer'>
                   <CreditCard />
                   Billing
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleLogout} className='cursor-pointer'>
               <LogOut />
               Log out
             </DropdownMenuItem>

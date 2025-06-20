@@ -7,6 +7,7 @@ interface UserState {
   getUserProfile: () => void;
   setUser: (user: UserProfile) => void;
   updateUserProfile: (data: Partial<UserProfile>) => Promise<void>;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => {
@@ -28,6 +29,9 @@ export const useUserStore = create<UserState>((set) => {
       } catch (error) {
         throw error;
       }
+    },
+    clearUser: () => {
+      localStorage.removeItem('access_token');
     },
   };
 });

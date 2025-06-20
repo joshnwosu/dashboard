@@ -1,3 +1,75 @@
+// 'use client';
+
+// import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+// import { AppSidebar } from '@/components/app-sidebar';
+// import Header from '@/components/header';
+// import { useEffect, useState } from 'react';
+// import { useRouter } from 'next/navigation';
+// import LoadingScreen from '@/components/loading-screen';
+// import { useUserStore } from '@/store/userStore';
+// import { SettingsDialog } from '@/components/settings-dialog';
+// import { useSettingsStore } from '@/store/settingsStore';
+// import { useTransactionStore } from '@/store/transactionStore';
+// import { useSubscriptionStore } from '@/store/subscriptionStore';
+// import { useCreditHistoryStore } from '@/store/creditHistoryStore';
+
+// export default function DashboardLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   const router = useRouter();
+//   const { getUserProfile, user } = useUserStore();
+//   const { fecthDashboardAnalysis, fetchAllTransactions } =
+//     useTransactionStore();
+//   const { fetchCompanySubscription } = useSubscriptionStore();
+//   const { fetchAllCreditHistory } = useCreditHistoryStore();
+//   const [loading, setLoading] = useState(false);
+
+//   const { isOpen, setIsOpen } = useSettingsStore();
+
+//   const initialize = async () => {
+//     setLoading(true);
+//     try {
+//       await Promise.all([
+//         !user && getUserProfile(),
+//         fecthDashboardAnalysis(),
+//         fetchAllTransactions(),
+//         fetchCompanySubscription(),
+//         fetchAllCreditHistory(),
+//       ]);
+//     } catch (error: any) {
+//       router.push('/auth/login');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     initialize();
+//   }, [router]);
+
+//   if (loading || !user) {
+//     return (
+//       <LoadingScreen title="Welcome back! We're setting everything up for you ..." />
+//     );
+//   }
+
+//   return (
+//     <SidebarProvider className='font-sans'>
+//       <AppSidebar variant='sidebar' collapsible='icon' />
+//       <SidebarInset>
+//         <Header />
+//         <div className='w-full py-6 max-w-7xl mx-auto flex flex-1 flex-col gap-4 p-8'>
+//           {children}
+//         </div>
+
+//         <SettingsDialog open={isOpen} onOpenChange={setIsOpen} />
+//       </SidebarInset>
+//     </SidebarProvider>
+//   );
+// }
+
 'use client';
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -12,6 +84,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useTransactionStore } from '@/store/transactionStore';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { useCreditHistoryStore } from '@/store/creditHistoryStore';
+import { logout } from '@/services/auth-service';
 
 export default function DashboardLayout({
   children,
@@ -30,6 +103,16 @@ export default function DashboardLayout({
 
   const initialize = async () => {
     setLoading(true);
+
+    // Check if we should logout first
+    if (
+      typeof window !== 'undefined' &&
+      localStorage.getItem('should_logout')
+    ) {
+      logout();
+      return;
+    }
+
     try {
       await Promise.all([
         !user && getUserProfile(),
@@ -46,7 +129,18 @@ export default function DashboardLayout({
   };
 
   useEffect(() => {
+    // Listen for logout events from API interceptor
+    const handleLogoutEvent = () => {
+      logout();
+    };
+
+    window.addEventListener('logout', handleLogoutEvent);
+
     initialize();
+
+    return () => {
+      window.removeEventListener('logout', handleLogoutEvent);
+    };
   }, [router]);
 
   if (loading || !user) {
