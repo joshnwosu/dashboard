@@ -173,12 +173,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { PAYMENT_FREQUENCIES, TIERS } from '@/lib/pricing';
 import { Tab } from './pricing-tab';
 import { PricingCard } from './pricing-card';
 import { Lock } from 'lucide-react';
 import { CurrencyTab } from './currency-tab';
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 
 interface PricingDialogProps {
   open: boolean;
@@ -237,6 +238,10 @@ export function PricingDialog({ open, onOpenChange }: PricingDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-[95%] max-h-[90vh] lg:max-w-6xl bg-sidebar/60 backdrop-blur-xl overflow-y-auto'>
+        <DialogHeader className='hidden'>
+          <DialogTitle>Pricing Plan</DialogTitle>
+          <DialogDescription>Description</DialogDescription>
+        </DialogHeader>
         <div className='flex flex-col items-center gap-8 pt-4 '>
           <div className='flex gap-4 items-center'>
             <div className='mx-auto flex w-fit rounded-full bg-muted p-1'>

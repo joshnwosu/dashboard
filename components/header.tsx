@@ -19,6 +19,7 @@ import { ArrowRightIcon, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PricingDialog } from './shared/pricing-dialog';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
+import { useAppStore } from '@/store/appStore';
 
 export default function Header() {
   const pathname = usePathname();
@@ -36,7 +37,8 @@ export default function Header() {
     settings: 'Settings',
   };
 
-  const [showPricing, setShowPricing] = useState(false);
+  // const [showPricing, setShowPricing] = useState(false);
+  const { showPricingToggle, setShowPricingToggle } = useAppStore();
 
   const { companySubscription } = useSubscriptionStore();
 
@@ -77,7 +79,7 @@ export default function Header() {
             <span>You're currently on the free trial</span>
             <Button
               className='bg-gradient-to-r from-blue-500 to-indigo-600 text-white cursor-pointer'
-              onClick={() => setShowPricing(true)}
+              onClick={() => setShowPricingToggle(true)}
             >
               Upgrade <ArrowRightIcon />
             </Button>
@@ -87,7 +89,10 @@ export default function Header() {
         <NavActions />
       </div>
 
-      <PricingDialog open={showPricing} onOpenChange={setShowPricing} />
+      <PricingDialog
+        open={showPricingToggle}
+        onOpenChange={setShowPricingToggle}
+      />
     </header>
   );
 }

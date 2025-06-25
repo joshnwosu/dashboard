@@ -217,6 +217,9 @@ export default function Search() {
         onSend={handleSend}
         loading={loading}
         isSendAllowed={areAllBadgesActive}
+        onIntegrationToggle={(name, b) => {
+          console.log('Hi', name, b);
+        }}
       />
 
       <div className='flex gap-2 items-center justify-center'>

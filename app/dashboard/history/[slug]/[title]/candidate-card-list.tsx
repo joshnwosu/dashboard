@@ -13,6 +13,7 @@ import SocialMediaIcons from '@/components/candidate/social-media-icons';
 import ActionButtons from '@/components/candidate/action-button';
 import Avatar from '@/components/candidate/avatar';
 import { useJobStore } from '@/store/jobStore';
+import CandidateDetailModal from '@/components/candidate/candidate-detail-modal';
 
 interface CardGridProps {
   items: Candidate[];
@@ -396,7 +397,7 @@ export default function CandidateCardList({
       </AnimatePresence>
 
       {selectedCandidate && (
-        <CandidateDetailSheet
+        <CandidateDetailModal
           item={selectedCandidate}
           open={open}
           onOpenChange={handleClose}

@@ -41,6 +41,8 @@ import {
   Settings2,
 } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { useAppStore } from '@/store/appStore';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
 
 // State to hold the pdfjs library
 type PDFJSLib = typeof import('pdfjs-dist');
@@ -101,6 +103,9 @@ export function LexicalInput({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const DEBOUNCE_DELAY = 30;
 
+  const { setShowPricingToggle } = useAppStore();
+  const { companySubscription } = useSubscriptionStore();
+
   // Load pdfjs-dist client-side
   useEffect(() => {
     if (typeof window !== 'undefined' && !pdfjsLib) {
@@ -130,14 +135,20 @@ export function LexicalInput({
   // Handle integration toggle
   const handleIntegrationToggle = useCallback(
     (integrationName: string, active: boolean) => {
-      setIntegrations((prev) =>
-        prev.map((integration) =>
-          integration.name === integrationName
-            ? { ...integration, active }
-            : integration
-        )
-      );
-      onIntegrationToggle?.(integrationName, active);
+      if (integrationName === 'Github') return;
+      if (companySubscription?.data.is_free && integrationName === 'LinkedIn') {
+        console.log('Yo');
+        setShowPricingToggle(true);
+      } else {
+        setIntegrations((prev) =>
+          prev.map((integration) =>
+            integration.name === integrationName
+              ? { ...integration, active }
+              : integration
+          )
+        );
+        onIntegrationToggle?.(integrationName, active);
+      }
     },
     [onIntegrationToggle]
   );
@@ -527,28 +538,30 @@ export function LexicalInput({
               ))}
             </div>
 
-            <div className='flex items-center gap-4'>
-              {integrations.map((integration) => (
-                <div
-                  key={integration.name}
-                  className='flex items-center justify-between space-x-2'
-                >
-                  <div className='flex items-center space-x-2'>
-                    <span className='text-sm text-muted-foreground'>
-                      {integration.name}
-                    </span>
+            {showIntegrations && (
+              <div className='flex items-center gap-4'>
+                {integrations.map((integration) => (
+                  <div
+                    key={integration.name}
+                    className='flex items-center justify-between space-x-2'
+                  >
+                    <div className='flex items-center space-x-2'>
+                      <span className='text-sm text-muted-foreground'>
+                        {integration.name}
+                      </span>
+                    </div>
+                    <Switch
+                      checked={integration.active}
+                      onCheckedChange={(checked) =>
+                        handleIntegrationToggle(integration.name, checked)
+                      }
+                      disabled={loading || integration.disabled}
+                      size='sm'
+                    />
                   </div>
-                  <Switch
-                    checked={integration.active}
-                    onCheckedChange={(checked) =>
-                      handleIntegrationToggle(integration.name, checked)
-                    }
-                    disabled={loading || integration.disabled}
-                    size='sm'
-                  />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </TooltipProvider>
         </div>
 

@@ -1,5 +1,4 @@
 import SearchList from '@/components/search-list';
-import TitleDescription from '@/components/title-description';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
@@ -16,15 +15,8 @@ export default async function HistoryPage({ params }: PageProps) {
     notFound();
   }
 
-  const title = slug === 'search-history' ? 'Search' : 'CV Screening';
-
-  const buttonText =
-    slug === 'search-history' ? 'Clear History' : 'Export History';
-
   return (
     <div className=''>
-      {/* <TitleDescription title={title} showButton buttonText={buttonText} /> */}
-
       <SearchList slug={slug} />
     </div>
   );

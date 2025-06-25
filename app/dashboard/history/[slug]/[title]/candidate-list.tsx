@@ -30,10 +30,10 @@ export default function CandidateList() {
     // Initial fetch immediately
     fetchAllCandidates(id);
 
-    // Set up continuous polling every 5 seconds
-    intervalRef.current = setInterval(() => {
-      fetchAllCandidates(id);
-    }, 2000); // 2 seconds for faster updates
+    //!TODO: Set up continuous polling every 5 seconds
+    // intervalRef.current = setInterval(() => {
+    //   fetchAllCandidates(id);
+    // }, 2000); // 2 seconds for faster updates
 
     // Cleanup interval when component unmounts or id changes
     return () => {
